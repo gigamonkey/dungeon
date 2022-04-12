@@ -1,8 +1,10 @@
 package com.gigamonkeys.dungeon;
 
-public class Thing implements Describable {
+public abstract class Thing implements Describable {
 
   public String description() {
     return "A THING";
   }
+
+  public abstract String verb(String verb);
 }

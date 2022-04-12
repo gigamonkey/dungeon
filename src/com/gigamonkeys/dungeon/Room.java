@@ -37,10 +37,7 @@ public class Room implements Describable {
     npcs.add(npc);
   }
 
-  private void describeAll(
-    StringBuilder sb,
-    Collection<? extends Describable> ds
-  ) {
+  private void describeAll(StringBuilder sb, Collection<? extends Describable> ds) {
     for (Describable d : ds) {
       sb.append(d.description());
     }

@@ -32,7 +32,7 @@ public class Dungeon {
   }
 
   private Command parse(String line) {
-    return new Command.UnknownObject(line);
+    return new Command.NotUnderstood(line);
   }
 
   public boolean gameOver() {
