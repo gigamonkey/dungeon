@@ -2,7 +2,7 @@ sources := $(wildcard src/com/gigamonkeys/dungeon/*.java)
 main := com.gigamonkeys.dungeon.Dungeon
 resources :=
 
-all: build run
+all: build
 
 build: compile resources
 

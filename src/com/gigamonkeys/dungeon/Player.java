@@ -1,3 +1,8 @@
 package com.gigamonkeys.dungeon;
 
-public class Player {}
+import java.util.*;
+
+public class Player {
+
+  private final List<Thing> items = new ArrayList<>();
+}
