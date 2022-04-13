@@ -1,6 +1,12 @@
 package com.gigamonkeys.dungeon;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class Dungeon {
 
@@ -14,6 +20,8 @@ public class Dungeon {
   //
   // Objects must be present and support the given verb. If needs a WITH clause and one not provided, ask for it.
   //
+
+  private static final Pattern WS = Pattern.compile("\\s+");
 
   private boolean gameOver = false;
   private Room room;
@@ -32,7 +40,7 @@ public class Dungeon {
   }
 
   private Command parse(String line) {
-    return new Command.NotUnderstood(line);
+    return new Command.NotUnderstood(Arrays.toString(WS.split(line)));
   }
 
   public boolean gameOver() {
