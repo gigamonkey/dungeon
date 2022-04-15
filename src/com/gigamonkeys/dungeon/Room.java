@@ -1,15 +1,15 @@
 package com.gigamonkeys.dungeon;
 
 import java.awt.Point;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class Room implements Describable {
 
   private final String description;
   private final Point position;
-  private final List<Door> doors = new ArrayList<>();
+  private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
   private final List<Thing> things = new ArrayList<>();
   private final List<NPC> npcs = new ArrayList<>();
 
@@ -23,7 +23,7 @@ public class Room implements Describable {
     sb.append(description);
     describeAll(sb, things);
     describeAll(sb, npcs);
-    describeAll(sb, doors);
+    describeAll(sb, doors.values());
     return sb.toString();
   }
 
@@ -43,7 +43,15 @@ public class Room implements Describable {
     }
   }
 
-  void addDoor(Door door) {
-    doors.add(door);
+  void addDoor(Door door, Direction d) {
+    doors.put(d, door);
+  }
+
+  public Door getDoor(Direction d) {
+    return doors.get(d);
+  }
+
+  public List<Thing> things() {
+    return things;
   }
 }

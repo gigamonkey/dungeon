@@ -1,4 +1,4 @@
-sources := $(wildcard src/com/gigamonkeys/dungeon/*.java)
+sources := $(shell find -name '*.java')
 main := com.gigamonkeys.dungeon.Dungeon
 resources :=
 
