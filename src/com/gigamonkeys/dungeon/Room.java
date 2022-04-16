@@ -12,23 +12,6 @@ public class Room {
     this.description = description;
   }
 
-  public String description() {
-    StringBuilder sb = new StringBuilder(description);
-    if (!doors.isEmpty()) {
-      sb.append("\n");
-      var ds = new ArrayList<>(doors.keySet());
-      sb.append(
-        switch (ds.size()) {
-          case 1 -> "There is a door to the " + ds.get(0);
-          case 2 -> "There are doors to the " + ds.get(0) + " and " + ds.get(1);
-          case 3 -> "There are doors to the " + ds.get(0) + ", " + ds.get(1) + " and " + ds.get(2);
-          default -> "There are doors in every direction.";
-        }
-      );
-    }
-    return sb.toString();
-  }
-
   void connect(String doorDescription, Room other, Direction d) {
     if (doors.containsKey(d)) {
       throw new RuntimeException("Already have a door in direction " + d);
@@ -43,11 +26,28 @@ public class Room {
     other.doors.put(d.opposite(), door);
   }
 
+  public String description() {
+    StringBuilder sb = new StringBuilder(description);
+    if (!doors.isEmpty()) {
+      sb.append(" ");
+      describeDoors(sb);
+    }
+    return sb.toString();
+  }
+
   public Door getDoor(Direction d) {
     return doors.get(d);
   }
 
   public List<Thing> things() {
     return things;
+  }
+
+  private void describeDoors(StringBuilder sb) {
+    for (var d : Direction.class.getEnumConstants()) {
+      if (doors.containsKey(d)) {
+        sb.append("To the " + d + " there is an " + doors.get(d) + ".");
+      }
+    }
   }
 }

@@ -22,7 +22,7 @@ public class Door {
     }
   }
 
-  public String description() {
+  public String toString() {
     return description;
   }
 }

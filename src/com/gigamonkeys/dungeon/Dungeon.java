@@ -74,8 +74,8 @@ public class Dungeon {
   }
 
   public static Room buildMaze() {
-    Room r = new Room("The first room");
-    Room r2 = new Room("Second room");
+    Room r = new Room("The first room.");
+    Room r2 = new Room("Second room.");
     r.connect("Oaken door", r2, EAST);
     return r;
   }
