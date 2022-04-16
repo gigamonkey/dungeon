@@ -74,10 +74,15 @@ public class Dungeon {
   }
 
   public static Room buildMaze() {
-    Room r = new Room("The first room.");
+    Room r1 = new Room("The first room.");
     Room r2 = new Room("Second room.");
-    r.connect("Oaken door", r2, EAST);
-    return r;
+    Room r3 = new Room("Third room.");
+    r1.connect("an oaken door", r2, EAST);
+    r1.connect("a dank tunnel", r3, SOUTH);
+    r3.things().add(new Thing(Thing.Kind.WEAPON) {
+        public String description() { return "an axe"; }
+      });
+    return r1;
   }
 
   public static void main(String[] args) {

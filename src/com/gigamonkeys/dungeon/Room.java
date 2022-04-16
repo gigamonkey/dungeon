@@ -27,12 +27,11 @@ public class Room {
   }
 
   public String description() {
-    StringBuilder sb = new StringBuilder(description);
-    if (!doors.isEmpty()) {
-      sb.append(" ");
-      describeDoors(sb);
-    }
-    return sb.toString();
+    List<String> desc = new ArrayList<>();
+    desc.add(description);
+    describeThings(desc);
+    describeDoors(desc);
+    return String.join(" ", desc);
   }
 
   public Door getDoor(Direction d) {
@@ -43,11 +42,17 @@ public class Room {
     return things;
   }
 
-  private void describeDoors(StringBuilder sb) {
+  private void describeDoors(List<String> desc) {
     for (var d : Direction.class.getEnumConstants()) {
       if (doors.containsKey(d)) {
-        sb.append("To the " + d + " there is an " + doors.get(d) + ".");
+        desc.add("To the " + d + " there is " + doors.get(d).description() + ".");
       }
+    }
+  }
+
+  private void describeThings(List<String> desc) {
+    for (var t : things) {
+      desc.add("On the floor is " + t.description() + ".");
     }
   }
 }
