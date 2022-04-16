@@ -50,6 +50,10 @@ public class Room {
     things.remove(t);
   }
 
+  public void drop(Thing t) {
+    things.add(t);
+  }
+
   private void describeDoors(List<String> desc) {
     for (var d : Direction.class.getEnumConstants()) {
       if (doors.containsKey(d)) {

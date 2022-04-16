@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Player {
 
-  private final Map<Thing.Kind, List<Thing>> things = new HashMap<Thing.Kind, List<Thing>>();
+  private final List<Thing> things = new ArrayList<>();
 
   private Room room;
 
@@ -28,12 +28,22 @@ public class Player {
 
   public String take(Thing t) {
     room.take(t);
-    things.computeIfAbsent(t.kind(), k -> new ArrayList<Thing>()).add(t);
+    things.add(t);
     return "You put the " + t.name() + " in your bag.";
+  }
+
+  public String drop(Thing t) {
+    room.drop(t);
+    things.remove(t);
+    return "You drop the " + t.name();
   }
 
   public String look() {
     return room.description();
+  }
+
+  public Optional<Thing> thing(String name) {
+    return things.stream().filter(t -> t.name().equals(name)).findAny();
   }
 
   public String listen() {

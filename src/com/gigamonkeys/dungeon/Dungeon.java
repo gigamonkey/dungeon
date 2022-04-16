@@ -30,6 +30,7 @@ public class Dungeon {
     commands.put("QUIT", this::quit);
     commands.put("GO", this::go);
     commands.put("TAKE", this::take);
+    commands.put("DROP", this::drop);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -51,7 +52,15 @@ public class Dungeon {
   }
 
   String take(String[] args) {
-    return thing(args[1]).map(t -> player.take(t)).orElse("There is no " + args[1] + " here.");
+    return player
+      .room()
+      .thing(args[1])
+      .map(t -> player.take(t))
+      .orElse("There is no " + args[1] + " here.");
+  }
+
+  String drop(String[] args) {
+    return player.thing(args[1]).map(t -> player.drop(t)).orElse("No " + args[1] + " to drop!");
   }
 
   // End commands
