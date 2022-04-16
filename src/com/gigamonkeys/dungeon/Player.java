@@ -2,39 +2,35 @@ package com.gigamonkeys.dungeon;
 
 import java.util.*;
 
-public class Player implements Verbable {
+public class Player {
 
-  private final List<Thing> things = new ArrayList<>();
-  private final Set<String> verbs = Set.of("INVENTORY");
+  private final Map<Thing.Kind, List<Thing>> things = new HashMap<Thing.Kind, List<Thing>>();
 
   private Room room;
 
-  public List<Thing> things() {
-    return things;
+  public Player(Room startingRoom) {
+    this.room = startingRoom;
   }
 
-  public String name() {
-    return "PLAYER";
+  void addThing(Thing t) {
+    things.computeIfAbsent(t.kind, k -> new ArrayList<Thing>()).add(t);
   }
 
-  public Set<String> verbs() {
-    return verbs;
+  public String go(Direction d) {
+    var door = room.getDoor(d);
+    if (door == null) {
+      return "No door to the " + d;
+    } else {
+      room = door.from(room);
+      return look();
+    }
   }
 
-  public Room room() {
-    return room;
+  public String look() {
+    return room.description();
   }
 
-  public void goThrough(Door door) {
-    room = door.from(room);
-  }
-
-  public String verb(String verb) {
-    // TODO: list things.
-    return "You have " + things.size() + " things in your bag.";
-  }
-
-  public String observe() {
-    return "Can't see anything!"; // FIXME: implement
+  public String listen() {
+    return "Can't hear anything!"; // FIXME: implement
   }
 }

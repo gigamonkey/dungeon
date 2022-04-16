@@ -2,15 +2,23 @@ package com.gigamonkeys.dungeon;
 
 import java.util.*;
 
-public abstract class Thing implements Describable, Verbable {
+public abstract class Thing {
 
-  public String description() {
-    return "A THING";
+  static enum Kind {
+    WEAPON,
+    MEDICINE,
+    FOOD,
   }
 
-  public abstract String verb(String verb);
+  public final Kind kind;
 
-  public abstract Set<String> verbs();
+  public Thing(Kind kind) {
+    this.kind = kind;
+  }
 
-  public abstract String name();
+  public abstract String description();
+
+  public void take(Player p) {
+    p.addThing(this);
+  }
 }

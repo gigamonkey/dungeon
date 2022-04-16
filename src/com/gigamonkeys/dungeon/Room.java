@@ -1,46 +1,33 @@
 package com.gigamonkeys.dungeon;
 
-import java.awt.Point;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Collection;
 
-public class Room implements Describable {
+public class Room {
 
   private final String description;
-  private final Point position;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
   private final List<Thing> things = new ArrayList<>();
-  private final List<NPC> npcs = new ArrayList<>();
 
-  public Room(String description, Point position) {
+  public Room(String description) {
     this.description = description;
-    this.position = position;
   }
 
   public String description() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(description);
-    describeAll(sb, things);
-    describeAll(sb, npcs);
-    describeAll(sb, doors.values());
-    return sb.toString();
+    return description;
   }
 
-  public void enter(Player player, UI ui) {
-    ui.describe(this);
-  }
-
-  public void enter(NPC npc) {
-    npc.exitCurrentRoom();
-    npc.enter(this);
-    npcs.add(npc);
-  }
-
-  private void describeAll(StringBuilder sb, Collection<? extends Describable> ds) {
-    for (Describable d : ds) {
-      sb.append(d.description());
+  void connect(String doorDescription, Room other, Direction d) {
+    if (doors.containsKey(d)) {
+      throw new RuntimeException("Already have a door in direction " + d);
     }
+    if (other.doors.containsKey(d.opposite())) {
+      throw new RuntimeException("Other room already has a door in direction " + d.opposite());
+    }
+
+    var door = new Door(doorDescription, this, other);
+
+    this.addDoor(door, d);
+    other.addDoor(door, d.opposite());
   }
 
   void addDoor(Door door, Direction d) {

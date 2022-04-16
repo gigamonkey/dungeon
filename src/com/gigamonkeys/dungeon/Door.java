@@ -1,11 +1,13 @@
 package com.gigamonkeys.dungeon;
 
-public class Door implements Describable {
+public class Door {
 
+  private final String description;
   private final Room a;
   private final Room b;
 
-  public Door(Room a, Room b) {
+  public Door(String description, Room a, Room b) {
+    this.description = description;
     this.a = a;
     this.b = b;
   }
@@ -21,6 +23,6 @@ public class Door implements Describable {
   }
 
   public String description() {
-    return "A DOOR";
+    return description;
   }
 }
