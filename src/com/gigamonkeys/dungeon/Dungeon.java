@@ -29,6 +29,7 @@ public class Dungeon {
 
     commands.put("QUIT", this::quit);
     commands.put("GO", this::go);
+    commands.put("TAKE", this::take);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -49,11 +50,19 @@ public class Dungeon {
       .orElse("Don't understand direction " + args[1]);
   }
 
+  String take(String[] args) {
+    return thing(args[1]).map(t -> player.take(t)).orElse("There is no " + args[1] + " here.");
+  }
+
   // End commands
   ////////////////////////////////////////////////////////////////////
 
   Optional<Direction> direction(String name) {
     return Direction.fromString(name);
+  }
+
+  Optional<Thing> thing(String name) {
+    return player.room().thing(name);
   }
 
   private void loop() throws IOException {
@@ -79,9 +88,7 @@ public class Dungeon {
     Room r3 = new Room("Third room.");
     r1.connect("an oaken door", r2, EAST);
     r1.connect("a dank tunnel", r3, SOUTH);
-    r3.things().add(new Thing(Thing.Kind.WEAPON) {
-        public String description() { return "an axe"; }
-      });
+    r3.things().add(new Thing(Thing.Kind.WEAPON, "AXE"));
     return r1;
   }
 

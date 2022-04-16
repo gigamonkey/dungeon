@@ -38,8 +38,16 @@ public class Room {
     return doors.get(d);
   }
 
+  public Optional<Thing> thing(String name) {
+    return things.stream().filter(t -> t.name().equals(name)).findAny();
+  }
+
   public List<Thing> things() {
     return things;
+  }
+
+  public void take(Thing t) {
+    things.remove(t);
   }
 
   private void describeDoors(List<String> desc) {

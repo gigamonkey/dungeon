@@ -12,10 +12,6 @@ public class Player {
     this.room = startingRoom;
   }
 
-  void addThing(Thing t) {
-    things.computeIfAbsent(t.kind, k -> new ArrayList<Thing>()).add(t);
-  }
-
   public String go(Direction d) {
     var door = room.getDoor(d);
     if (door == null) {
@@ -24,6 +20,16 @@ public class Player {
       room = door.from(room);
       return look();
     }
+  }
+
+  public Room room() {
+    return room;
+  }
+
+  public String take(Thing t) {
+    room.take(t);
+    things.computeIfAbsent(t.kind(), k -> new ArrayList<Thing>()).add(t);
+    return "You put the " + t.name() + " in your bag.";
   }
 
   public String look() {

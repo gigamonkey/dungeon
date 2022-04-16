@@ -1,8 +1,6 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.*;
-
-public abstract class Thing {
+public class Thing {
 
   static enum Kind {
     WEAPON,
@@ -10,15 +8,23 @@ public abstract class Thing {
     FOOD,
   }
 
-  public final Kind kind;
+  private final Kind kind;
+  private final String name;
 
-  public Thing(Kind kind) {
+  public Thing(Kind kind, String name) {
     this.kind = kind;
+    this.name = name;
   }
 
-  public abstract String description();
+  public Kind kind() {
+    return kind;
+  }
 
-  public void take(Player p) {
-    p.addThing(this);
+  public String name() {
+    return name;
+  }
+
+  public String description() {
+    return name;
   }
 }
