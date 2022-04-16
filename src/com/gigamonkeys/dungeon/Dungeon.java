@@ -56,16 +56,15 @@ public class Dungeon {
     return Direction.fromString(name);
   }
 
-  private void loop() {
-    try {
-      out.println(player.look());
-
-      while (!gameOver) {
-        out.println(doCommand(in.readLine().toUpperCase()));
-      }
-    } catch (IOException ioe) {
-      out.println("Yikes. Problem reading command: " + ioe);
+  private void loop() throws IOException {
+    say(player.look());
+    while (!gameOver) {
+      say(doCommand(in.readLine().toUpperCase()));
     }
+  }
+
+  private void say(String s) {
+    out.println(s.toUpperCase());
   }
 
   public String doCommand(String line) {
@@ -82,7 +81,11 @@ public class Dungeon {
   }
 
   public static void main(String[] args) {
-    Player p = new Player(buildMaze());
-    new Dungeon(p, System.in, System.out).loop();
+    try {
+      Player p = new Player(buildMaze());
+      new Dungeon(p, System.in, System.out).loop();
+    } catch (IOException ioe) {
+      System.out.println("Yikes. Problem reading command: " + ioe);
+    }
   }
 }

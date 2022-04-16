@@ -13,7 +13,20 @@ public class Room {
   }
 
   public String description() {
-    return description;
+    StringBuilder sb = new StringBuilder(description);
+    if (!doors.isEmpty()) {
+      sb.append("\n");
+      var ds = new ArrayList<>(doors.keySet());
+      sb.append(
+        switch (ds.size()) {
+          case 1 -> "There is a door to the " + ds.get(0);
+          case 2 -> "There are doors to the " + ds.get(0) + " and " + ds.get(1);
+          case 3 -> "There are doors to the " + ds.get(0) + ", " + ds.get(1) + " and " + ds.get(2);
+          default -> "There are doors in every direction.";
+        }
+      );
+    }
+    return sb.toString();
   }
 
   void connect(String doorDescription, Room other, Direction d) {
