@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class Dungeon {
@@ -31,6 +33,8 @@ public class Dungeon {
     commands.put("GO", this::go);
     commands.put("TAKE", this::take);
     commands.put("DROP", this::drop);
+    commands.put("LOOK", this::look);
+    commands.put("INVENTORY", this::inventory);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -63,6 +67,14 @@ public class Dungeon {
     return player.thing(args[1]).map(t -> player.drop(t)).orElse("No " + args[1] + " to drop!");
   }
 
+  String look(String[] args) {
+    return player.room().description();
+  }
+
+  String inventory(String[] args) {
+    return player.inventory();
+  }
+
   // End commands
   ////////////////////////////////////////////////////////////////////
 
@@ -75,7 +87,7 @@ public class Dungeon {
   }
 
   private void loop() throws IOException {
-    say(player.look());
+    say(player.room().description());
     while (!gameOver) {
       say(doCommand(in.readLine().toUpperCase()));
     }
