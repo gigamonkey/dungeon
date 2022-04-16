@@ -22,3 +22,6 @@ test:
 
 clean:
 	rm -rf classes
+
+tidy:
+	find . -name '*~' -delete
