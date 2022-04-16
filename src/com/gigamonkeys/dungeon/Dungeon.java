@@ -12,10 +12,6 @@ import java.util.regex.Pattern;
 
 public class Dungeon {
 
-  private static interface Command {
-    String run(String[] args);
-  }
-
   private static final Pattern WS = Pattern.compile("\\s+");
 
   private final Player player;
@@ -30,6 +26,34 @@ public class Dungeon {
     this.player = player;
     this.in = new BufferedReader(new InputStreamReader(in));
     this.out = out;
+
+    commands.put("QUIT", this::quit);
+    commands.put("GO", this::go);
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  // Commands
+
+  private static interface Command {
+    String run(String[] args);
+  }
+
+  String quit(String[] args) {
+    gameOver = true;
+    return "Okay. Bye!";
+  }
+
+  String go(String[] args) {
+    return direction(args[1])
+      .map(d -> player.go(d))
+      .orElse("Don't understand direction " + args[1]);
+  }
+
+  // End commands
+  ////////////////////////////////////////////////////////////////////
+
+  Optional<Direction> direction(String name) {
+    return Direction.fromString(name);
   }
 
   private void loop() {
@@ -50,21 +74,15 @@ public class Dungeon {
     return c.run(tokens);
   }
 
-  public String[] parse(String line) {
-    return WS.split(line.toUpperCase());
-  }
-
-  public String doCommand(String[] command) {
-    return player.go(EAST);
-  }
-
-  public static void main(String[] args) {
-    System.out.println(NORTH + " -> " + NORTH.opposite());
-
+  public static Room buildMaze() {
     Room r = new Room("The first room");
     Room r2 = new Room("Second room");
     r.connect("Oaken door", r2, EAST);
-    Player p = new Player(r);
+    return r;
+  }
+
+  public static void main(String[] args) {
+    Player p = new Player(buildMaze());
     new Dungeon(p, System.in, System.out).loop();
   }
 }

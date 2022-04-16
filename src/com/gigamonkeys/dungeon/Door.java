@@ -15,7 +15,7 @@ public class Door {
   public Room from(Room r) {
     if (r == a) {
       return b;
-    } else if (r == a) {
+    } else if (r == b) {
       return a;
     } else {
       throw new Error("Not connected room: " + r);

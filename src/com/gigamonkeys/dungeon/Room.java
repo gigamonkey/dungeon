@@ -26,12 +26,8 @@ public class Room {
 
     var door = new Door(doorDescription, this, other);
 
-    this.addDoor(door, d);
-    other.addDoor(door, d.opposite());
-  }
-
-  void addDoor(Door door, Direction d) {
     doors.put(d, door);
+    other.doors.put(d.opposite(), door);
   }
 
   public Door getDoor(Direction d) {
