@@ -1,19 +1,16 @@
 package com.gigamonkeys.dungeon;
 
-public class Monster extends Thing {
+public class Blobbyblob extends Thing {
 
-  private final String where;
   private int hitPoints;
-  private Room room;
 
-  Monster(String name, String where, String description, int hitPoints) {
-    super(name);
-    this.where = where;
+  Blobbyblob(int hitPoints) {
+    super("Blobbyblob");
     this.hitPoints = hitPoints;
   }
 
   public String where() {
-    return where;
+    return "across from you is";
   }
 
   public String description() {
@@ -28,17 +25,9 @@ public class Monster extends Thing {
     if (alive()) {
       return "Are you out of your mind?! This is a live and jiggling BlobbyBlob!";
     } else {
-      room.removeMonster(this);
+      room().removeMonster(this);
       return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it slightly sates your hunger.";
     }
-  }
-
-  public void setRoom(Room room) {
-    this.room = room;
-  }
-
-  public Room room() {
-    return room;
   }
 
   public String attackWith(Thing weapon) {

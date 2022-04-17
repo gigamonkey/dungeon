@@ -3,6 +3,7 @@ package com.gigamonkeys.dungeon;
 public abstract class Thing {
 
   private final String name;
+  private Room room;
 
   public Thing(String name) {
     this.name = name.toUpperCase();
@@ -12,8 +13,20 @@ public abstract class Thing {
     return "AEIOUH".indexOf(name.charAt(0)) != -1 ? "an" : "a";
   }
 
+  public void setRoom(Room room) {
+    this.room = room;
+  }
+
+  public Room room() {
+    return room;
+  }
+
   public String name() {
     return name;
+  }
+
+  public String where() {
+    return "on the floor";
   }
 
   public String description() {

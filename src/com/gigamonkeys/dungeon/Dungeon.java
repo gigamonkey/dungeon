@@ -134,26 +134,19 @@ public class Dungeon {
   }
 
   public static Room buildMaze() {
-    Room r1 = new Room("You are in a dusty entryway to a castle.");
+    Room entry = new Room("You are in a dusty entryway to a castle.");
     Room kitchen = new Room("You are in what appears to be a kitchen.");
     Room r3 = new Room("Oh no, you have entered the lair of a horrible creature.");
     Room diningRoom = new Room(
       "You are in a grand dining room with a crystal chandelier and tapestries on the walls."
     );
-    r1.connect("an oaken door", kitchen, EAST);
-    r1.connect("a dank tunnel", r3, SOUTH);
+    entry.connect("an oaken door", kitchen, EAST);
+    entry.connect("a dank tunnel", r3, SOUTH);
     r3.addThing(new Axe());
     kitchen.addThing(new Bread());
     kitchen.connect("swinging door", diningRoom, EAST);
-    r3.addMonster(
-      new Monster(
-        "BlobbyBlob",
-        "across from you is",
-        "a gelatenous mass with too many eyes and an odor of jello casserole gone bad",
-        3
-      )
-    );
-    return r1;
+    r3.addMonster(new Blobbyblob(3));
+    return entry;
   }
 
   public static void main(String[] args) {

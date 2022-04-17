@@ -7,7 +7,7 @@ public class Room {
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
   private final List<Thing> things = new ArrayList<>();
-  private final List<Monster> monsters = new ArrayList<>();
+  private final List<Thing> monsters = new ArrayList<>();
 
   public Room(String description) {
     this.description = description;
@@ -44,7 +44,7 @@ public class Room {
     return things.stream().filter(t -> t.name().equals(name)).findAny();
   }
 
-  public Optional<Monster> monster(String name) {
+  public Optional<Thing> monster(String name) {
     return monsters.stream().filter(t -> t.name().equals(name)).findAny();
   }
 
@@ -54,14 +54,15 @@ public class Room {
 
   public void addThing(Thing t) {
     things.add(t);
+    t.setRoom(this);
   }
 
-  public void addMonster(Monster m) {
+  public void addMonster(Thing m) {
     monsters.add(m);
     m.setRoom(this);
   }
 
-  public void removeMonster(Monster m) {
+  public void removeMonster(Thing m) {
     monsters.remove(m);
   }
 
