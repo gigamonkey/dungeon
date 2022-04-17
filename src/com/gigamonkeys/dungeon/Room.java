@@ -1,13 +1,13 @@
 package com.gigamonkeys.dungeon;
 
 import java.util.*;
+import java.util.function.*;
 
 public class Room {
 
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
   private final List<Thing> things = new ArrayList<>();
-  private final List<Thing> monsters = new ArrayList<>();
 
   public Room(String description) {
     this.description = description;
@@ -31,8 +31,8 @@ public class Room {
     List<String> desc = new ArrayList<>();
     desc.add("You are in");
     desc.add(description);
-    describeThings(desc);
-    describeMonsters(desc);
+    describeThings(desc, t -> !t.isMonster());
+    describeThings(desc, t -> t.isMonster());
     describeDoors(desc);
     return String.join(" ", desc);
   }
@@ -45,10 +45,6 @@ public class Room {
     return things.stream().filter(t -> t.name().equals(name)).findAny();
   }
 
-  public Optional<Thing> monster(String name) {
-    return monsters.stream().filter(t -> t.name().equals(name)).findAny();
-  }
-
   public List<Thing> things() {
     return things;
   }
@@ -58,13 +54,8 @@ public class Room {
     t.setRoom(this);
   }
 
-  public void addMonster(Thing m) {
-    monsters.add(m);
-    m.setRoom(this);
-  }
-
-  public void removeMonster(Thing m) {
-    monsters.remove(m);
+  public void removeThing(Thing t) {
+    things.remove(t);
   }
 
   public void take(Thing t) {
@@ -75,17 +66,13 @@ public class Room {
     things.add(t);
   }
 
-  private void describeThings(List<String> desc) {
-    for (var t : things) {
-      desc.add("On the floor is " + t.a() + " " + t.description() + ".");
-    }
-  }
-
-  private void describeMonsters(List<String> desc) {
-    for (var m : monsters) {
-      desc.add(m.where());
-      desc.add(m.description() + ".");
-    }
+  private void describeThings(List<String> desc, Predicate<Thing> p) {
+    things
+      .stream()
+      .filter(p)
+      .forEach(t -> {
+        desc.add(t.where() + " is " + t.a() + " " + t.description() + ".");
+      });
   }
 
   private void describeDoors(List<String> desc) {

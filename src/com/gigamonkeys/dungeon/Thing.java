@@ -33,6 +33,10 @@ public abstract class Thing {
     return name;
   }
 
+  public boolean portable() {
+    return !isMonster();
+  }
+
   public abstract String beEatenBy(Player p);
 
   public String attackWith(int damage) {
@@ -49,5 +53,9 @@ public abstract class Thing {
 
   public int damage() {
     return 0;
+  }
+
+  public boolean isMonster() {
+    return false;
   }
 }

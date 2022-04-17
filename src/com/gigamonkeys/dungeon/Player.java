@@ -27,9 +27,13 @@ public class Player {
   }
 
   public String take(Thing t) {
-    room.take(t);
-    things.add(t);
-    return "You put the " + t.name() + " in your bag.";
+    if (t.portable()) {
+      room.take(t);
+      things.add(t);
+      return "You put the " + t.name() + " in your bag.";
+    } else {
+      return "You can't take " + t.a() + " " + t.name() + "!";
+    }
   }
 
   public String drop(Thing t) {

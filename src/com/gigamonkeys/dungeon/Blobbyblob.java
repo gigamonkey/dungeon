@@ -7,14 +7,14 @@ public class Blobbyblob extends Monster {
   }
 
   public String where() {
-    return "across from you is";
+    return "across from you";
   }
 
   public String description() {
     if (alive()) {
-      return "a BlobbyBlob, a gelatenous mass with too many eyes and an odor of jello casserole gone bad";
+      return "BlobbyBlob, a gelatenous mass with too many eyes and an odor of jello casserole gone bad";
     } else {
-      return "a dead BlobbyBlob decaying into puddle of goo";
+      return "dead BlobbyBlob decaying into puddle of goo";
     }
   }
 
@@ -22,7 +22,7 @@ public class Blobbyblob extends Monster {
     if (alive()) {
       return "Are you out of your mind?! This is a live and jiggling BlobbyBlob!";
     } else {
-      room().removeMonster(this);
+      room().removeThing(this);
       return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger.";
     }
   }

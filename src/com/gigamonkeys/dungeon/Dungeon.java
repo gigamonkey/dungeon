@@ -109,10 +109,7 @@ public class Dungeon {
   }
 
   Optional<Thing> thing(String name) {
-    return player
-      .thing(name)
-      .or(() -> player.room().thing(name))
-      .or(() -> player.room().monster(name));
+    return player.thing(name).or(() -> player.room().thing(name));
   }
 
   private void loop() throws IOException {
@@ -137,17 +134,20 @@ public class Dungeon {
 
   public static Room buildMaze() {
     Room entry = new Room("a dusty entryway to a castle.");
-    Room kitchen = new Room("in what appears to be a kitchen.");
-    Room r3 = new Room("the lair of a horrible creature.");
+    Room kitchen = new Room("what appears to be a kitchen.");
+    Room blobbyblobLair = new Room("the lair of a horrible creature.");
     Room diningRoom = new Room(
-      "You are in a grand dining room with a crystal chandelier and tapestries on the walls."
+      "a grand dining room with a crystal chandelier and tapestries on the walls."
     );
+
     entry.connect("an oaken door", kitchen, EAST);
-    entry.connect("a dank tunnel", r3, SOUTH);
-    r3.addThing(new Axe());
-    kitchen.addThing(new Bread());
+    entry.connect("a dank tunnel", blobbyblobLair, SOUTH);
     kitchen.connect("swinging door", diningRoom, EAST);
-    r3.addMonster(new Blobbyblob(3));
+
+    kitchen.addThing(new Bread());
+    blobbyblobLair.addThing(new Axe());
+    blobbyblobLair.addThing(new Blobbyblob(3));
+
     return entry;
   }
 

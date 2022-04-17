@@ -17,6 +17,10 @@ public abstract class Monster extends Thing {
     this.hitPoints -= damage;
   }
 
+  public boolean isMonster() {
+    return true;
+  }
+
   public String attackWith(int damage) {
     takeDamage(damage);
     if (alive()) {
