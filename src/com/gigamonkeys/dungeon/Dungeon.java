@@ -33,14 +33,14 @@ public class Dungeon {
     this.in = new BufferedReader(new InputStreamReader(in));
     this.out = out;
 
-    commands.put("QUIT", this::quit);
-    commands.put("GO", this::go);
-    commands.put("TAKE", this::take);
-    commands.put("DROP", this::drop);
-    commands.put("LOOK", this::look);
-    commands.put("INVENTORY", this::inventory);
-    commands.put("EAT", this::eat);
     commands.put("ATTACK", this::attack);
+    commands.put("DROP", this::drop);
+    commands.put("EAT", this::eat);
+    commands.put("GO", this::go);
+    commands.put("INVENTORY", this::inventory);
+    commands.put("LOOK", this::look);
+    commands.put("QUIT", this::quit);
+    commands.put("TAKE", this::take);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -84,9 +84,14 @@ public class Dungeon {
   }
 
   String attack(String[] args) {
-    var target = arg(args, 1).flatMap(n -> player.roomThing(n));
-    var with = arg(args, 2).flatMap(n -> expect("WITH", n));
-    var weapon = arg(args, 3).flatMap(n -> player.anyThing(n));
+    var i = 1;
+
+    var target = (args.length == 3 && args[i].equals("WITH"))
+      ? onlyMonster()
+      : arg(args, i++).flatMap(n -> player.roomThing(n));
+
+    var with = arg(args, i++).flatMap(n -> expect("WITH", n));
+    var weapon = arg(args, i++).flatMap(n -> player.anyThing(n));
 
     return target
       .map(t ->
@@ -110,6 +115,11 @@ public class Dungeon {
 
   Optional<String> expect(String expected, String s) {
     return Optional.of(s).filter(v -> expected.equals(v));
+  }
+
+  Optional<Thing> onlyMonster() {
+    System.out.println("here");
+    return player.room().onlyMonster();
   }
 
   private void loop() throws IOException {

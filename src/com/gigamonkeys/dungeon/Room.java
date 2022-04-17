@@ -58,6 +58,11 @@ public class Room {
     things.add(t);
   }
 
+  public Optional<Thing> onlyMonster() {
+    var monsters = things.stream().filter(t -> t.isMonster()).toList();
+    return Optional.of(monsters).filter(m -> m.size() == 1).map(m -> m.get(0));
+  }
+
   private void describeThings(List<String> desc, Predicate<Thing> p) {
     things
       .stream()
