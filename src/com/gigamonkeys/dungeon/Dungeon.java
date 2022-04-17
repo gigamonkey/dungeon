@@ -2,7 +2,6 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Direction.*;
 
-import com.gigamonkeys.dungeon.things.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +13,10 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class Dungeon {
+
+  private static interface Command {
+    String run(String[] args);
+  }
 
   private static final Pattern WS = Pattern.compile("\\s+");
 
@@ -42,10 +45,6 @@ public class Dungeon {
 
   ////////////////////////////////////////////////////////////////////
   // Commands
-
-  private static interface Command {
-    String run(String[] args);
-  }
 
   String quit(String[] args) {
     gameOver = true;
@@ -148,7 +147,7 @@ public class Dungeon {
     kitchen.connect("swinging door", dining, EAST);
 
     kitchen.addThing(new Bread());
-    blobbyblobLair.addThing(new Axe());
+    blobbyblobLair.addThing(new Axe(2));
     blobbyblobLair.addThing(new Blobbyblob(3));
 
     return entry;
