@@ -12,9 +12,7 @@ public class Blobbyblob extends Monster {
 
   public String description() {
     if (alive()) {
-      return (
-        name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad"
-      );
+      return (name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad");
     } else {
       return "dead " + name() + " decaying into puddle of goo";
     }

@@ -8,16 +8,7 @@ public enum Direction {
   SOUTH,
   WEST;
 
-  private static Map<String, String> abbrevs = Map.of(
-    "N",
-    "NORTH",
-    "E",
-    "EAST",
-    "S",
-    "SOUTH",
-    "W",
-    "WEST"
-  );
+  private static Map<String, String> abbrevs = Map.of("N", "NORTH", "E", "EAST", "S", "SOUTH", "W", "WEST");
 
   public Direction opposite() {
     return Direction.class.getEnumConstants()[(ordinal() + 2) % 4];

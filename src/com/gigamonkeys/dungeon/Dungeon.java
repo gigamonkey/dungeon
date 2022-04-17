@@ -53,17 +53,11 @@ public class Dungeon {
   }
 
   String go(String[] args) {
-    return direction(args[1])
-      .map(d -> player.go(d))
-      .orElse("Don't understand direction " + args[1]);
+    return direction(args[1]).map(d -> player.go(d)).orElse("Don't understand direction " + args[1]);
   }
 
   String take(String[] args) {
-    return player
-      .room()
-      .thing(args[1])
-      .map(t -> player.take(t))
-      .orElse("There is no " + args[1] + " here.");
+    return player.room().thing(args[1]).map(t -> player.take(t)).orElse("There is no " + args[1] + " here.");
   }
 
   String drop(String[] args) {
@@ -93,11 +87,7 @@ public class Dungeon {
 
   private String doAttack(String target, String weapon) {
     return thing(target)
-      .map(t ->
-        thing(weapon)
-          .map(w -> w.weaponizeAgainst(t))
-          .orElse("No " + weapon + " here to attack with.")
-      )
+      .map(t -> thing(weapon).map(w -> w.weaponizeAgainst(t)).orElse("No " + weapon + " here to attack with."))
       .orElse("No " + target + " here to attack.");
   }
 
@@ -133,16 +123,14 @@ public class Dungeon {
   }
 
   public static Room buildMaze() {
-    Room entry = new Room("a dusty entryway to a castle.");
-    Room kitchen = new Room("what appears to be a kitchen.");
-    Room blobbyblobLair = new Room("the lair of a horrible creature.");
-    Room diningRoom = new Room(
-      "a grand dining room with a crystal chandelier and tapestries on the walls."
-    );
+    var entry = new Room("a dusty entryway to a castle.");
+    var kitchen = new Room("what appears to be a kitchen.");
+    var blobbyblobLair = new Room("the lair of a horrible creature.");
+    var dining = new Room("a grand dining room with a crystal chandelier and tapestries on the walls.");
 
     entry.connect("an oaken door", kitchen, EAST);
     entry.connect("a dank tunnel", blobbyblobLair, SOUTH);
-    kitchen.connect("swinging door", diningRoom, EAST);
+    kitchen.connect("swinging door", dining, EAST);
 
     kitchen.addThing(new Bread());
     blobbyblobLair.addThing(new Axe());
