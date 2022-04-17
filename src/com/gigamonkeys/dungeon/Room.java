@@ -58,9 +58,6 @@ public class Room {
     things.remove(t);
   }
 
-  public void take(Thing t) {
-    things.remove(t);
-  }
 
   public void drop(Thing t) {
     things.add(t);
