@@ -111,9 +111,24 @@ public class Dungeon {
 
   private void say(String s) {
     out.println();
-    out.println(new Description(s.toUpperCase(), 60).wrapped());
+    out.println(wrap(s.toUpperCase(), 60));
     out.println();
     out.print("> ");
+  }
+
+  private String wrap(String text, int width) {
+    var sb = new StringBuilder();
+    int col = 0;
+    for (var t : text.split("\\s+")) {
+      if (col + t.length() > width) {
+        sb.append("\n");
+        col = 0;
+      }
+      sb.append(t);
+      sb.append(" ");
+      col += t.length();
+    }
+    return sb.toString();
   }
 
   public String doCommand(String line) {
