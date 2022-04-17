@@ -62,6 +62,14 @@ public class Player {
     return things.stream().filter(t -> t.name().equals(name)).findAny();
   }
 
+  public Optional<Thing> roomThing(String name) {
+    return room.thing(name);
+  }
+
+  public Optional<Thing> anyThing(String name) {
+    return thing(name).or(() -> roomThing(name));
+  }
+
   public String listen() {
     return "Can't hear anything!"; // FIXME: implement
   }

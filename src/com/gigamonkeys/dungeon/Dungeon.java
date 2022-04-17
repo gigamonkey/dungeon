@@ -52,15 +52,21 @@ public class Dungeon {
   }
 
   String go(String[] args) {
-    return direction(args[1]).map(d -> player.go(d)).orElse("Don't understand direction " + args[1]);
+    return arg(args, 1)
+      .map(d -> direction(d).map(player::go).orElse("Don't understand direction " + d))
+      .orElse("Go where?");
   }
 
   String take(String[] args) {
-    return player.room().thing(args[1]).map(t -> player.take(t)).orElse("There is no " + args[1] + " here.");
+    return arg(args, 1)
+      .map(name -> player.roomThing(name).map(player::take).orElse("There is no " + name + " here."))
+      .orElse("Take what?");
   }
 
   String drop(String[] args) {
-    return player.thing(args[1]).map(t -> player.drop(t)).orElse("No " + args[1] + " to drop!");
+    return arg(args, 1)
+      .map(name -> player.thing(name).map(player::drop).orElse("No " + name + " to drop!"))
+      .orElse("Drop what?");
   }
 
   String look(String[] args) {
@@ -72,33 +78,38 @@ public class Dungeon {
   }
 
   String eat(String[] args) {
-    return thing(args[1]).map(t -> player.eat(t)).orElse("No " + args[1] + " here to eat.");
+    return arg(args, 1)
+      .map(name -> player.anyThing(name).map(player::eat).orElse("No " + name + " here to eat."))
+      .orElse("Eat what?");
   }
 
   String attack(String[] args) {
-    return switch (args.length) {
-      case 1 -> "Attack what. And with what?";
-      case 2, 3 -> "With what?";
-      case 4 -> doAttack(args[1], args[3]);
-      default -> "Huh?";
-    };
-  }
+    var target = arg(args, 1).flatMap(n -> player.roomThing(n));
+    var with = arg(args, 2).flatMap(n -> expect("WITH", n));
+    var weapon = arg(args, 3).flatMap(n -> player.anyThing(n));
 
-  private String doAttack(String target, String weapon) {
-    return thing(target)
-      .map(t -> thing(weapon).map(w -> w.weaponizeAgainst(t)).orElse("No " + weapon + " here to attack with."))
-      .orElse("No " + target + " here to attack.");
+    return target
+      .map(t ->
+        with
+          .map(e -> weapon.map(w -> w.weaponizeAgainst(t)).orElse("Attack with what?"))
+          .orElse("Don't understand 'ATTACK' with no 'WITH'.")
+      )
+      .orElse("Attack what?");
   }
 
   // End commands
   ////////////////////////////////////////////////////////////////////
 
+  Optional<String> arg(String[] args, int idx) {
+    return Optional.of(idx).filter(i -> i < args.length).map(i -> args[i]);
+  }
+
   Optional<Direction> direction(String name) {
     return Direction.fromString(name);
   }
 
-  Optional<Thing> thing(String name) {
-    return player.thing(name).or(() -> player.room().thing(name));
+  Optional<String> expect(String expected, String s) {
+    return Optional.of(s).filter(v -> expected.equals(v));
   }
 
   private void loop() throws IOException {
