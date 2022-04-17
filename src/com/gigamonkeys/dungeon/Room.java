@@ -58,6 +58,11 @@ public class Room {
 
   public void addMonster(Monster m) {
     monsters.add(m);
+    m.setRoom(this);
+  }
+
+  public void removeMonster(Monster m) {
+    monsters.remove(m);
   }
 
   public void take(Thing t) {
@@ -85,8 +90,6 @@ public class Room {
   private void describeMonsters(List<String> desc) {
     for (var m : monsters) {
       desc.add(m.where());
-      desc.add(m.a());
-      desc.add(m.name() + ",");
       desc.add(m.description() + ".");
     }
   }

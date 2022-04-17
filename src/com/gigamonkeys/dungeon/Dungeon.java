@@ -83,11 +83,20 @@ public class Dungeon {
   }
 
   String attack(String[] args) {
-    var target = thing(args[1]);
-    var weapon = thing(args[3]);
-    return target
-      .map(t -> weapon.map(w -> t.attackWith(w)).orElse("No " + args[3] + " here to attack with."))
-      .orElse("No " + args[1] + " here to attack.");
+    return switch (args.length) {
+      case 1 -> "Attack what. And with what?";
+      case 2, 3 -> "With what?";
+      case 4 -> doAttack(args[1], args[3]);
+      default -> "Huh?";
+    };
+  }
+
+  private String doAttack(String target, String weapon) {
+    return thing(target)
+      .map(t ->
+        thing(weapon).map(w -> t.attackWith(w)).orElse("No " + weapon + " here to attack with.")
+      )
+      .orElse("No " + target + " here to attack.");
   }
 
   // End commands
@@ -112,7 +121,10 @@ public class Dungeon {
   }
 
   private void say(String s) {
-    out.println(s.toUpperCase());
+    out.println();
+    out.println(new Description(s.toUpperCase(), 60).wrapped());
+    out.println();
+    out.print("> ");
   }
 
   public String doCommand(String line) {
@@ -122,19 +134,23 @@ public class Dungeon {
   }
 
   public static Room buildMaze() {
-    Room r1 = new Room("The first room.");
-    Room r2 = new Room("Second room.");
-    Room r3 = new Room("Third room.");
-    r1.connect("an oaken door", r2, EAST);
+    Room r1 = new Room("You are in a dusty entryway to a castle.");
+    Room kitchen = new Room("You are in what appears to be a kitchen.");
+    Room r3 = new Room("Oh no, you have entered the lair of a horrible creature.");
+    Room diningRoom = new Room(
+      "You are in a grand dining room with a crystal chandelier and tapestries on the walls."
+    );
+    r1.connect("an oaken door", kitchen, EAST);
     r1.connect("a dank tunnel", r3, SOUTH);
     r3.addThing(new Axe());
-    r2.addThing(new Bread());
+    kitchen.addThing(new Bread());
+    kitchen.connect("swinging door", diningRoom, EAST);
     r3.addMonster(
       new Monster(
         "BlobbyBlob",
         "across from you is",
         "a gelatenous mass with too many eyes and an odor of jello casserole gone bad",
-        6
+        3
       )
     );
     return r1;

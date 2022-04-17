@@ -3,14 +3,12 @@ package com.gigamonkeys.dungeon;
 public class Monster extends Thing {
 
   private final String where;
-  private final String description;
   private int hitPoints;
   private Room room;
 
   Monster(String name, String where, String description, int hitPoints) {
     super(name);
     this.where = where;
-    this.description = description;
     this.hitPoints = hitPoints;
   }
 
@@ -19,15 +17,24 @@ public class Monster extends Thing {
   }
 
   public String description() {
-    return description;
+    if (alive()) {
+      return "a BlobbyBlob, a gelatenous mass with too many eyes and an odor of jello casserole gone bad";
+    } else {
+      return "a dead BlobbyBlob decaying into puddle of goo";
+    }
   }
 
   public String beEatenBy(Player p) {
     if (alive()) {
       return "Are you out of your mind?! This is a live and jiggling BlobbyBlob!";
     } else {
+      room.removeMonster(this);
       return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it slightly sates your hunger.";
     }
+  }
+
+  public void setRoom(Room room) {
+    this.room = room;
   }
 
   public Room room() {
@@ -43,7 +50,7 @@ public class Monster extends Thing {
     }
   }
 
-  private boolean alive() {
+  public boolean alive() {
     return hitPoints > 0;
   }
 }
