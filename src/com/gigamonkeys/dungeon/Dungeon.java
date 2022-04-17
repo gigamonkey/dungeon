@@ -37,6 +37,7 @@ public class Dungeon {
     commands.put("LOOK", this::look);
     commands.put("INVENTORY", this::inventory);
     commands.put("EAT", this::eat);
+    commands.put("ATTACK", this::attack);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -81,6 +82,14 @@ public class Dungeon {
     return thing(args[1]).map(t -> player.eat(t)).orElse("No " + args[1] + " here to eat.");
   }
 
+  String attack(String[] args) {
+    var target = thing(args[1]);
+    var weapon = thing(args[3]);
+    return target
+      .map(t -> weapon.map(w -> t.attackWith(w)).orElse("No " + args[3] + " here to attack with."))
+      .orElse("No " + args[1] + " here to attack.");
+  }
+
   // End commands
   ////////////////////////////////////////////////////////////////////
 
@@ -89,7 +98,10 @@ public class Dungeon {
   }
 
   Optional<Thing> thing(String name) {
-    return player.thing(name).or(() -> player.room().thing(name));
+    return player
+      .thing(name)
+      .or(() -> player.room().thing(name))
+      .or(() -> player.room().monster(name));
   }
 
   private void loop() throws IOException {
@@ -121,7 +133,8 @@ public class Dungeon {
       new Monster(
         "BlobbyBlob",
         "across from you is",
-        "a gelatenous mass with too many eyes and an odor of jello casserole gone bad"
+        "a gelatenous mass with too many eyes and an odor of jello casserole gone bad",
+        6
       )
     );
     return r1;

@@ -11,4 +11,8 @@ public class Axe extends Thing {
   public String beEatenBy(Player p) {
     return "Axes are not good for eating. Now your teeth hurt and you are no less hungry.";
   }
+
+  public int damage() {
+    return 2;
+  }
 }

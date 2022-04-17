@@ -44,6 +44,10 @@ public class Room {
     return things.stream().filter(t -> t.name().equals(name)).findAny();
   }
 
+  public Optional<Monster> monster(String name) {
+    return monsters.stream().filter(t -> t.name().equals(name)).findAny();
+  }
+
   public List<Thing> things() {
     return things;
   }
