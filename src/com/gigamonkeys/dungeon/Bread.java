@@ -1,6 +1,4 @@
-package com.gigamonkeys.dungeon.things;
-
-import com.gigamonkeys.dungeon.*;
+package com.gigamonkeys.dungeon;
 
 public class Bread extends Food {
 
