@@ -9,10 +9,14 @@ public enum Direction {
   WEST;
 
   private static Map<String, String> abbrevs = Map.of(
-    "N", "NORTH",
-    "E", "EAST",
-    "S", "SOUTH",
-    "W", "WEST"
+    "N",
+    "NORTH",
+    "E",
+    "EAST",
+    "S",
+    "SOUTH",
+    "W",
+    "WEST"
   );
 
   public Direction opposite() {

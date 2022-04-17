@@ -1,23 +1,11 @@
 package com.gigamonkeys.dungeon;
 
-public class Thing {
+public abstract class Thing {
 
-  static enum Kind {
-    WEAPON,
-    MEDICINE,
-    FOOD,
-  }
-
-  private final Kind kind;
   private final String name;
 
-  public Thing(Kind kind, String name) {
-    this.kind = kind;
+  public Thing(String name) {
     this.name = name;
-  }
-
-  public Kind kind() {
-    return kind;
   }
 
   public String name() {
@@ -27,4 +15,6 @@ public class Thing {
   public String description() {
     return name;
   }
+
+  public abstract String beEatenBy(Player p);
 }

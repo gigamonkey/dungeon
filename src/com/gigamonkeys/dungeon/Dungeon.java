@@ -2,6 +2,7 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Direction.*;
 
+import com.gigamonkeys.dungeon.things.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +36,7 @@ public class Dungeon {
     commands.put("DROP", this::drop);
     commands.put("LOOK", this::look);
     commands.put("INVENTORY", this::inventory);
+    commands.put("EAT", this::eat);
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -75,6 +77,10 @@ public class Dungeon {
     return player.inventory();
   }
 
+  String eat(String[] args) {
+    return thing(args[1]).map(t -> player.eat(t)).orElse("No " + args[1] + " here.");
+  }
+
   // End commands
   ////////////////////////////////////////////////////////////////////
 
@@ -83,7 +89,7 @@ public class Dungeon {
   }
 
   Optional<Thing> thing(String name) {
-    return player.room().thing(name);
+    return player.thing(name).or(() -> player.room().thing(name));
   }
 
   private void loop() throws IOException {
@@ -109,7 +115,8 @@ public class Dungeon {
     Room r3 = new Room("Third room.");
     r1.connect("an oaken door", r2, EAST);
     r1.connect("a dank tunnel", r3, SOUTH);
-    r3.things().add(new Thing(Thing.Kind.WEAPON, "AXE"));
+    r3.things().add(new Axe());
+    r2.things().add(new Bread());
     return r1;
   }
 
