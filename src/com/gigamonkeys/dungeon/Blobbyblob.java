@@ -1,12 +1,9 @@
 package com.gigamonkeys.dungeon;
 
-public class Blobbyblob extends Thing {
-
-  private int hitPoints;
+public class Blobbyblob extends Monster {
 
   Blobbyblob(int hitPoints) {
-    super("Blobbyblob");
-    this.hitPoints = hitPoints;
+    super("Blobbyblob", hitPoints);
   }
 
   public String where() {
@@ -31,15 +28,11 @@ public class Blobbyblob extends Thing {
   }
 
   public String attackWith(Thing weapon) {
-    hitPoints -= weapon.damage();
+    damage(weapon.damage());
     if (alive()) {
       return "The " + name() + " is wounded but still alive. And now it's mad.";
     } else {
       return "The " + name() + " is dead. Murderer.";
     }
-  }
-
-  public boolean alive() {
-    return hitPoints > 0;
   }
 }
