@@ -8,6 +8,10 @@ public class Bread extends Thing {
     super("BREAD");
   }
 
+  public String a() {
+    return "some";
+  }
+
   public String beEatenBy(Player p) {
     return "Ah, delicious. Could use some mayonnaise though.";
   }

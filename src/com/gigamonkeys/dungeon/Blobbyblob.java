@@ -23,16 +23,7 @@ public class Blobbyblob extends Monster {
       return "Are you out of your mind?! This is a live and jiggling BlobbyBlob!";
     } else {
       room().removeMonster(this);
-      return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it slightly sates your hunger.";
-    }
-  }
-
-  public String attackWith(Thing weapon) {
-    damage(weapon.damage());
-    if (alive()) {
-      return "The " + name() + " is wounded but still alive. And now it's mad.";
-    } else {
-      return "The " + name() + " is dead. Murderer.";
+      return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger.";
     }
   }
 }

@@ -94,7 +94,9 @@ public class Dungeon {
   private String doAttack(String target, String weapon) {
     return thing(target)
       .map(t ->
-        thing(weapon).map(w -> t.attackWith(w)).orElse("No " + weapon + " here to attack with.")
+        thing(weapon)
+          .map(w -> w.weaponizeAgainst(t))
+          .orElse("No " + weapon + " here to attack with.")
       )
       .orElse("No " + target + " here to attack.");
   }
@@ -134,9 +136,9 @@ public class Dungeon {
   }
 
   public static Room buildMaze() {
-    Room entry = new Room("You are in a dusty entryway to a castle.");
-    Room kitchen = new Room("You are in what appears to be a kitchen.");
-    Room r3 = new Room("Oh no, you have entered the lair of a horrible creature.");
+    Room entry = new Room("a dusty entryway to a castle.");
+    Room kitchen = new Room("in what appears to be a kitchen.");
+    Room r3 = new Room("the lair of a horrible creature.");
     Room diningRoom = new Room(
       "You are in a grand dining room with a crystal chandelier and tapestries on the walls."
     );

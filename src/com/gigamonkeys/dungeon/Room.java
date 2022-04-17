@@ -29,6 +29,7 @@ public class Room {
 
   public String description() {
     List<String> desc = new ArrayList<>();
+    desc.add("You are in");
     desc.add(description);
     describeThings(desc);
     describeMonsters(desc);
@@ -74,17 +75,9 @@ public class Room {
     things.add(t);
   }
 
-  private void describeDoors(List<String> desc) {
-    for (var d : Direction.class.getEnumConstants()) {
-      if (doors.containsKey(d)) {
-        desc.add("To the " + d + " there is " + doors.get(d).description() + ".");
-      }
-    }
-  }
-
   private void describeThings(List<String> desc) {
     for (var t : things) {
-      desc.add("On the floor is " + t.description() + ".");
+      desc.add("On the floor is " + t.a() + " " + t.description() + ".");
     }
   }
 
@@ -92,6 +85,14 @@ public class Room {
     for (var m : monsters) {
       desc.add(m.where());
       desc.add(m.description() + ".");
+    }
+  }
+
+  private void describeDoors(List<String> desc) {
+    for (var d : Direction.class.getEnumConstants()) {
+      if (doors.containsKey(d)) {
+        desc.add("To the " + d + " there is " + doors.get(d).description() + ".");
+      }
     }
   }
 }

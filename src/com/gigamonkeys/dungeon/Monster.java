@@ -13,7 +13,16 @@ public abstract class Monster extends Thing {
     return hitPoints > 0;
   }
 
-  public void damage(int damage) {
+  public void takeDamage(int damage) {
     this.hitPoints -= damage;
+  }
+
+  public String attackWith(int damage) {
+    takeDamage(damage);
+    if (alive()) {
+      return "The " + name() + " is wounded but still alive. And now it's mad.";
+    } else {
+      return "The " + name() + " is dead. Murderer.";
+    }
   }
 }

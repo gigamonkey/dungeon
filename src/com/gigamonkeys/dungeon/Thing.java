@@ -35,8 +35,16 @@ public abstract class Thing {
 
   public abstract String beEatenBy(Player p);
 
-  public String attackWith(Thing weapon) {
+  public String attackWith(int damage) {
     return "I don't know why you're attacking an innocent " + name() + ".";
+  }
+
+  public String weaponizeAgainst(Thing monster) {
+    if (damage() == 0) {
+      return a() + " " + name() + " is not an effective weapon. You do zero damage.";
+    } else {
+      return monster.attackWith(this.damage());
+    }
   }
 
   public int damage() {
