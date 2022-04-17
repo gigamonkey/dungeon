@@ -9,6 +9,6 @@ public class Bread extends Thing {
   }
 
   public String beEatenBy(Player p) {
-    return "Ah, delicious. Could use some mayonaise though.";
+    return "Ah, delicious. Could use some mayonnaise though.";
   }
 }
