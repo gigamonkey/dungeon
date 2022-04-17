@@ -45,10 +45,6 @@ public class Room {
     return things.stream().filter(t -> t.name().equals(name)).findAny();
   }
 
-  public List<Thing> things() {
-    return things;
-  }
-
   public void addThing(Thing t) {
     things.add(t);
     t.setRoom(this);
