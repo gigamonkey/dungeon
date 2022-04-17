@@ -78,7 +78,7 @@ public class Dungeon {
   }
 
   String eat(String[] args) {
-    return thing(args[1]).map(t -> player.eat(t)).orElse("No " + args[1] + " here.");
+    return thing(args[1]).map(t -> player.eat(t)).orElse("No " + args[1] + " here to eat.");
   }
 
   // End commands
@@ -115,8 +115,15 @@ public class Dungeon {
     Room r3 = new Room("Third room.");
     r1.connect("an oaken door", r2, EAST);
     r1.connect("a dank tunnel", r3, SOUTH);
-    r3.things().add(new Axe());
-    r2.things().add(new Bread());
+    r3.addThing(new Axe());
+    r2.addThing(new Bread());
+    r3.addMonster(
+      new Monster(
+        "BlobbyBlob",
+        "across from you is",
+        "a gelatenous mass with too many eyes and an odor of jello casserole gone bad"
+      )
+    );
     return r1;
   }
 

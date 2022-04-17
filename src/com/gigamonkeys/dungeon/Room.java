@@ -7,6 +7,7 @@ public class Room {
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
   private final List<Thing> things = new ArrayList<>();
+  private final List<Monster> monsters = new ArrayList<>();
 
   public Room(String description) {
     this.description = description;
@@ -30,6 +31,7 @@ public class Room {
     List<String> desc = new ArrayList<>();
     desc.add(description);
     describeThings(desc);
+    describeMonsters(desc);
     describeDoors(desc);
     return String.join(" ", desc);
   }
@@ -44,6 +46,14 @@ public class Room {
 
   public List<Thing> things() {
     return things;
+  }
+
+  public void addThing(Thing t) {
+    things.add(t);
+  }
+
+  public void addMonster(Monster m) {
+    monsters.add(m);
   }
 
   public void take(Thing t) {
@@ -65,6 +75,15 @@ public class Room {
   private void describeThings(List<String> desc) {
     for (var t : things) {
       desc.add("On the floor is " + t.description() + ".");
+    }
+  }
+
+  private void describeMonsters(List<String> desc) {
+    for (var m : monsters) {
+      desc.add(m.where());
+      desc.add(m.a());
+      desc.add(m.name() + ",");
+      desc.add(m.description() + ".");
     }
   }
 }
