@@ -138,10 +138,10 @@ public class Dungeon {
   }
 
   public static Room buildMaze() {
-    var entry = new Room("a dusty entryway to a castle.");
-    var kitchen = new Room("what appears to be a kitchen.");
-    var blobbyblobLair = new Room("the lair of a horrible creature.");
-    var dining = new Room("a grand dining room with a crystal chandelier and tapestries on the walls.");
+    var entry = new Room("a dusty entryway to a castle");
+    var kitchen = new Room("what appears to be a kitchen");
+    var blobbyblobLair = new Room("the lair of a horrible creature");
+    var dining = new Room("a grand dining room with a crystal chandelier and tapestries on the walls");
 
     entry.connect("an oaken door", kitchen, EAST);
     entry.connect("a dank tunnel", blobbyblobLair, SOUTH);

@@ -30,7 +30,7 @@ public class Room {
   public String description() {
     List<String> desc = new ArrayList<>();
     desc.add("You are in");
-    desc.add(description);
+    desc.add(description + ".");
     describeThings(desc, t -> !t.isMonster());
     describeThings(desc, t -> t.isMonster());
     describeDoors(desc);
