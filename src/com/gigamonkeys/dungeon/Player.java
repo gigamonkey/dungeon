@@ -51,7 +51,11 @@ public class Player {
   }
 
   public String eat(Thing t) {
-    return t.beEatenBy(this);
+    if (t.isEdible()) {
+      things.remove(t);
+      room.removeThing(t);
+    }
+    return t.eat();
   }
 
   public Optional<Thing> thing(String name) {

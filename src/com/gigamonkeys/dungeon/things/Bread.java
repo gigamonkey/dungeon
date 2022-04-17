@@ -2,7 +2,7 @@ package com.gigamonkeys.dungeon.things;
 
 import com.gigamonkeys.dungeon.*;
 
-public class Bread extends Thing {
+public class Bread extends Food {
 
   public Bread() {
     super("BREAD");
@@ -12,7 +12,7 @@ public class Bread extends Thing {
     return "some";
   }
 
-  public String beEatenBy(Player p) {
+  public String eat() {
     return "Ah, delicious. Could use some mayonnaise though.";
   }
 }

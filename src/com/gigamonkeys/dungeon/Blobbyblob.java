@@ -18,11 +18,10 @@ public class Blobbyblob extends Monster {
     }
   }
 
-  public String beEatenBy(Player p) {
+  public String eat() {
     if (alive()) {
       return "Are you out of your mind?! This is a live and jiggling BlobbyBlob!";
     } else {
-      room().removeThing(this);
       return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger.";
     }
   }

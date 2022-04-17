@@ -37,7 +37,11 @@ public abstract class Thing {
     return !isMonster();
   }
 
-  public abstract String beEatenBy(Player p);
+  public boolean isEdible() {
+    return false;
+  }
+
+  public abstract String eat();
 
   public String attackWith(int damage) {
     return "I don't know why you're attacking an innocent " + name() + ".";

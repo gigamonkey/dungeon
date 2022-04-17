@@ -21,6 +21,10 @@ public abstract class Monster extends Thing {
     return true;
   }
 
+  public boolean isEdible() {
+    return !alive();
+  }
+
   public String attackWith(int damage) {
     takeDamage(damage);
     if (alive()) {
