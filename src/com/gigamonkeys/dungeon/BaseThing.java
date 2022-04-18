@@ -18,12 +18,12 @@ public abstract class BaseThing implements Thing {
     this.hitPoints = hitPoints;
   }
 
-  public String a() {
-    return "AEIOUH".indexOf(name.charAt(0)) != -1 ? "an" : "a";
-  }
-
   public void setRoom(Room room) {
     this.room = room;
+  }
+
+  public void clearRoom() {
+    this.room = null;
   }
 
   public Room room() {
@@ -40,10 +40,6 @@ public abstract class BaseThing implements Thing {
 
   public String description() {
     return name;
-  }
-
-  public boolean alive() {
-    return hitPoints > 0;
   }
 
   public void takeDamage(int damage) {
@@ -82,9 +78,5 @@ public abstract class BaseThing implements Thing {
 
   public boolean isMonster() {
     return false;
-  }
-
-  public Attack attackPlayer() {
-    return Attack.EMPTY;
   }
 }

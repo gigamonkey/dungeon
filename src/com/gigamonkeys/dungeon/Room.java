@@ -69,10 +69,11 @@ public class Room {
 
   public void removeThing(Thing t) {
     things.remove(t);
+    t.clearRoom();
   }
 
   public void drop(Thing t) {
-    things.add(t);
+    addThing(t);
   }
 
   public Optional<Thing> onlyMonster() {

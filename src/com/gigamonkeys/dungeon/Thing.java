@@ -14,14 +14,14 @@ public interface Thing {
   public String name();
 
   /**
-   * Return 'a' or 'an'.
-   */
-  public String a();
-
-  /**
    * Set the room the thing is in.
    */
   public void setRoom(Room room);
+
+  /**
+   * Clear the room when the thing is taken by the player or destroyed.
+   */
+  public void clearRoom();
 
   /**
    * Get the room the thing is in.
@@ -37,11 +37,6 @@ public interface Thing {
    * Longer description of the thing used to refer to in in sentences.
    */
   public String description();
-
-  /**
-   * Is the thing alive.
-   */
-  public boolean alive();
 
   /**
    * Take damage.
@@ -78,9 +73,37 @@ public interface Thing {
    */
   public String weaponizeAgainst(Thing monster);
 
+  /**
+   * The damage this thing does when used as a weapon.
+   */
   public int damage();
 
+  /**
+   * Is the thing a monster.
+   */
   public boolean isMonster();
 
-  public Attack attackPlayer();
+  //////////////////////////////////////////////////////////////////////////////
+  // Some default implementations. Probably don't need to override these.
+
+  /**
+   * Generate an attack against the player.
+   */
+  public default Attack attackPlayer() {
+    return Attack.EMPTY;
+  }
+
+  /**
+   * Return 'a' or 'an'.
+   */
+  public default String a() {
+    return "AEIOUH".indexOf(name().charAt(0)) != -1 ? "an" : "a";
+  }
+
+  /**
+   * Is the thing alive?
+   */
+  public default boolean alive() {
+    return hitPoints() > 0;
+  }
 }

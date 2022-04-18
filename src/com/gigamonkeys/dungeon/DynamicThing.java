@@ -53,6 +53,10 @@ public class DynamicThing implements Thing {
     this.attackPlayer = attackPlayer;
   }
 
+  ////////////////////////////////////////////////////////////////////
+  // Not dynamic. Values that are set once or bits of logic that don't
+  // change.
+
   public String name() {
     return name;
   }
@@ -65,12 +69,8 @@ public class DynamicThing implements Thing {
     this.room = room;
   }
 
-  public String a() {
-    return "AEIOUH".indexOf(name.charAt(0)) != -1 ? "an" : "a";
-  }
-
-  public boolean alive() {
-    return hitPoints > 0;
+  public void clearRoom() {
+    this.room = null;
   }
 
   public void takeDamage(int damage) {
