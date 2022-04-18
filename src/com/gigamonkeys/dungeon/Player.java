@@ -1,15 +1,18 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Player {
 
   private final List<Thing> things = new ArrayList<>();
-
   private Room room;
+  private int hitPoints;
 
-  public Player(Room startingRoom) {
+  public Player(Room startingRoom, int hitPoints) {
     this.room = startingRoom;
+    this.hitPoints = hitPoints;
   }
 
   public String go(Direction d) {
@@ -18,7 +21,7 @@ public class Player {
       return "No door to the " + d;
     } else {
       room = door.from(room);
-      return look();
+      return room.enter(this);
     }
   }
 
@@ -72,5 +75,11 @@ public class Player {
 
   public String listen() {
     return "Can't hear anything!"; // FIXME: implement
+  }
+
+  public String loseHitPoints(int amount) {
+    hitPoints -= amount;
+    var s = amount != 1 ? "s" : "";
+    return "You take " + amount + " hit point" + s + " of damage.";
   }
 }

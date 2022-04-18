@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -118,7 +119,6 @@ public class Dungeon {
   }
 
   Optional<Thing> onlyMonster() {
-    System.out.println("here");
     return player.room().onlyMonster();
   }
 
@@ -154,7 +154,10 @@ public class Dungeon {
   public String doCommand(String line) {
     String[] tokens = WS.split(line);
     var c = commands.getOrDefault(tokens[0], args -> "Don't know how to " + args[0]);
-    return c.run(tokens);
+    var desc = new ArrayList<String>();
+    desc.add(c.run(tokens));
+    player.room().describeAttacks(desc, player);
+    return String.join(" ", desc);
   }
 
   public static Room buildMaze() {
@@ -176,7 +179,7 @@ public class Dungeon {
 
   public static void main(String[] args) {
     try {
-      Player p = new Player(buildMaze());
+      Player p = new Player(buildMaze(), 32);
       new Dungeon(p, System.in, System.out).loop();
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);

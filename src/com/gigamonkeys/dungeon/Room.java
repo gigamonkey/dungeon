@@ -1,7 +1,12 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.*;
-import java.util.function.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class Room {
 
@@ -25,6 +30,13 @@ public class Room {
 
     doors.put(d, door);
     other.doors.put(d.opposite(), door);
+  }
+
+  public String enter(Player player) {
+    List<String> desc = new ArrayList<>();
+    desc.add(description());
+    describeAttacks(desc, player);
+    return String.join(" ", desc);
   }
 
   public String description() {
@@ -59,8 +71,11 @@ public class Room {
   }
 
   public Optional<Thing> onlyMonster() {
-    var monsters = things.stream().filter(t -> t.isMonster()).toList();
-    return Optional.of(monsters).filter(m -> m.size() == 1).map(m -> m.get(0));
+    return Optional.of(monsters().toList()).filter(m -> m.size() == 1).map(m -> m.get(0));
+  }
+
+  private Stream<Thing> monsters() {
+    return things.stream().filter(t -> t.isMonster());
   }
 
   private void describeThings(List<String> desc, Predicate<Thing> p) {
@@ -77,6 +92,18 @@ public class Room {
       if (doors.containsKey(d)) {
         desc.add("To the " + d + " there is " + doors.get(d).description() + ".");
       }
+    }
+  }
+
+  public void describeAttacks(List<String> desc, Player player) {
+    var totalDamage = 0;
+    for (var m : monsters().toList()) {
+      var a = m.attackPlayer();
+      totalDamage += a.damage();
+      desc.add(a.description());
+    }
+    if (totalDamage > 0) {
+      desc.add(player.loseHitPoints(totalDamage));
     }
   }
 }

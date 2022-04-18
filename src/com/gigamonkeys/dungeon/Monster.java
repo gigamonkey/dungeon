@@ -2,6 +2,10 @@ package com.gigamonkeys.dungeon;
 
 public abstract class Monster extends Thing {
 
+  public static record Attack(int damage, String description) {}
+
+  public static final Attack EMPTY_ATTACK = new Attack(0, "");
+
   private int hitPoints;
 
   Monster(String name, int hitPoints) {

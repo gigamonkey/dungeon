@@ -6,8 +6,8 @@ public class Bread extends Food {
     super("BREAD");
   }
 
-  public String a() {
-    return "some";
+  public String description() {
+    return "loaf of bread";
   }
 
   public String eat() {

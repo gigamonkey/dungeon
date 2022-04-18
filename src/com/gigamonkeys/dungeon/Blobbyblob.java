@@ -25,4 +25,12 @@ public class Blobbyblob extends Monster {
       return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger.";
     }
   }
+
+  public Monster.Attack attackPlayer() {
+    if (alive()) {
+      return new Monster.Attack(2, "The " + name() + " extrudes a blobby arm and smashes at you!");
+    } else {
+      return EMPTY_ATTACK;
+    }
+  }
 }

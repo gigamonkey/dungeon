@@ -1,6 +1,7 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 public enum Direction {
   NORTH,

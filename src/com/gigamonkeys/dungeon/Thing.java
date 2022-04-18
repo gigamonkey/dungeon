@@ -49,7 +49,7 @@ public abstract class Thing {
 
   public String weaponizeAgainst(Thing monster) {
     if (damage() == 0) {
-      return a() + " " + name() + " is not an effective weapon. You do zero damage.";
+      return a() + " " + description() + " is not an effective weapon. You do zero damage.";
     } else {
       return monster.attackWith(this.damage());
     }
@@ -61,5 +61,9 @@ public abstract class Thing {
 
   public boolean isMonster() {
     return false;
+  }
+
+  public Monster.Attack attackPlayer() {
+    return Monster.EMPTY_ATTACK;
   }
 }
