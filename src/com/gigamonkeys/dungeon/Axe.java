@@ -1,5 +1,9 @@
 package com.gigamonkeys.dungeon;
 
+/**
+ * Specific class representing an Axe. This could easily be replaced
+ * with a DynamicThing.
+ */
 public class Axe extends BaseThing {
 
   public Axe(int damage) {

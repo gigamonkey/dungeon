@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Represent the player.
+ */
 public class Player {
 
   private final List<Thing> things = new ArrayList<>();

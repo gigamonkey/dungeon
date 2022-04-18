@@ -1,5 +1,12 @@
 package com.gigamonkeys.dungeon;
 
+/**
+ * The interface for all the things in the Dungeon other than the
+ * Player, Rooms, and Doors. We don't distinguish between different
+ * kinds of things by class because ultimately it seems better to
+ * actually have to deal with the player applying any verb to any
+ * thing.
+ */
 public interface Thing {
   /**
    * The thing's name. How it must be referred to in commands.

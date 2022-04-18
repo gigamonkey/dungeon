@@ -8,6 +8,11 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+/**
+ * One room in the dungeon. Rooms are connected to other Rooms by
+ * Doors. They also contain Things which can be weapons, food,
+ * monsters, etc.
+ */
 public class Room {
 
   private final String description;

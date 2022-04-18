@@ -1,5 +1,9 @@
 package com.gigamonkeys.dungeon;
 
+/**
+ * Specific class representing a specific kind of montser. This could
+ * pretty easily be replaced with a DynamicThing.
+ */
 public class Blobbyblob extends BaseThing {
 
   Blobbyblob(int hitPoints) {

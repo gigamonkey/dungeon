@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+/**
+ * The main class for the game.
+ */
 public class Dungeon {
 
   private static interface Command {

@@ -1,5 +1,9 @@
 package com.gigamonkeys.dungeon;
 
+/**
+ * Specific class representing Bread. This could easily be replaced
+ * with a DynamicThing.
+ */
 public class Bread extends BaseThing {
 
   public Bread() {

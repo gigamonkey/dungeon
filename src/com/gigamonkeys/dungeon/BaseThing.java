@@ -1,5 +1,8 @@
 package com.gigamonkeys.dungeon;
 
+/**
+ * A base implementation of Thing for non-DynamicThing things.
+ */
 public abstract class BaseThing implements Thing {
 
   // Name is how the thing must be referred to in commands. AXE, BREAD, etc.

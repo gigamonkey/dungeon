@@ -3,6 +3,10 @@ package com.gigamonkeys.dungeon;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The directions the player can move. Also supports one-letter
+ * abbreviations.
+ */
 public enum Direction {
   NORTH,
   EAST,

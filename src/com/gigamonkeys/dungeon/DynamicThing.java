@@ -2,6 +2,11 @@ package com.gigamonkeys.dungeon;
 
 import java.util.function.*;
 
+/**
+ * An implementation of the Thing interface that can be put together
+ * out of individual dynamic parts. Designed to be constructed with
+ * ThingBuilder.
+ */
 public class DynamicThing implements Thing {
 
   private final String name;

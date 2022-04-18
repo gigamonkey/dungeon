@@ -5,6 +5,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * A builder for DynamicThings. (See https://en.wikipedia.org/wiki/Builder_pattern)
+ */
 public class ThingBuilder {
 
   private Supplier<Integer> hitPoints = () -> 0;

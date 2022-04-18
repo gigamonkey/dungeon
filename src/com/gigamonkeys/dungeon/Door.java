@@ -1,5 +1,9 @@
 package com.gigamonkeys.dungeon;
 
+/**
+ * A door connecting two rooms. For now the description is the same on
+ * both sides. Might want to make that more flexible.
+ */
 public class Door {
 
   private final String description;
