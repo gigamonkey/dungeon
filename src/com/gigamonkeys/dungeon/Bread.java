@@ -1,6 +1,6 @@
 package com.gigamonkeys.dungeon;
 
-public class Bread extends Thing {
+public class Bread extends BaseThing {
 
   public Bread() {
     super("BREAD", 0, 0);

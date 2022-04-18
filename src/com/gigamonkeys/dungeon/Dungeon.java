@@ -173,6 +173,7 @@ public class Dungeon {
     kitchen.addThing(new Bread());
     blobbyblobLair.addThing(new Axe(2));
     blobbyblobLair.addThing(new Blobbyblob(3));
+    entry.addThing(new ThingBuilder().where("floating in mid air").description("ring of great power").thing("RING"));
 
     return entry;
   }

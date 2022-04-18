@@ -30,7 +30,7 @@ public class Player {
   }
 
   public String take(Thing t) {
-    if (t.portable()) {
+    if (t.isPortable()) {
       room.removeThing(t);
       things.add(t);
       return "You put the " + t.name() + " in your bag.";

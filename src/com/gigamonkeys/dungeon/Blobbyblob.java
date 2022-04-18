@@ -1,6 +1,6 @@
 package com.gigamonkeys.dungeon;
 
-public class Blobbyblob extends Thing {
+public class Blobbyblob extends BaseThing {
 
   Blobbyblob(int hitPoints) {
     super("Blobbyblob", hitPoints, 2);

@@ -1,6 +1,6 @@
 package com.gigamonkeys.dungeon;
 
-public class Axe extends Thing {
+public class Axe extends BaseThing {
 
   public Axe(int damage) {
     super("AXE", 2, 0);
