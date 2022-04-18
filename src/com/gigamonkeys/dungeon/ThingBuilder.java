@@ -10,36 +10,29 @@ import java.util.function.Supplier;
  */
 public class ThingBuilder {
 
-  private Supplier<Integer> hitPoints = () -> 0;
+  // N.B. initialHitPoints is only invoked when building the Thing
+  // whereas the rest of the functions are installed in the
+  // DynamicThing.
+  private Supplier<Integer> initialHitPoints = () -> 0;
 
-  private BiFunction<Thing, Integer, String> attackWith = (t, d) -> {
-    return "I don't know why you're attacking an innocent " + t.name() + ".";
-  };
-
-  private BiFunction<Thing, Thing, String> weaponizeAgainst = (t, m) -> {
-    if (t.damage() == 0) {
-      return t.a() + " " + t.description() + " is not an effective weapon. You do zero damage.";
-    } else {
-      return m.attackWith(t.damage());
-    }
-  };
-
+  private BiFunction<Thing, Integer, String> attackWith = ThingBuilder::defaultAttackWith;
+  private BiFunction<Thing, Thing, String> weaponizeAgainst = ThingBuilder::defaultWeaponizeAgainst;
   private Function<Thing, Attack> attackPlayer = t -> Attack.EMPTY;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = t -> t.name();
-  private Function<Thing, String> eat = t -> "Ouch, you hurt your teeth.";
+  private Function<Thing, String> eat = t -> t.isEdible() ? "Yum." : "Ouch, you hurt your teeth.";
   private Function<Thing, String> where = t -> "on the floor";
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
 
-  ThingBuilder hitPoints(Supplier<Integer> hitPoints) {
-    this.hitPoints = hitPoints;
+  ThingBuilder initialHitPoints(Supplier<Integer> initialHitPoints) {
+    this.initialHitPoints = initialHitPoints;
     return this;
   }
 
-  ThingBuilder hitPoints(int hitPoints) {
-    this.hitPoints = () -> hitPoints;
+  ThingBuilder initialHitPoints(int initialHitPoints) {
+    this.initialHitPoints = () -> initialHitPoints;
     return this;
   }
 
@@ -146,7 +139,7 @@ public class ThingBuilder {
   public Thing thing(String name) {
     return new DynamicThing(
       name,
-      hitPoints.get(),
+      initialHitPoints.get(),
       attackWith,
       weaponizeAgainst,
       attackPlayer,
@@ -158,5 +151,20 @@ public class ThingBuilder {
       isMonster,
       isPortable
     );
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  // Default implementation of more complex methods.
+
+  private static String defaultAttackWith(Thing t, int damage) {
+    return "I don't know why you're attacking an innocent " + t.name() + ".";
+  }
+
+  private static String defaultWeaponizeAgainst(Thing t, Thing m) {
+    if (t.damage() == 0) {
+      return t.a() + " " + t.description() + " is not an effective weapon. You do zero damage.";
+    } else {
+      return m.attackWith(t.damage());
+    }
   }
 }
