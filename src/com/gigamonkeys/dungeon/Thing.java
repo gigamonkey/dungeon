@@ -1,7 +1,6 @@
 package com.gigamonkeys.dungeon;
 
 public interface Thing {
-
   /**
    * The thing's name. How it must be referred to in commands.
    */
@@ -41,6 +40,11 @@ public interface Thing {
    * Take damage.
    */
   public void takeDamage(int damage);
+
+  /**
+   * How many points does the Thing have left.
+   */
+  public int hitPoints();
 
   /**
    * Can the thing be taken by the player.

@@ -170,10 +170,30 @@ public class Dungeon {
     entry.connect("a dank tunnel", blobbyblobLair, SOUTH);
     kitchen.connect("swinging door", dining, EAST);
 
+    var ring = new ThingBuilder()
+      .where("floating in mid air")
+      .description("ring of great power")
+      .damage(1000)
+      .weaponizeAgainst((t, m) ->
+        "A blast of light emanates from the ring blasting the " +
+        m.name() +
+        " to smithereens. " +
+        m.attackWith(t.damage())
+      )
+      .thing("RING");
+
+    var sword = new ThingBuilder()
+      .where("on the floor")
+      .description("broadsword with a rusty iron hilt")
+      .damage(5)
+      .weaponizeAgainst((t, m) -> "Oof. This sword is heavy to swing. But you connect. " + m.attackWith(t.damage()))
+      .thing("SWORD");
+
     kitchen.addThing(new Bread());
     blobbyblobLair.addThing(new Axe(2));
     blobbyblobLair.addThing(new Blobbyblob(3));
-    entry.addThing(new ThingBuilder().where("floating in mid air").description("ring of great power").thing("RING"));
+    entry.addThing(ring);
+    dining.addThing(sword);
 
     return entry;
   }

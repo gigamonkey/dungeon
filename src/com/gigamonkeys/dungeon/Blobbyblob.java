@@ -3,7 +3,7 @@ package com.gigamonkeys.dungeon;
 public class Blobbyblob extends BaseThing {
 
   Blobbyblob(int hitPoints) {
-    super("Blobbyblob", hitPoints, 2);
+    super("Blobbyblob", 2, hitPoints);
   }
 
   public boolean isMonster() {
@@ -19,7 +19,7 @@ public class Blobbyblob extends BaseThing {
     if (alive()) {
       return "The " + name() + " is wounded but still alive. And now it's mad.";
     } else {
-      return "The " + name() + " is dead. Murderer.";
+      return "The " + name() + " is dead. Good job, murderer.";
     }
   }
 
@@ -38,6 +38,12 @@ public class Blobbyblob extends BaseThing {
   public String eat() {
     if (alive()) {
       return "Are you out of your mind?! This is a live and jiggling BlobbyBlob!";
+    } else if (hitPoints() < -100) {
+      return (
+        "The " +
+        name() +
+        " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
+      );
     } else {
       return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger.";
     }
