@@ -127,8 +127,15 @@ public class Dungeon {
 
   private void loop() throws IOException {
     say(player.room().description());
+    out.print("> ");
     while (!gameOver) {
       say(doCommand(in.readLine().toUpperCase()));
+      if (!player.alive()) {
+        say("Ooops. You're dead. Game over.");
+        gameOver = true;
+      } else {
+        out.print("> ");
+      }
     }
   }
 
@@ -136,7 +143,6 @@ public class Dungeon {
     out.println();
     out.println(wrap(s.toUpperCase(), 60));
     out.println();
-    out.print("> ");
   }
 
   private String wrap(String text, int width) {
@@ -203,7 +209,7 @@ public class Dungeon {
 
   public static void main(String[] args) {
     try {
-      Player p = new Player(buildMaze(), 32);
+      Player p = new Player(buildMaze(), 10);
       new Dungeon(p, System.in, System.out).loop();
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);

@@ -83,6 +83,10 @@ public class Player {
   public String loseHitPoints(int amount) {
     hitPoints -= amount;
     var s = amount != 1 ? "s" : "";
-    return "You take " + amount + " hit point" + s + " of damage.";
+    return "You take " + amount + " hit point" + s + " of damage. You're down to " + hitPoints;
+  }
+
+  public boolean alive() {
+    return hitPoints > 0;
   }
 }

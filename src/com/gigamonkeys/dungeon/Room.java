@@ -40,7 +40,6 @@ public class Room {
   public String enter(Player player) {
     List<String> desc = new ArrayList<>();
     desc.add(description());
-    describeAttacks(desc, player);
     return String.join(" ", desc);
   }
 
