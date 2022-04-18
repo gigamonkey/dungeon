@@ -1,9 +1,9 @@
 package com.gigamonkeys.dungeon;
 
-public class Axe extends Weapon {
+public class Axe extends Thing {
 
   public Axe(int damage) {
-    super("AXE", 2);
+    super("AXE", 2, 0);
   }
 
   public String eat() {

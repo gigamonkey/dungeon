@@ -2,11 +2,17 @@ package com.gigamonkeys.dungeon;
 
 public abstract class Thing {
 
+  // Name is how the thing must be referred to in commands. AXE, BREAD, etc.
   private final String name;
+  private final int damage;
+
+  private int hitPoints;
   private Room room;
 
-  public Thing(String name) {
+  public Thing(String name, int damage, int hitPoints) {
     this.name = name.toUpperCase();
+    this.damage = damage;
+    this.hitPoints = hitPoints;
   }
 
   public String a() {
@@ -33,6 +39,14 @@ public abstract class Thing {
     return name;
   }
 
+  public boolean alive() {
+    return hitPoints > 0;
+  }
+
+  public void takeDamage(int damage) {
+    hitPoints -= damage;
+  }
+
   public boolean portable() {
     return !isMonster();
   }
@@ -56,14 +70,14 @@ public abstract class Thing {
   }
 
   public int damage() {
-    return 0;
+    return damage;
   }
 
   public boolean isMonster() {
     return false;
   }
 
-  public Monster.Attack attackPlayer() {
-    return Monster.EMPTY_ATTACK;
+  public Attack attackPlayer() {
+    return Attack.EMPTY;
   }
 }

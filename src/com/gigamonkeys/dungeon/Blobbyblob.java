@@ -1,9 +1,26 @@
 package com.gigamonkeys.dungeon;
 
-public class Blobbyblob extends Monster {
+public class Blobbyblob extends Thing {
 
   Blobbyblob(int hitPoints) {
-    super("Blobbyblob", hitPoints);
+    super("Blobbyblob", hitPoints, 2);
+  }
+
+  public boolean isMonster() {
+    return true;
+  }
+
+  public boolean isEdible() {
+    return !alive();
+  }
+
+  public String attackWith(int damage) {
+    takeDamage(damage);
+    if (alive()) {
+      return "The " + name() + " is wounded but still alive. And now it's mad.";
+    } else {
+      return "The " + name() + " is dead. Murderer.";
+    }
   }
 
   public String where() {
@@ -26,11 +43,11 @@ public class Blobbyblob extends Monster {
     }
   }
 
-  public Monster.Attack attackPlayer() {
+  public Attack attackPlayer() {
     if (alive()) {
-      return new Monster.Attack(2, "The " + name() + " extrudes a blobby arm and smashes at you!");
+      return new Attack(damage(), "The " + name() + " extrudes a blobby arm and smashes at you!");
     } else {
-      return EMPTY_ATTACK;
+      return Attack.EMPTY;
     }
   }
 }

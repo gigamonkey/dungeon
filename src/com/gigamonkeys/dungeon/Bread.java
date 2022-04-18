@@ -1,13 +1,17 @@
 package com.gigamonkeys.dungeon;
 
-public class Bread extends Food {
+public class Bread extends Thing {
 
   public Bread() {
-    super("BREAD");
+    super("BREAD", 0, 0);
   }
 
   public String description() {
     return "loaf of bread";
+  }
+
+  public boolean isEdible() {
+    return true;
   }
 
   public String eat() {
