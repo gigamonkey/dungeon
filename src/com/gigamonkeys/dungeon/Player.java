@@ -2,6 +2,7 @@ package com.gigamonkeys.dungeon;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Represent the player.
@@ -34,6 +35,10 @@ public class Player implements Location {
 
   public Collection<PlacedThing> things() {
     return inventory.things();
+  }
+
+  public Stream<PlacedThing> allThings() {
+    return inventory.allThings();
   }
 
   //

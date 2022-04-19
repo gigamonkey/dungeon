@@ -42,6 +42,10 @@ public class Room implements Location {
     return things.things();
   }
 
+  public Stream<PlacedThing> allThings() {
+    return things.allThings();
+  }
+
   //
   //////////////////////////////////////////////////////////////////////////////
 
@@ -88,7 +92,7 @@ public class Room implements Location {
   }
 
   private Stream<Thing> monsters() {
-    return things().stream().map(pt -> pt.thing()).filter(t -> t.isMonster());
+    return allThings().map(pt -> pt.thing()).filter(t -> t.isMonster());
   }
 
   private void describeThings(List<String> desc, Predicate<Thing> p) {
@@ -96,9 +100,7 @@ public class Room implements Location {
     for (var pt : things) {
       var t = pt.thing();
       desc.add(pt.where() + " is " + t.a() + " " + t.description() + ".");
-    }
-    for (var pt : things) {
-      desc.add(pt.thing().describeThings());
+      desc.add(t.describeThings());
     }
   }
 

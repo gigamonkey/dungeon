@@ -3,6 +3,7 @@ package com.gigamonkeys.dungeon;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * An abstract implementation of Thing with the bits that shouldn't change.
@@ -54,7 +55,7 @@ public abstract class AbstractThing implements Thing {
     var desc = new ArrayList<String>();
     for (var pt : things()) {
       var t = pt.thing();
-      desc.add(pt.where() + " the " + description() + " is " + t.a() + " " + t.description() + ".");
+      desc.add(pt.where() + " the " + name() + " is " + t.a() + " " + t.description() + ".");
     }
     for (var pt : things()) {
       desc.add(pt.thing().describeThings());
@@ -79,6 +80,10 @@ public abstract class AbstractThing implements Thing {
 
   public Collection<PlacedThing> things() {
     return things.things();
+  }
+
+  public Stream<PlacedThing> allThings() {
+    return things.allThings();
   }
   //
   //////////////////////////////////////////////////////////////////////////////

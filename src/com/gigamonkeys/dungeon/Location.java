@@ -2,6 +2,7 @@ package com.gigamonkeys.dungeon;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * A location where a Thing can be. Every Thing must be in one location at a
@@ -24,7 +25,12 @@ public interface Location {
   public Optional<Thing> thing(String name);
 
   /**
-   * A list of the things with their places.
+   * Things directly in this location.
    */
   public Collection<PlacedThing> things();
+
+  /**
+   * All things accessible from this location.
+   */
+  public Stream<PlacedThing> allThings();
 }

@@ -206,8 +206,25 @@ public class Dungeon {
     var sword = new ThingBuilder("SWORD")
       .description("broadsword with a rusty iron hilt")
       .damage(5)
-      .weaponizeAgainst((t, m) -> "Oof, this sword is heavy to swing. But you connect. " + m.attackWith(t.damage()))
+      .weaponizeAgainst((t, m) -> "Oof, this sword is heavy to swing, but you connect. " + m.attackWith(t.damage()))
       .thing();
+
+    var pirate = new ThingBuilder("PIRATE")
+      .description("pirate with a wooden leg and and an eye patch")
+      .isMonster(true)
+      .initialHitPoints(10)
+      .damage(2)
+      .thing();
+
+    var parrot = new ThingBuilder("PARROT")
+      .description("green and blue parrot with a tiny eye patch")
+      .isMonster(true)
+      .initialHitPoints(5)
+      .damage(1)
+      .thing();
+
+    pirate.placeThing(parrot, "on the right shoulder of");
+    dining.placeThing(pirate, "in the middle of the room");
 
     kitchen.placeThing(table, "against the wall");
     table.placeThing(new Bread(), "on");

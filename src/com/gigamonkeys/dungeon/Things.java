@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * A concrete implementation of Location, to be used via composition.
@@ -38,5 +39,9 @@ public class Things implements Location {
 
   public Collection<PlacedThing> things() {
     return things.values();
+  }
+
+  public Stream<PlacedThing> allThings() {
+    return things.values().stream().flatMap(pt -> Stream.concat(Stream.of(pt), pt.thing().allThings()));
   }
 }

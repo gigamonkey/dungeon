@@ -165,7 +165,18 @@ public class ThingBuilder {
   // Default implementation of more complex methods.
 
   private static String defaultAttackWith(Thing t, int damage) {
-    return "I don't know why you're attacking an innocent " + t.name() + ".";
+    if (t.isMonster()) {
+      t.takeDamage(damage);
+      var s = "You hit, doing " + damage + " points of damage.";
+      if (t.alive()) {
+        s += " The " + t.name() + " is wounded but still alive. And now it's mad.";
+      } else {
+        s += " The " + t.name() + " is dead. Good job, murderer.";
+      }
+      return s;
+    } else {
+      return "I don't know why you're attacking an innocent " + t.name() + ".";
+    }
   }
 
   private static String defaultWeaponizeAgainst(Thing t, Thing m) {
