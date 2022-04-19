@@ -213,13 +213,13 @@ public class Dungeon {
     var bread = new ThingBuilder("BREAD")
       .description("loaf of bread")
       .isEdible(true)
-      .eat("Ah, delicious. Could use some mayonnaise though.")
+      .eatIfEdible("Ah, delicious. Could use some mayonnaise though.")
       .thing();
 
     var sandwich = new ThingBuilder("SANDWICH")
       .description("ham and cheese sandwich")
       .isEdible(true)
-      .eat("Mmmm, tasty. But I think you got a spot of mustard on your tunic.")
+      .eatIfEdible("Mmmm, tasty. But I think you got a spot of mustard on your tunic.")
       .thing();
 
     var blobbyblob = new ThingBuilder("BLOBBYBLOB")

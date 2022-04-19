@@ -9,3 +9,7 @@
 - Notion of turns within room so attacks can change or only start after a certain turn.
 
 - Add LCS error correction for not understood words.
+
+- When a thing is in another thing, the enclosing thing should control whether
+  you can take it. (E.g. you can take the parrot from the pirate if the pirate
+  is weak or dead.)

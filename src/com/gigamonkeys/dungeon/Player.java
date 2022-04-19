@@ -89,8 +89,12 @@ public class Player implements Location {
   }
 
   public String inventory() {
-    var things = inventory.things().stream().map(t -> a(t.thing().description())).toList();
-    return new StringBuilder("You have ").append(commify(things)).append(".").toString();
+    if (inventory.things().isEmpty()) {
+      return "Your bag is empty.";
+    } else {
+      var items = inventory.things().stream().map(t -> a(t.thing().description())).toList();
+      return new StringBuilder("You have ").append(commify(items)).append(".").toString();
+    }
   }
 
   public String eat(Thing t) {

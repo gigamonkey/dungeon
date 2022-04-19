@@ -11,6 +11,7 @@ class Text {
 
   public static String commify(List<String> items) {
     return switch (items.size()) {
+      case 0 -> "";
       case 1 -> items.get(0);
       case 2 -> items.get(0) + " and " + items.get(1);
       default -> String.join(", ", items.subList(0, items.size() - 1)) + ", and " + items.get(items.size() - 1);
