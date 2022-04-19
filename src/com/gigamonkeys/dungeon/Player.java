@@ -101,7 +101,10 @@ public class Player implements Location {
   public String loseHitPoints(int amount) {
     hitPoints -= amount;
     var s = amount != 1 ? "s" : "";
-    return "You take " + amount + " hit point" + s + " of damage. You're down to " + hitPoints;
+    var status = hitPoints > 0
+      ? "You're down to " + hitPoints
+      : "You feel consciousness slipping away.";
+      return "You take " + amount + " hit point" + s + " of damage. " + status;
   }
 
   public boolean alive() {
