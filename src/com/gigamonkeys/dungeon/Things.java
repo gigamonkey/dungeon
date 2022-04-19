@@ -23,7 +23,17 @@ public class Things implements Location {
   }
 
   public Optional<Thing> thing(String name) {
-    return things.containsKey(name) ? Optional.of(things.get(name).thing()) : Optional.empty();
+    if (things.containsKey(name)) {
+      return Optional.of(things.get(name).thing());
+    } else {
+      for (var pt : things()) {
+        var maybe = pt.thing().thing(name);
+        if (maybe.isPresent()) {
+          return maybe;
+        }
+      }
+      return Optional.empty();
+    }
   }
 
   public Collection<PlacedThing> things() {

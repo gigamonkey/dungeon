@@ -63,7 +63,7 @@ public class Player implements Location {
 
   public String take(Thing t) {
     if (t.isPortable()) {
-      room.removeThing(t);
+      t.location().removeThing(t);
       inventory.placeThing(t, "in your bag");
       return "You put the " + t.name() + " in your bag.";
     } else {
@@ -101,10 +101,8 @@ public class Player implements Location {
   public String loseHitPoints(int amount) {
     hitPoints -= amount;
     var s = amount != 1 ? "s" : "";
-    var status = hitPoints > 0
-      ? "You're down to " + hitPoints
-      : "You feel consciousness slipping away.";
-      return "You take " + amount + " hit point" + s + " of damage. " + status;
+    var status = hitPoints > 0 ? "You're down to " + hitPoints : "You feel consciousness slipping away.";
+    return "You take " + amount + " hit point" + s + " of damage. " + status;
   }
 
   public boolean alive() {

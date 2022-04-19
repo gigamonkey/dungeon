@@ -92,12 +92,14 @@ public class Room implements Location {
   }
 
   private void describeThings(List<String> desc, Predicate<Thing> p) {
-    things()
-      .stream()
-      .filter(pt -> p.test(pt.thing()))
-      .forEach(pt -> {
-        desc.add(pt.where() + " is " + pt.thing().a() + " " + pt.thing().description() + ".");
-      });
+    var things = things().stream().filter(pt -> p.test(pt.thing())).toList();
+    for (var pt : things) {
+      var t = pt.thing();
+      desc.add(pt.where() + " is " + t.a() + " " + t.description() + ".");
+    }
+    for (var pt : things) {
+      desc.add(pt.thing().describeThings());
+    }
   }
 
   private void describeDoors(List<String> desc) {

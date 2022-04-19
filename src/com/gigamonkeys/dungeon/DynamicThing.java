@@ -7,7 +7,7 @@ import java.util.function.*;
  * out of individual dynamic parts. Designed to be constructed with
  * ThingBuilder.
  */
-public class DynamicThing extends BaseThing {
+public class DynamicThing extends AbstractThing {
 
   static record Dynamic(
     BiFunction<Thing, Integer, String> attackWith,

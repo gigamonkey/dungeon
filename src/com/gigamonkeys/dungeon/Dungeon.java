@@ -179,6 +179,12 @@ public class Dungeon {
     entry.connect("a dank tunnel", blobbyblobLair, SOUTH);
     kitchen.connect("swinging door", dining, EAST);
 
+    var pedestal = new ThingBuilder("PEDESTAL").description("stone pedestal").isPortable(false).thing();
+
+    var table = new ThingBuilder("TABLE").description("wooden table").isPortable(false).thing();
+
+    var tvTray = new ThingBuilder("TRAY").description("tv tray").isPortable(false).thing();
+
     var ring = new ThingBuilder("RING")
       .description("ring of great power")
       .damage(1000)
@@ -189,6 +195,8 @@ public class Dungeon {
         m.attackWith(t.damage())
       )
       .thing();
+
+    pedestal.placeThing(ring, "on");
 
     var sandwich = new ThingBuilder("SANDWICH")
       .description("ham and cheese sandwich")
@@ -201,11 +209,13 @@ public class Dungeon {
       .weaponizeAgainst((t, m) -> "Oof. This sword is heavy to swing. But you connect. " + m.attackWith(t.damage()))
       .thing();
 
-    kitchen.placeThing(new Bread(), "on a table");
+    kitchen.placeThing(table, "against the wall");
+    table.placeThing(new Bread(), "on");
     blobbyblobLair.placeThing(new Axe(2), "on floor");
     blobbyblobLair.placeThing(new Blobbyblob(3), "across from you");
-    entry.placeThing(ring, "floating in mid air");
-    entry.placeThing(sandwich, "on small tray by the door");
+    entry.placeThing(pedestal, "in the center of the room");
+    entry.placeThing(tvTray, "by the door");
+    tvTray.placeThing(sandwich, "on");
     dining.placeThing(sword, "propped against a wall");
 
     return entry;

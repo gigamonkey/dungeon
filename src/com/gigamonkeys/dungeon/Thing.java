@@ -7,7 +7,7 @@ package com.gigamonkeys.dungeon;
  * actually have to deal with the player applying any verb to any
  * thing.
  */
-public interface Thing {
+public interface Thing extends Location {
   /**
    * The thing's name. How it must be referred to in commands.
    */
@@ -32,6 +32,11 @@ public interface Thing {
    * Longer description of the thing used to refer to it in sentences.
    */
   public String description();
+
+  /**
+   * Describe any things located on this thing.
+   */
+  public String describeThings();
 
   /**
    * Take damage.
