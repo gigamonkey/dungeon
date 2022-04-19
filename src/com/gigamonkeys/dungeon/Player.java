@@ -72,9 +72,9 @@ public class Player implements Location {
     if (t.isPortable()) {
       t.location().removeThing(t);
       inventory.placeThing(t, "in your stuff");
-      return "Okay. You have " + a(t.name());
+      return "Okay. You have " + a(t.description());
     } else {
-      return "You can't take " + a(t.name()) + "!";
+      return "You can't take the " + t.name() + "!";
     }
   }
 
