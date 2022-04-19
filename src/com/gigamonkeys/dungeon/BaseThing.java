@@ -10,17 +10,12 @@ public abstract class BaseThing implements Thing {
   private final int damage;
 
   private int hitPoints;
-  private Room room;
   private Location location;
 
   public BaseThing(String name, int damage, int hitPoints) {
     this.name = name.toUpperCase();
     this.damage = damage;
     this.hitPoints = hitPoints;
-  }
-
-  public void setRoom(Room room) {
-    this.room = room;
   }
 
   public void setLocation(Location location) {
@@ -33,14 +28,6 @@ public abstract class BaseThing implements Thing {
 
   public void clearLocation() {
     location = null;
-  }
-
-  public void clearRoom() {
-    this.room = null;
-  }
-
-  public Room room() {
-    return room;
   }
 
   public String name() {

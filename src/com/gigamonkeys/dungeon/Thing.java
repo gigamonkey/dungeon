@@ -14,25 +14,19 @@ public interface Thing {
   public String name();
 
   /**
-   * Set the room the thing is in.
+   * Set the thing's location.
    */
-  public void setRoom(Room room);
-
   public void setLocation(Location location);
 
+  /**
+   * Get the thing's location.
+   */
   public Location location();
 
+  /**
+   * Clear the thing's location. (Such as when the thing is eaten or otherwise destroyed.)
+   */
   public void clearLocation();
-
-  /**
-   * Clear the room when the thing is taken by the player or destroyed.
-   */
-  public void clearRoom();
-
-  /**
-   * Get the room the thing is in.
-   */
-  public Room room();
 
   /**
    * Longer description of the thing used to refer to in in sentences.

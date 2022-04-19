@@ -12,7 +12,6 @@ public class DynamicThing implements Thing {
   private final String name;
 
   private int hitPoints;
-  private Room room;
   private Location location;
 
   private final BiFunction<Thing, Integer, String> attackWith;
@@ -57,18 +56,6 @@ public class DynamicThing implements Thing {
 
   public String name() {
     return name;
-  }
-
-  public Room room() {
-    return room;
-  }
-
-  public void setRoom(Room room) {
-    this.room = room;
-  }
-
-  public void clearRoom() {
-    this.room = null;
   }
 
   public Location location() {
