@@ -88,7 +88,7 @@ public class Room implements Location {
   }
 
   private Stream<Thing> monsters() {
-    return things().stream().filter(pt -> pt.thing().isMonster()).map(pt -> pt.thing());
+    return things().stream().map(pt -> pt.thing()).filter(t -> t.isMonster());
   }
 
   private void describeThings(List<String> desc, Predicate<Thing> p) {

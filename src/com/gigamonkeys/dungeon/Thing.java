@@ -96,15 +96,13 @@ public interface Thing {
    */
   public boolean isMonster();
 
-  //////////////////////////////////////////////////////////////////////////////
-  // Some default implementations. Probably don't need to override these.
-
   /**
    * Generate an attack against the player.
    */
-  public default Attack attackPlayer() {
-    return Attack.EMPTY;
-  }
+  public Attack attackPlayer();
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Some default implementations. Probably don't need to override these.
 
   /**
    * Return 'a' or 'an'.
