@@ -13,3 +13,10 @@
 - When a thing is in another thing, the enclosing thing should control whether
   you can take it. (E.g. you can take the parrot from the pirate if the pirate
   is weak or dead.)
+
+- TAKE should support 'take a and b', 'take a, b, and c', etc. (Probably by
+  having a list parser.)
+
+- Improve description of things with things, perhaps using some standard places.
+  "THERE IS A WOODEN TABLE ON WHICH IS A LOAF OF BREAD" rather than "THERE IS A
+  WOODEN TABLE. ON THE TABLE IS A LOAF OF BREAD."

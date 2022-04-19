@@ -71,8 +71,8 @@ public class Player implements Location {
   public String take(Thing t) {
     if (t.isPortable()) {
       t.location().removeThing(t);
-      inventory.placeThing(t, "in your bag");
-      return "You put the " + t.name() + " in your bag.";
+      inventory.placeThing(t, "in your stuff");
+      return "Okay. You have " + a(t.name());
     } else {
       return "You can't take " + a(t.name()) + "!";
     }
@@ -90,7 +90,7 @@ public class Player implements Location {
 
   public String inventory() {
     if (inventory.things().isEmpty()) {
-      return "Your bag is empty.";
+      return "You've got nothing!";
     } else {
       var items = inventory.things().stream().map(t -> a(t.thing().description())).toList();
       return new StringBuilder("You have ").append(commify(items)).append(".").toString();
