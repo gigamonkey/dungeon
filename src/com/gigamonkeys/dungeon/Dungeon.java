@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -62,9 +63,7 @@ public class Dungeon {
   }
 
   String take(String[] args) {
-    return arg(args, 1)
-      .map(name -> player.roomThing(name).map(player::take).orElse("There is no " + name + " here."))
-      .orElse("Take what?");
+    return arg(args, 1).flatMap(n -> listOfThings(args, 1)).map(player::takeThings).orElse("Take what?");
   }
 
   String drop(String[] args) {
@@ -123,6 +122,19 @@ public class Dungeon {
 
   Optional<Thing> onlyMonster() {
     return player.room().onlyMonster();
+  }
+
+  Optional<List<Thing>> listOfThings(String[] args, int start) {
+    var things = new ArrayList<Thing>();
+    for (var i = start; i < args.length; i++) {
+      var maybe = player.roomThing(args[i]);
+      if (!maybe.isPresent()) {
+        return Optional.empty();
+      } else {
+        things.add(maybe.get());
+      }
+    }
+    return Optional.of(things);
   }
 
   private void loop() throws IOException {

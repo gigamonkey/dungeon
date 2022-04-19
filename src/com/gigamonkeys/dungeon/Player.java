@@ -2,7 +2,9 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Text.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -76,6 +78,25 @@ public class Player implements Location {
     } else {
       return "You can't take the " + t.name() + "!";
     }
+  }
+
+  public String takeThings(List<Thing> things) {
+    var taken = new ArrayList<String>();
+    var notTaken = new ArrayList<String>();
+    for (var t : things) {
+      if (t.isPortable()) {
+        t.location().removeThing(t);
+        inventory.placeThing(t, "in your stuff");
+        taken.add(t.description());
+      } else {
+        notTaken.add(t.name());
+      }
+    }
+    var desc = new StringBuilder("Okay. Took " + commify(taken) + ".");
+    if (!notTaken.isEmpty()) {
+      desc.append(" Can't take " + commify(notTaken) + ".");
+    }
+    return desc.toString();
   }
 
   public String drop(Thing t) {
