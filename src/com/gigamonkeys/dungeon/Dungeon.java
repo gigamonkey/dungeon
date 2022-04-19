@@ -24,7 +24,7 @@ public class Dungeon {
     String run(String[] args);
   }
 
-  private static final Pattern WS = Pattern.compile("\\s+");
+  private static final Pattern wordPattern = Pattern.compile("\\W*(\\w+)\\W*");
 
   private final Player player;
   private final BufferedReader in;
@@ -159,7 +159,7 @@ public class Dungeon {
   }
 
   public String doCommand(String line) {
-    String[] tokens = WS.split(line);
+    var tokens = wordPattern.matcher(line).results().map(r -> r.group(1)).toList().toArray(new String[0]);
     var c = commands.getOrDefault(tokens[0], args -> "Don't know how to " + args[0]);
     var desc = new ArrayList<String>();
     desc.add(c.run(tokens));
