@@ -20,7 +20,9 @@ public class ThingBuilder {
   private Function<Thing, Attack> attackPlayer = t -> Attack.EMPTY;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = t -> t.name();
-  private Function<Thing, String> eat = t -> t.isEdible() ? "Yum." : "Ouch, you hurt your teeth.";
+  private Function<Thing, String> eat = null;
+  private Function<Thing, String> eatIfEdible = t -> "Yum";
+  private Function<Thing, String> eatIfInedible = t -> "Yuck. You can't eat " + t.a() + " " + t.description() + ".";
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
@@ -31,18 +33,16 @@ public class ThingBuilder {
   }
 
   ThingBuilder initialHitPoints(int initialHitPoints) {
-    this.initialHitPoints = () -> initialHitPoints;
-    return this;
-  }
-
-  ThingBuilder attackPlayer(Attack attackPlayer) {
-    this.attackPlayer = t -> attackPlayer;
-    return this;
+    return initialHitPoints(() -> initialHitPoints);
   }
 
   ThingBuilder attackPlayer(Function<Thing, Attack> attackPlayer) {
     this.attackPlayer = attackPlayer;
     return this;
+  }
+
+  ThingBuilder attackPlayer(Attack attackPlayer) {
+    return attackPlayer(t -> attackPlayer);
   }
 
   ThingBuilder attackWith(BiFunction<Thing, Integer, String> attackWith) {
@@ -51,8 +51,7 @@ public class ThingBuilder {
   }
 
   ThingBuilder attackWith(String attackWith) {
-    this.attackWith = (t, i) -> attackWith;
-    return this;
+    return attackWith((t, i) -> attackWith);
   }
 
   ThingBuilder damage(Function<Thing, Integer> damage) {
@@ -61,8 +60,7 @@ public class ThingBuilder {
   }
 
   ThingBuilder damage(int damage) {
-    this.damage = t -> damage;
-    return this;
+    return damage(t -> damage);
   }
 
   ThingBuilder description(Function<Thing, String> description) {
@@ -71,8 +69,7 @@ public class ThingBuilder {
   }
 
   ThingBuilder description(String description) {
-    this.description = t -> description;
-    return this;
+    return description(t -> description);
   }
 
   ThingBuilder eat(Function<Thing, String> eat) {
@@ -81,8 +78,25 @@ public class ThingBuilder {
   }
 
   ThingBuilder eat(String eat) {
-    this.eat = t -> eat;
+    return eat(t -> eat);
+  }
+
+  ThingBuilder eatIfEdible(Function<Thing, String> eatIfEdible) {
+    this.eatIfEdible = eatIfEdible;
     return this;
+  }
+
+  ThingBuilder eatIfEdible(String eatIfEdible) {
+    return eatIfEdible(t -> eatIfEdible);
+  }
+
+  ThingBuilder eatIfInedible(Function<Thing, String> eatIfInedible) {
+    this.eatIfInedible = eatIfInedible;
+    return this;
+  }
+
+  ThingBuilder eatIfInedible(String eatIfInedible) {
+    return eatIfInedible(t -> eatIfInedible);
   }
 
   ThingBuilder isEdible(Predicate<Thing> isEdible) {
@@ -91,8 +105,7 @@ public class ThingBuilder {
   }
 
   ThingBuilder isEdible(boolean isEdible) {
-    this.isEdible = t -> isEdible;
-    return this;
+    return isEdible(t -> isEdible);
   }
 
   ThingBuilder isMonster(Predicate<Thing> isMonster) {
@@ -101,8 +114,7 @@ public class ThingBuilder {
   }
 
   ThingBuilder isMonster(boolean isMonster) {
-    this.isMonster = t -> isMonster;
-    return this;
+    return isMonster(t -> isMonster);
   }
 
   ThingBuilder isPortable(Predicate<Thing> isPortable) {
@@ -111,8 +123,7 @@ public class ThingBuilder {
   }
 
   ThingBuilder isPortable(boolean isPortable) {
-    this.isPortable = t -> isPortable;
-    return this;
+    return isPortable(t -> isPortable);
   }
 
   ThingBuilder weaponizeAgainst(BiFunction<Thing, Thing, String> weaponizeAgainst) {
@@ -121,8 +132,7 @@ public class ThingBuilder {
   }
 
   ThingBuilder weaponizeAgainst(String weaponizeAgainst) {
-    this.weaponizeAgainst = (t1, t2) -> weaponizeAgainst;
-    return this;
+    return weaponizeAgainst((t1, t2) -> weaponizeAgainst);
   }
 
   public Thing thing(String name) {
@@ -135,6 +145,8 @@ public class ThingBuilder {
       damage,
       description,
       eat,
+      eatIfEdible,
+      eatIfInedible,
       isEdible,
       isMonster,
       isPortable

@@ -10,10 +10,12 @@ public class Axe extends BaseThing {
     super("AXE", 2, 0);
   }
 
-  public String eat() {
+  @Override
+  public String eatIfInedible() {
     return "Axes are not good for eating. Now your teeth hurt and you are no less hungry.";
   }
 
+  @Override
   public String weaponizeAgainst(Thing m) {
     return "You swing your axe and connect! " + super.weaponizeAgainst(m);
   }

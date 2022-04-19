@@ -85,16 +85,12 @@ public class Player implements Location {
     var desc = new StringBuilder("You have:\n");
     for (var pt : inventory.things()) {
       Thing t = pt.thing();
-      desc.append(" - " + t.a() + " " + t.description() + " " + pt.where());
+      desc.append(" - " + t.a() + " " + t.description() + " " + pt.where() + "\n");
     }
     return desc.toString();
   }
 
   public String eat(Thing t) {
-    if (t.isEdible()) {
-      removeThing(t);
-      room.removeThing(t);
-    }
     return t.eat();
   }
 

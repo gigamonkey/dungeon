@@ -1,3 +1,5 @@
 - Things as locations.
 
 - Possibly differential damage for weapon/monster pairs.
+
+- Description class to deal with word wrapping, commafying, lists, etc.

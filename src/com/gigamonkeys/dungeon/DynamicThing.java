@@ -20,6 +20,8 @@ public class DynamicThing implements Thing {
   private final Function<Thing, Integer> damage;
   private final Function<Thing, String> description;
   private final Function<Thing, String> eat;
+  private final Function<Thing, String> eatIfEdible;
+  private final Function<Thing, String> eatIfInedible;
   private final Predicate<Thing> isEdible;
   private final Predicate<Thing> isMonster;
   private final Predicate<Thing> isPortable;
@@ -33,6 +35,8 @@ public class DynamicThing implements Thing {
     Function<Thing, Integer> damage,
     Function<Thing, String> description,
     Function<Thing, String> eat,
+    Function<Thing, String> eatIfEdible,
+    Function<Thing, String> eatIfInedible,
     Predicate<Thing> isEdible,
     Predicate<Thing> isMonster,
     Predicate<Thing> isPortable
@@ -44,6 +48,8 @@ public class DynamicThing implements Thing {
     this.isPortable = isPortable;
     this.isEdible = isEdible;
     this.eat = eat;
+    this.eatIfEdible = eatIfEdible;
+    this.eatIfInedible = eatIfInedible;
     this.weaponizeAgainst = weaponizeAgainst;
     this.attackWith = attackWith;
     this.isMonster = isMonster;
@@ -94,7 +100,19 @@ public class DynamicThing implements Thing {
   }
 
   public String eat() {
-    return eat.apply(this);
+    if (eat != null) {
+      return eat.apply(this);
+    } else {
+      return Thing.super.eat();
+    }
+  }
+
+  public String eatIfEdible() {
+    return eatIfEdible.apply(this);
+  }
+
+  public String eatIfInedible() {
+    return eatIfInedible.apply(this);
   }
 
   public String attackWith(int damage) {

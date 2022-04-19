@@ -54,9 +54,27 @@ public interface Thing {
   public boolean isEdible();
 
   /**
-   * Describe eating the thing.
+   * Describe eating the thing. Default implementation delegates to
+   * eatIfEdible() and eatIfInedible().
    */
-  public String eat();
+  public default String eat() {
+    if (isEdible()) {
+      destroy();
+      return eatIfEdible();
+    } else {
+      return eatIfInedible();
+    }
+  }
+
+  /**
+   * Describe eating the thing if it is edible.
+   */
+  public String eatIfEdible();
+
+  /**
+   * Describe eating the thing if it is inedible.
+   */
+  public String eatIfInedible();
 
   /**
    * Describe an attack on the thing with the given amount of damage.
@@ -100,5 +118,9 @@ public interface Thing {
    */
   public default boolean alive() {
     return hitPoints() > 0;
+  }
+
+  public default void destroy() {
+    location().removeThing(this);
   }
 }

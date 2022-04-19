@@ -190,6 +190,11 @@ public class Dungeon {
       )
       .thing("RING");
 
+    var sandwich = new ThingBuilder()
+      .description("ham and cheese sandwich")
+      .eat("delicious. but I think you have a spot of mustard on your tunic.")
+      .thing("SANDWICH");
+
     var sword = new ThingBuilder()
       .description("broadsword with a rusty iron hilt")
       .damage(5)
@@ -200,6 +205,7 @@ public class Dungeon {
     blobbyblobLair.placeThing(new Axe(2), "on floor");
     blobbyblobLair.placeThing(new Blobbyblob(3), "across from you");
     entry.placeThing(ring, "floating in mid air");
+    entry.placeThing(sandwich, "on small tray by the door");
     dining.placeThing(sword, "propped against a wall");
 
     return entry;

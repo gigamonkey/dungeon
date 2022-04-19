@@ -10,14 +10,17 @@ public class Blobbyblob extends BaseThing {
     super("Blobbyblob", 2, hitPoints);
   }
 
+  @Override
   public boolean isMonster() {
     return true;
   }
 
+  @Override
   public boolean isEdible() {
     return !alive();
   }
 
+  @Override
   public String attackWith(int damage) {
     takeDamage(damage);
     if (alive()) {
@@ -27,10 +30,7 @@ public class Blobbyblob extends BaseThing {
     }
   }
 
-  public String where() {
-    return "across from you";
-  }
-
+  @Override
   public String description() {
     if (alive()) {
       return (name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad");
@@ -39,10 +39,9 @@ public class Blobbyblob extends BaseThing {
     }
   }
 
-  public String eat() {
-    if (alive()) {
-      return "Are you out of your mind?! This is a live and jiggling BlobbyBlob!";
-    } else if (hitPoints() < -100) {
+  @Override
+  public String eatIfEdible() {
+    if (hitPoints() < -100) {
       return (
         "The " +
         name() +
@@ -53,6 +52,12 @@ public class Blobbyblob extends BaseThing {
     }
   }
 
+  @Override
+  public String eatIfInedible() {
+    return "Are you out of your mind?! This is a live and jiggling BlobbyBlob!";
+  }
+
+  @Override
   public Attack attackPlayer() {
     if (alive()) {
       return new Attack(damage(), "The " + name() + " extrudes a blobby arm and smashes at you!");

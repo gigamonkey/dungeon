@@ -54,7 +54,13 @@ public abstract class BaseThing implements Thing {
     return false;
   }
 
-  public abstract String eat();
+  public String eatIfEdible() {
+    return "Yum";
+  }
+
+  public String eatIfInedible() {
+    return "Yuck. You can't eat " + a() + " " + description() + ".";
+  }
 
   public String attackWith(int damage) {
     return "I don't know why you're attacking an innocent " + name() + ".";
