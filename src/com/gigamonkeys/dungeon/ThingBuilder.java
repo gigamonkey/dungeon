@@ -22,7 +22,7 @@ public class ThingBuilder {
   private Function<Thing, Attack> attackPlayer = t -> Attack.EMPTY;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = t -> t.name();
-  private Function<Thing, String> eat = null;
+  private Function<Thing, String> eat = null; // See corresponding kludge in DynamicThing.eat()
   private Function<Thing, String> eatIfEdible = t -> "Yum";
   private Function<Thing, String> eatIfInedible = t -> "Yuck. You can't eat " + t.a() + " " + t.description() + ".";
   private Predicate<Thing> isEdible = t -> false;

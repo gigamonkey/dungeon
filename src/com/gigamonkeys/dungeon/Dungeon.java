@@ -192,7 +192,7 @@ public class Dungeon {
 
     var sandwich = new ThingBuilder("SANDWICH")
       .description("ham and cheese sandwich")
-      .eat("delicious. but I think you have a spot of mustard on your tunic.")
+      .eat("Mmmm, tasty. But I think you got a spot of mustard on your tunic.")
       .thing();
 
     var sword = new ThingBuilder("SWORD")
