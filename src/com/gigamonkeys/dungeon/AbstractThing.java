@@ -68,7 +68,7 @@ public abstract class AbstractThing implements Thing {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Location implementation
+  // Location implementation -- things can contain things.
 
   public void placeThing(Thing thing, String where) {
     things.placeThing(thing, where);

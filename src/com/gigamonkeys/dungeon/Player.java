@@ -89,12 +89,8 @@ public class Player implements Location {
   }
 
   public String inventory() {
-    var desc = new StringBuilder("You have:\n");
-    for (var pt : inventory.things()) {
-      Thing t = pt.thing();
-      desc.append(" - " + a(t.description()) + " " + pt.where() + "\n");
-    }
-    return desc.toString();
+    var things = inventory.things().stream().map(t -> a(t.thing().description())).toList();
+    return new StringBuilder("You have ").append(commify(things)).append(".").toString();
   }
 
   public String eat(Thing t) {
