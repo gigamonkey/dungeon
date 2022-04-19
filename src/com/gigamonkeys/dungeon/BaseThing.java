@@ -46,11 +46,11 @@ public class BaseThing extends AbstractThing {
   }
 
   @Override
-  public default Attack attackPlayer() {
+  public Attack attackPlayer() {
     return Attack.EMPTY;
   }
 
-  @Overridea
+  @Override
   public String weaponizeAgainst(Thing monster) {
     if (damage() == 0) {
       return a() + " " + description() + " is not an effective weapon. You do zero damage.";
