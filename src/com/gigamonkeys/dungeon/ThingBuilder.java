@@ -10,6 +10,8 @@ import java.util.function.Supplier;
  */
 public class ThingBuilder {
 
+  private final String name;
+
   // N.B. initialHitPoints is only invoked when building the Thing
   // whereas the rest of the functions are installed in the
   // DynamicThing.
@@ -20,12 +22,16 @@ public class ThingBuilder {
   private Function<Thing, Attack> attackPlayer = t -> Attack.EMPTY;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = t -> t.name();
-  private Function<Thing, String> eat = null;
+  private Function<Thing, String> eat = Thing::eat;
   private Function<Thing, String> eatIfEdible = t -> "Yum";
   private Function<Thing, String> eatIfInedible = t -> "Yuck. You can't eat " + t.a() + " " + t.description() + ".";
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
+
+  public ThingBuilder(String name) {
+    this.name = name;
+  }
 
   ThingBuilder initialHitPoints(Supplier<Integer> initialHitPoints) {
     this.initialHitPoints = initialHitPoints;
@@ -135,7 +141,7 @@ public class ThingBuilder {
     return weaponizeAgainst((t1, t2) -> weaponizeAgainst);
   }
 
-  public Thing thing(String name) {
+  public Thing thing() {
     return new DynamicThing(
       name,
       initialHitPoints.get(),

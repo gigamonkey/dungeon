@@ -7,18 +7,21 @@ package com.gigamonkeys.dungeon;
 public class Bread extends BaseThing {
 
   public Bread() {
-    super("BREAD", 0, 0);
+    super("BREAD", 0);
   }
 
+  @Override
   public String description() {
     return "loaf of bread";
   }
 
+  @Override
   public boolean isEdible() {
     return true;
   }
 
-  public String eat() {
+  @Override
+  public String eatIfEdible() {
     return "Ah, delicious. Could use some mayonnaise though.";
   }
 }

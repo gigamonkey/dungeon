@@ -179,7 +179,7 @@ public class Dungeon {
     entry.connect("a dank tunnel", blobbyblobLair, SOUTH);
     kitchen.connect("swinging door", dining, EAST);
 
-    var ring = new ThingBuilder()
+    var ring = new ThingBuilder("RING")
       .description("ring of great power")
       .damage(1000)
       .weaponizeAgainst((t, m) ->
@@ -188,18 +188,18 @@ public class Dungeon {
         " to smithereens. " +
         m.attackWith(t.damage())
       )
-      .thing("RING");
+      .thing();
 
-    var sandwich = new ThingBuilder()
+    var sandwich = new ThingBuilder("SANDWICH")
       .description("ham and cheese sandwich")
       .eat("delicious. but I think you have a spot of mustard on your tunic.")
-      .thing("SANDWICH");
+      .thing();
 
-    var sword = new ThingBuilder()
+    var sword = new ThingBuilder("SWORD")
       .description("broadsword with a rusty iron hilt")
       .damage(5)
       .weaponizeAgainst((t, m) -> "Oof. This sword is heavy to swing. But you connect. " + m.attackWith(t.damage()))
-      .thing("SWORD");
+      .thing();
 
     kitchen.placeThing(new Bread(), "on a table");
     blobbyblobLair.placeThing(new Axe(2), "on floor");

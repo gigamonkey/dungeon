@@ -1,5 +1,7 @@
 - Things as locations.
 
+- Give objects a default place on the player (in bag, on finger, etc.)
+
 - Possibly differential damage for weapon/monster pairs.
 
 - Description class to deal with word wrapping, commafying, lists, etc.

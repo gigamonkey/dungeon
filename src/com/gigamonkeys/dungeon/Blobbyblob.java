@@ -7,7 +7,7 @@ package com.gigamonkeys.dungeon;
 public class Blobbyblob extends BaseThing {
 
   Blobbyblob(int hitPoints) {
-    super("Blobbyblob", 2, hitPoints);
+    super("Blobbyblob", hitPoints);
   }
 
   @Override
@@ -64,5 +64,10 @@ public class Blobbyblob extends BaseThing {
     } else {
       return Attack.EMPTY;
     }
+  }
+
+  @Override
+  public int damage() {
+    return 3;
   }
 }

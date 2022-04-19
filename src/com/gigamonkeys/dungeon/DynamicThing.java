@@ -7,12 +7,7 @@ import java.util.function.*;
  * out of individual dynamic parts. Designed to be constructed with
  * ThingBuilder.
  */
-public class DynamicThing implements Thing {
-
-  private final String name;
-
-  private int hitPoints;
-  private Location location;
+public class DynamicThing extends BaseThing {
 
   private final BiFunction<Thing, Integer, String> attackWith;
   private final BiFunction<Thing, Thing, String> weaponizeAgainst;
@@ -41,8 +36,7 @@ public class DynamicThing implements Thing {
     Predicate<Thing> isMonster,
     Predicate<Thing> isPortable
   ) {
-    this.name = name;
-    this.hitPoints = hitPoints;
+    super(name, hitPoints);
     this.description = description;
     this.damage = damage;
     this.isPortable = isPortable;
@@ -57,80 +51,59 @@ public class DynamicThing implements Thing {
   }
 
   ////////////////////////////////////////////////////////////////////
-  // Not dynamic. Values that are set once or bits of logic that don't
-  // change.
-
-  public String name() {
-    return name;
-  }
-
-  public Location location() {
-    return location;
-  }
-
-  public void setLocation(Location location) {
-    this.location = location;
-  }
-
-  public void clearLocation() {
-    location = null;
-  }
-
-  public void takeDamage(int damage) {
-    hitPoints -= damage;
-  }
-
-  public int hitPoints() {
-    return hitPoints;
-  }
-
-  ////////////////////////////////////////////////////////////////////
   // Dynamic bits.
 
+  @Override
   public String description() {
     return description.apply(this);
   }
 
+  @Override
   public boolean isPortable() {
     return isPortable.test(this);
   }
 
+  @Override
   public boolean isEdible() {
     return isEdible.test(this);
   }
 
+  @Override
   public String eat() {
-    if (eat != null) {
-      return eat.apply(this);
-    } else {
-      return Thing.super.eat();
-    }
+    return eat.apply(this);
   }
 
+  @Override
   public String eatIfEdible() {
     return eatIfEdible.apply(this);
   }
 
+  @Override
   public String eatIfInedible() {
     return eatIfInedible.apply(this);
   }
 
+  @Override
   public String attackWith(int damage) {
     return attackWith.apply(this, damage);
   }
 
+  @Override
   public String weaponizeAgainst(Thing monster) {
     return weaponizeAgainst.apply(this, monster);
   }
 
+  @Override
   public int damage() {
     return damage.apply(this);
   }
 
+  @Override
   public boolean isMonster() {
     return isMonster.test(this);
   }
 
+  @Override
   public Attack attackPlayer() {
     return attackPlayer.apply(this);
   }

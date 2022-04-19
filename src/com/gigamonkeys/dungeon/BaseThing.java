@@ -1,71 +1,51 @@
 package com.gigamonkeys.dungeon;
 
 /**
- * A base implementation of Thing for non-DynamicThing things.
+ * A base implementation of Thing for non-DynamicThing things with reasonable
+ * defaults.
  */
-public abstract class BaseThing implements Thing {
+public class BaseThing extends AbstractThing {
 
-  // Name is how the thing must be referred to in commands. AXE, BREAD, etc.
-  private final String name;
-  private final int damage;
-
-  private int hitPoints;
-  private Location location;
-
-  public BaseThing(String name, int damage, int hitPoints) {
-    this.name = name.toUpperCase();
-    this.damage = damage;
-    this.hitPoints = hitPoints;
+  public BaseThing(String name, int hitPoints) {
+    super(name, hitPoints);
   }
 
-  public void setLocation(Location location) {
-    this.location = location;
-  }
-
-  public Location location() {
-    return location;
-  }
-
-  public void clearLocation() {
-    location = null;
-  }
-
-  public String name() {
-    return name;
-  }
-
+  @Override
   public String description() {
-    return name;
+    return name();
   }
 
-  public void takeDamage(int damage) {
-    hitPoints -= damage;
-  }
-
-  public int hitPoints() {
-    return hitPoints;
-  }
-
+  @Override
   public boolean isPortable() {
     return !isMonster();
   }
 
+  @Override
   public boolean isEdible() {
     return false;
   }
 
+  @Override
+  public boolean isMonster() {
+    return false;
+  }
+
+  @Override
   public String eatIfEdible() {
     return "Yum";
   }
 
+  @Override
   public String eatIfInedible() {
     return "Yuck. You can't eat " + a() + " " + description() + ".";
   }
 
+  @Override
   public String attackWith(int damage) {
     return "I don't know why you're attacking an innocent " + name() + ".";
   }
 
+  @Override
   public String weaponizeAgainst(Thing monster) {
     if (damage() == 0) {
       return a() + " " + description() + " is not an effective weapon. You do zero damage.";
@@ -74,11 +54,8 @@ public abstract class BaseThing implements Thing {
     }
   }
 
+  @Override
   public int damage() {
-    return damage;
-  }
-
-  public boolean isMonster() {
-    return false;
+    return 0;
   }
 }

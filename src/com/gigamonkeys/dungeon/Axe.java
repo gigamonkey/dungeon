@@ -7,7 +7,7 @@ package com.gigamonkeys.dungeon;
 public class Axe extends BaseThing {
 
   public Axe(int damage) {
-    super("AXE", 2, 0);
+    super("AXE", 0);
   }
 
   @Override
@@ -18,5 +18,10 @@ public class Axe extends BaseThing {
   @Override
   public String weaponizeAgainst(Thing m) {
     return "You swing your axe and connect! " + super.weaponizeAgainst(m);
+  }
+
+  @Override
+  public int damage() {
+    return 2;
   }
 }
