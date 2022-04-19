@@ -9,21 +9,7 @@ import java.util.function.*;
  */
 public class DynamicThing extends BaseThing {
 
-  private final BiFunction<Thing, Integer, String> attackWith;
-  private final BiFunction<Thing, Thing, String> weaponizeAgainst;
-  private final Function<Thing, Attack> attackPlayer;
-  private final Function<Thing, Integer> damage;
-  private final Function<Thing, String> description;
-  private final Function<Thing, String> eat;
-  private final Function<Thing, String> eatIfEdible;
-  private final Function<Thing, String> eatIfInedible;
-  private final Predicate<Thing> isEdible;
-  private final Predicate<Thing> isMonster;
-  private final Predicate<Thing> isPortable;
-
-  public DynamicThing(
-    String name,
-    int hitPoints,
+  static record Dynamic(
     BiFunction<Thing, Integer, String> attackWith,
     BiFunction<Thing, Thing, String> weaponizeAgainst,
     Function<Thing, Attack> attackPlayer,
@@ -35,19 +21,13 @@ public class DynamicThing extends BaseThing {
     Predicate<Thing> isEdible,
     Predicate<Thing> isMonster,
     Predicate<Thing> isPortable
-  ) {
+  ) {}
+
+  private final Dynamic dynamic;
+
+  public DynamicThing(String name, int hitPoints, Dynamic dynamic) {
     super(name, hitPoints);
-    this.description = description;
-    this.damage = damage;
-    this.isPortable = isPortable;
-    this.isEdible = isEdible;
-    this.eat = eat;
-    this.eatIfEdible = eatIfEdible;
-    this.eatIfInedible = eatIfInedible;
-    this.weaponizeAgainst = weaponizeAgainst;
-    this.attackWith = attackWith;
-    this.isMonster = isMonster;
-    this.attackPlayer = attackPlayer;
+    this.dynamic = dynamic;
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -55,56 +35,62 @@ public class DynamicThing extends BaseThing {
 
   @Override
   public String description() {
-    return description.apply(this);
+    return dynamic.description().apply(this);
   }
 
   @Override
   public boolean isPortable() {
-    return isPortable.test(this);
+    return dynamic.isPortable().test(this);
   }
 
   @Override
   public boolean isEdible() {
-    return isEdible.test(this);
+    return dynamic.isEdible().test(this);
   }
 
   @Override
   public String eat() {
-    return eat.apply(this);
+    // This feels like a kludge but I can't figure out a value we can set on
+    // dynamic that will invoke the default implementation properly.
+    if (dynamic.eat() == null) {
+      return super.eat();
+    } else {
+      return dynamic.eat().apply(this);
+    }
   }
 
   @Override
   public String eatIfEdible() {
-    return eatIfEdible.apply(this);
+    return dynamic.eatIfEdible().apply(this);
   }
 
   @Override
   public String eatIfInedible() {
-    return eatIfInedible.apply(this);
+    return dynamic.eatIfInedible().apply(this);
   }
 
   @Override
   public String attackWith(int damage) {
-    return attackWith.apply(this, damage);
+    return dynamic.attackWith().apply(this, damage);
   }
 
   @Override
   public String weaponizeAgainst(Thing monster) {
-    return weaponizeAgainst.apply(this, monster);
+    return dynamic.weaponizeAgainst().apply(this, monster);
   }
 
   @Override
   public int damage() {
-    return damage.apply(this);
+    return dynamic.damage().apply(this);
   }
 
   @Override
   public boolean isMonster() {
-    return isMonster.test(this);
+    return dynamic.isMonster().test(this);
   }
 
   @Override
   public Attack attackPlayer() {
-    return attackPlayer.apply(this);
+    return dynamic.attackPlayer().apply(this);
   }
 }

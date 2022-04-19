@@ -22,7 +22,7 @@ public class ThingBuilder {
   private Function<Thing, Attack> attackPlayer = t -> Attack.EMPTY;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = t -> t.name();
-  private Function<Thing, String> eat = Thing::eat;
+  private Function<Thing, String> eat = null;
   private Function<Thing, String> eatIfEdible = t -> "Yum";
   private Function<Thing, String> eatIfInedible = t -> "Yuck. You can't eat " + t.a() + " " + t.description() + ".";
   private Predicate<Thing> isEdible = t -> false;
@@ -145,17 +145,19 @@ public class ThingBuilder {
     return new DynamicThing(
       name,
       initialHitPoints.get(),
-      attackWith,
-      weaponizeAgainst,
-      attackPlayer,
-      damage,
-      description,
-      eat,
-      eatIfEdible,
-      eatIfInedible,
-      isEdible,
-      isMonster,
-      isPortable
+      new DynamicThing.Dynamic(
+        attackWith,
+        weaponizeAgainst,
+        attackPlayer,
+        damage,
+        description,
+        eat,
+        eatIfEdible,
+        eatIfInedible,
+        isEdible,
+        isMonster,
+        isPortable
+      )
     );
   }
 
