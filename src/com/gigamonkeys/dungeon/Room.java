@@ -1,6 +1,6 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +13,37 @@ import java.util.stream.Stream;
  * Doors. They also contain Things which can be weapons, food,
  * monsters, etc.
  */
-public class Room {
+public class Room implements Location {
 
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
-  private final List<Thing> things = new ArrayList<>();
+  private final Things things = new Things();
 
   public Room(String description) {
     this.description = description;
   }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Location implementation
+
+  public void placeThing(Thing thing, String where) {
+    things.placeThing(thing, where);
+  }
+
+  public void removeThing(Thing thing) {
+    things.removeThing(thing);
+  }
+
+  public Optional<Thing> thing(String name) {
+    return things.thing(name);
+  }
+
+  public Collection<PlacedThing> things() {
+    return things.things();
+  }
+
+  //
+  //////////////////////////////////////////////////////////////////////////////
 
   void connect(String doorDescription, Room other, Direction d) {
     if (doors.containsKey(d)) {
@@ -57,22 +79,8 @@ public class Room {
     return doors.get(d);
   }
 
-  public Optional<Thing> thing(String name) {
-    return things.stream().filter(t -> t.name().equals(name)).findAny();
-  }
-
-  public void addThing(Thing t) {
-    things.add(t);
-    t.setRoom(this);
-  }
-
-  public void removeThing(Thing t) {
-    things.remove(t);
-    t.clearRoom();
-  }
-
   public void drop(Thing t) {
-    addThing(t);
+    placeThing(t, "on floor");
   }
 
   public Optional<Thing> onlyMonster() {
@@ -80,15 +88,15 @@ public class Room {
   }
 
   private Stream<Thing> monsters() {
-    return things.stream().filter(t -> t.isMonster());
+    return things().stream().filter(pt -> pt.thing().isMonster()).map(pt -> pt.thing());
   }
 
   private void describeThings(List<String> desc, Predicate<Thing> p) {
-    things
+    things()
       .stream()
-      .filter(p)
-      .forEach(t -> {
-        desc.add(t.where() + " is " + t.a() + " " + t.description() + ".");
+      .filter(pt -> p.test(pt.thing()))
+      .forEach(pt -> {
+        desc.add(pt.where() + " is " + pt.thing().a() + " " + pt.thing().description() + ".");
       });
   }
 

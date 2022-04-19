@@ -18,6 +18,12 @@ public interface Thing {
    */
   public void setRoom(Room room);
 
+  public void setLocation(Location location);
+
+  public Location location();
+
+  public void clearLocation();
+
   /**
    * Clear the room when the thing is taken by the player or destroyed.
    */
@@ -27,11 +33,6 @@ public interface Thing {
    * Get the room the thing is in.
    */
   public Room room();
-
-  /**
-   * Where is the thing located in the room.
-   */
-  public String where();
 
   /**
    * Longer description of the thing used to refer to in in sentences.

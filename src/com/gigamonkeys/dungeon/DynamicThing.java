@@ -13,6 +13,7 @@ public class DynamicThing implements Thing {
 
   private int hitPoints;
   private Room room;
+  private Location location;
 
   private final BiFunction<Thing, Integer, String> attackWith;
   private final BiFunction<Thing, Thing, String> weaponizeAgainst;
@@ -20,7 +21,6 @@ public class DynamicThing implements Thing {
   private final Function<Thing, Integer> damage;
   private final Function<Thing, String> description;
   private final Function<Thing, String> eat;
-  private final Function<Thing, String> where;
   private final Predicate<Thing> isEdible;
   private final Predicate<Thing> isMonster;
   private final Predicate<Thing> isPortable;
@@ -34,7 +34,6 @@ public class DynamicThing implements Thing {
     Function<Thing, Integer> damage,
     Function<Thing, String> description,
     Function<Thing, String> eat,
-    Function<Thing, String> where,
     Predicate<Thing> isEdible,
     Predicate<Thing> isMonster,
     Predicate<Thing> isPortable
@@ -43,7 +42,6 @@ public class DynamicThing implements Thing {
     this.hitPoints = hitPoints;
     this.description = description;
     this.damage = damage;
-    this.where = where;
     this.isPortable = isPortable;
     this.isEdible = isEdible;
     this.eat = eat;
@@ -73,6 +71,18 @@ public class DynamicThing implements Thing {
     this.room = null;
   }
 
+  public Location location() {
+    return location;
+  }
+
+  public void setLocation(Location location) {
+    this.location = location;
+  }
+
+  public void clearLocation() {
+    location = null;
+  }
+
   public void takeDamage(int damage) {
     hitPoints -= damage;
   }
@@ -86,10 +96,6 @@ public class DynamicThing implements Thing {
 
   public String description() {
     return description.apply(this);
-  }
-
-  public String where() {
-    return where.apply(this);
   }
 
   public boolean isPortable() {

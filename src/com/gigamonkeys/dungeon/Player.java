@@ -1,21 +1,50 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
  * Represent the player.
  */
-public class Player {
+public class Player implements Location {
 
-  private final List<Thing> things = new ArrayList<>();
+  private final Things inventory = new Things();
   private Room room;
   private int hitPoints;
 
   public Player(Room startingRoom, int hitPoints) {
     this.room = startingRoom;
     this.hitPoints = hitPoints;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Location implementation
+
+  public void placeThing(Thing thing, String where) {
+    inventory.placeThing(thing, where);
+  }
+
+  public void removeThing(Thing thing) {
+    inventory.removeThing(thing);
+  }
+
+  public Optional<Thing> thing(String name) {
+    return inventory.thing(name);
+  }
+
+  public Collection<PlacedThing> things() {
+    return inventory.things();
+  }
+
+  //
+  //////////////////////////////////////////////////////////////////////////////
+
+  public Optional<Thing> roomThing(String name) {
+    return room.thing(name);
+  }
+
+  public Optional<Thing> anyThing(String name) {
+    return thing(name).or(() -> roomThing(name));
   }
 
   public String go(Direction d) {
@@ -35,7 +64,7 @@ public class Player {
   public String take(Thing t) {
     if (t.isPortable()) {
       room.removeThing(t);
-      things.add(t);
+      inventory.placeThing(t, "in your bag");
       return "You put the " + t.name() + " in your bag.";
     } else {
       return "You can't take " + t.a() + " " + t.name() + "!";
@@ -44,7 +73,7 @@ public class Player {
 
   public String drop(Thing t) {
     room.drop(t);
-    things.remove(t);
+    inventory.removeThing(t);
     return "You drop the " + t.name();
   }
 
@@ -53,27 +82,20 @@ public class Player {
   }
 
   public String inventory() {
-    return String.join(" ", things.stream().map(x -> x.description()).toList());
+    var desc = new StringBuilder("You have:\n");
+    for (var pt : inventory.things()) {
+      Thing t = pt.thing();
+      desc.append(" - " + t.a() + " " + t.description() + " " + pt.where());
+    }
+    return desc.toString();
   }
 
   public String eat(Thing t) {
     if (t.isEdible()) {
-      things.remove(t);
+      removeThing(t);
       room.removeThing(t);
     }
     return t.eat();
-  }
-
-  public Optional<Thing> thing(String name) {
-    return things.stream().filter(t -> t.name().equals(name)).findAny();
-  }
-
-  public Optional<Thing> roomThing(String name) {
-    return room.thing(name);
-  }
-
-  public Optional<Thing> anyThing(String name) {
-    return thing(name).or(() -> roomThing(name));
   }
 
   public String listen() {

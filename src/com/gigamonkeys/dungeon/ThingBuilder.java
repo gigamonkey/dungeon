@@ -21,7 +21,6 @@ public class ThingBuilder {
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = t -> t.name();
   private Function<Thing, String> eat = t -> t.isEdible() ? "Yum." : "Ouch, you hurt your teeth.";
-  private Function<Thing, String> where = t -> "on the floor";
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
@@ -126,16 +125,6 @@ public class ThingBuilder {
     return this;
   }
 
-  ThingBuilder where(Function<Thing, String> where) {
-    this.where = where;
-    return this;
-  }
-
-  ThingBuilder where(String where) {
-    this.where = t -> where;
-    return this;
-  }
-
   public Thing thing(String name) {
     return new DynamicThing(
       name,
@@ -146,7 +135,6 @@ public class ThingBuilder {
       damage,
       description,
       eat,
-      where,
       isEdible,
       isMonster,
       isPortable

@@ -180,7 +180,6 @@ public class Dungeon {
     kitchen.connect("swinging door", dining, EAST);
 
     var ring = new ThingBuilder()
-      .where("floating in mid air")
       .description("ring of great power")
       .damage(1000)
       .weaponizeAgainst((t, m) ->
@@ -192,17 +191,16 @@ public class Dungeon {
       .thing("RING");
 
     var sword = new ThingBuilder()
-      .where("on the floor")
       .description("broadsword with a rusty iron hilt")
       .damage(5)
       .weaponizeAgainst((t, m) -> "Oof. This sword is heavy to swing. But you connect. " + m.attackWith(t.damage()))
       .thing("SWORD");
 
-    kitchen.addThing(new Bread());
-    blobbyblobLair.addThing(new Axe(2));
-    blobbyblobLair.addThing(new Blobbyblob(3));
-    entry.addThing(ring);
-    dining.addThing(sword);
+    kitchen.placeThing(new Bread(), "on a table");
+    blobbyblobLair.placeThing(new Axe(2), "on floor");
+    blobbyblobLair.placeThing(new Blobbyblob(3), "across from you");
+    entry.placeThing(ring, "floating in mid air");
+    dining.placeThing(sword, "propped against a wall");
 
     return entry;
   }
