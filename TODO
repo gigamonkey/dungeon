@@ -5,3 +5,7 @@
 - Possibly differential damage for weapon/monster pairs.
 
 - Description class to deal with word wrapping, commafying, lists, etc.
+
+- Notion of turns within room so attacks can change or only start after a certain turn.
+
+- Add LCS error correction for not understood words.
