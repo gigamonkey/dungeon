@@ -11,7 +11,12 @@ public class BaseThing extends AbstractThing {
   }
 
   @Override
-  public String description() {
+  public String describeAlive() {
+    return name();
+  }
+
+  @Override
+  public String describeDead() {
     return name();
   }
 

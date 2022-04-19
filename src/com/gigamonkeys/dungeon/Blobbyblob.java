@@ -31,12 +31,13 @@ public class Blobbyblob extends BaseThing {
   }
 
   @Override
-  public String description() {
-    if (alive()) {
-      return (name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad");
-    } else {
-      return "dead " + name() + " decaying into puddle of goo";
-    }
+  public String describeAlive() {
+    return (name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad");
+  }
+
+  @Override
+  public String describeDead() {
+    return "dead " + name() + " decaying into puddle of goo";
   }
 
   @Override

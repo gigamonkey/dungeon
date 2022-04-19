@@ -29,9 +29,14 @@ public interface Thing extends Location {
   public void clearLocation();
 
   /**
-   * Longer description of the thing used to refer to it in sentences.
+   * Longer description of the thing when it is alive.
    */
-  public String description();
+  public String describeAlive();
+
+  /**
+   * Longer description of the thing when it is dead.
+   */
+  public String describeDead();
 
   /**
    * Describe any things located on this thing.
@@ -57,19 +62,6 @@ public interface Thing extends Location {
    * Can the thing be eaten by the player.
    */
   public boolean isEdible();
-
-  /**
-   * Describe eating the thing. Default implementation delegates to
-   * eatIfEdible() and eatIfInedible().
-   */
-  public default String eat() {
-    if (isEdible()) {
-      destroy();
-      return eatIfEdible();
-    } else {
-      return eatIfInedible();
-    }
-  }
 
   /**
    * Describe eating the thing if it is edible.
@@ -105,6 +97,26 @@ public interface Thing extends Location {
    * Generate an attack against the player.
    */
   public Attack attackPlayer();
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Some protocols
+
+  /**
+   * Describe eating the thing. Default implementation delegates to
+   * eatIfEdible() and eatIfInedible().
+   */
+  public default String eat() {
+    if (isEdible()) {
+      destroy();
+      return eatIfEdible();
+    } else {
+      return eatIfInedible();
+    }
+  }
+
+  public default String description() {
+    return alive() ? describeAlive() : describeDead();
+  }
 
   //////////////////////////////////////////////////////////////////////////////
   // Some default implementations. Probably don't need to override these.

@@ -15,6 +15,8 @@ public class DynamicThing extends AbstractThing {
     Function<Thing, Attack> attackPlayer,
     Function<Thing, Integer> damage,
     Function<Thing, String> description,
+    Function<Thing, String> describeAlive,
+    Function<Thing, String> describeDead,
     Function<Thing, String> eat,
     Function<Thing, String> eatIfEdible,
     Function<Thing, String> eatIfInedible,
@@ -34,8 +36,13 @@ public class DynamicThing extends AbstractThing {
   // Dynamic bits.
 
   @Override
-  public String description() {
-    return dynamic.description().apply(this);
+  public String describeAlive() {
+    return dynamic.describeAlive().apply(this);
+  }
+
+  @Override
+  public String describeDead() {
+    return dynamic.describeDead().apply(this);
   }
 
   @Override
@@ -46,17 +53,6 @@ public class DynamicThing extends AbstractThing {
   @Override
   public boolean isEdible() {
     return dynamic.isEdible().test(this);
-  }
-
-  @Override
-  public String eat() {
-    // This feels like a kludge but I can't figure out a value we can set on
-    // dynamic that will invoke the default implementation properly.
-    if (dynamic.eat() == null) {
-      return super.eat();
-    } else {
-      return dynamic.eat().apply(this);
-    }
   }
 
   @Override
@@ -92,5 +88,28 @@ public class DynamicThing extends AbstractThing {
   @Override
   public Attack attackPlayer() {
     return dynamic.attackPlayer().apply(this);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // For protocol methods we have to do this kind of kludgy thing. I can't
+  // figure out a value we can set on dynamic that will invoke the default
+  // implementation properly.
+
+  @Override
+  public String eat() {
+    if (dynamic.eat() == null) {
+      return super.eat();
+    } else {
+      return dynamic.eat().apply(this);
+    }
+  }
+
+  @Override
+  public String description() {
+    if (dynamic.description() == null) {
+      return super.description();
+    } else {
+      return dynamic.description().apply(this);
+    }
   }
 }

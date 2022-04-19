@@ -210,14 +210,16 @@ public class Dungeon {
       .thing();
 
     var pirate = new ThingBuilder("PIRATE")
-      .description("pirate with a wooden leg and and an eye patch")
+      .describeAlive("pirate with a wooden leg and and an eye patch")
+      .describeDead("dead pirate with his eye patch askew")
       .isMonster(true)
       .initialHitPoints(10)
       .damage(2)
       .thing();
 
     var parrot = new ThingBuilder("PARROT")
-      .description("green and blue parrot with a tiny eye patch")
+      .describeAlive("green and blue parrot with a tiny eye patch")
+      .describeDead("dead parrot")
       .isMonster(true)
       .initialHitPoints(5)
       .damage(1)

@@ -14,15 +14,17 @@ public class ThingBuilder {
 
   // N.B. initialHitPoints is only invoked when building the Thing
   // whereas the rest of the functions are installed in the
-  // DynamicThing.
+  // DynamicThing.Dynamic
   private Supplier<Integer> initialHitPoints = () -> 0;
 
   private BiFunction<Thing, Integer, String> attackWith = ThingBuilder::defaultAttackWith;
   private BiFunction<Thing, Thing, String> weaponizeAgainst = ThingBuilder::defaultWeaponizeAgainst;
   private Function<Thing, Attack> attackPlayer = t -> Attack.EMPTY;
   private Function<Thing, Integer> damage = t -> 0;
-  private Function<Thing, String> description = t -> t.name();
-  private Function<Thing, String> eat = null; // See corresponding kludge in DynamicThing.eat()
+  private Function<Thing, String> description = null; // protocol method kludge.
+  private Function<Thing, String> describeAlive = t -> t.name();
+  private Function<Thing, String> describeDead = t -> t.name();
+  private Function<Thing, String> eat = null; // protocol method kludge.
   private Function<Thing, String> eatIfEdible = t -> "Yum";
   private Function<Thing, String> eatIfInedible = t -> "Yuck. You can't eat " + t.a() + " " + t.description() + ".";
   private Predicate<Thing> isEdible = t -> false;
@@ -76,6 +78,24 @@ public class ThingBuilder {
 
   ThingBuilder description(String description) {
     return description(t -> description);
+  }
+
+  ThingBuilder describeAlive(Function<Thing, String> describeAlive) {
+    this.describeAlive = describeAlive;
+    return this;
+  }
+
+  ThingBuilder describeAlive(String describeAlive) {
+    return describeAlive(t -> describeAlive);
+  }
+
+  ThingBuilder describeDead(Function<Thing, String> describeDead) {
+    this.describeDead = describeDead;
+    return this;
+  }
+
+  ThingBuilder describeDead(String describeDead) {
+    return describeDead(t -> describeDead);
   }
 
   ThingBuilder eat(Function<Thing, String> eat) {
@@ -151,6 +171,8 @@ public class ThingBuilder {
         attackPlayer,
         damage,
         description,
+        describeAlive,
+        describeDead,
         eat,
         eatIfEdible,
         eatIfInedible,
