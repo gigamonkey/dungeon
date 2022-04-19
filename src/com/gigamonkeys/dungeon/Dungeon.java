@@ -198,9 +198,10 @@ public class Dungeon {
 
     pedestal.placeThing(ring, "on");
 
-    var sandwich = new ThingBuilder("SANDWICH")
-      .description("ham and cheese sandwich")
-      .eat("Mmmm, tasty. But I think you got a spot of mustard on your tunic.")
+    var axe = new ThingBuilder("AXE")
+      .damage(2)
+      .eatIfInedible("Axes are not good for eating. Now your teeth hurt and you are no less hungry.")
+      .weaponizeAgainst((t, m) -> "You swing your axe and connect! " + m.attackWith(t.damage()))
       .thing();
 
     var sword = new ThingBuilder("SWORD")
@@ -209,29 +210,69 @@ public class Dungeon {
       .weaponizeAgainst((t, m) -> "Oof, this sword is heavy to swing, but you connect. " + m.attackWith(t.damage()))
       .thing();
 
+    var bread = new ThingBuilder("BREAD")
+      .description("loaf of bread")
+      .isEdible(true)
+      .eat("Ah, delicious. Could use some mayonnaise though.")
+      .thing();
+
+    var sandwich = new ThingBuilder("SANDWICH")
+      .description("ham and cheese sandwich")
+      .isEdible(true)
+      .eat("Mmmm, tasty. But I think you got a spot of mustard on your tunic.")
+      .thing();
+
+    var blobbyblob = new ThingBuilder("BLOBBYBLOB")
+      .isMonster(true)
+      .initialHitPoints(7)
+      .damage(3)
+      .describeAlive(t -> t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad")
+      .describeDead(t -> "dead " + t.name() + " decaying into puddle of goo")
+      .isEdible(t -> !t.alive())
+      .eatIfEdible(t -> {
+        if (t.hitPoints() < -100) {
+          return (
+            "The " +
+            t.name() +
+            " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
+          );
+        } else {
+          return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger.";
+        }
+      })
+      .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
+      .attackPlayer(t -> {
+        if (t.alive()) {
+          return new Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!");
+        } else {
+          return Attack.EMPTY;
+        }
+      })
+      .thing();
+
     var pirate = new ThingBuilder("PIRATE")
-      .describeAlive("pirate with a wooden leg and and an eye patch")
-      .describeDead("dead pirate with his eye patch askew")
       .isMonster(true)
       .initialHitPoints(10)
       .damage(2)
+      .describeAlive("pirate with a wooden leg and and an eye patch")
+      .describeDead("dead pirate with his eye patch askew")
       .thing();
 
     var parrot = new ThingBuilder("PARROT")
-      .describeAlive("green and blue parrot with a tiny eye patch")
-      .describeDead("dead parrot")
       .isMonster(true)
       .initialHitPoints(5)
       .damage(1)
+      .describeAlive("green and blue parrot with a tiny eye patch")
+      .describeDead("dead parrot")
       .thing();
 
     pirate.placeThing(parrot, "on the right shoulder of");
     dining.placeThing(pirate, "in the middle of the room");
 
     kitchen.placeThing(table, "against the wall");
-    table.placeThing(new Bread(), "on");
-    blobbyblobLair.placeThing(new Axe(2), "on floor");
-    blobbyblobLair.placeThing(new Blobbyblob(3), "across from you");
+    table.placeThing(bread, "on");
+    blobbyblobLair.placeThing(axe, "on floor");
+    blobbyblobLair.placeThing(blobbyblob, "across from you");
     entry.placeThing(pedestal, "in the center of the room");
     entry.placeThing(tvTray, "by the door");
     tvTray.placeThing(sandwich, "on");
@@ -242,7 +283,7 @@ public class Dungeon {
 
   public static void main(String[] args) {
     try {
-      Player p = new Player(buildMaze(), 10);
+      Player p = new Player(buildMaze(), 20);
       new Dungeon(p, System.in, System.out).loop();
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);
