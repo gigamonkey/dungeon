@@ -189,7 +189,7 @@ public class Dungeon {
       .description("ring of great power")
       .damage(1000)
       .weaponizeAgainst((t, m) ->
-        "A blast of light emanates from the ring blasting the " +
+        "A sphere of light emanates from the ring blasting the " +
         m.name() +
         " to smithereens. " +
         m.attackWith(t.damage())
@@ -206,7 +206,7 @@ public class Dungeon {
     var sword = new ThingBuilder("SWORD")
       .description("broadsword with a rusty iron hilt")
       .damage(5)
-      .weaponizeAgainst((t, m) -> "Oof. This sword is heavy to swing. But you connect. " + m.attackWith(t.damage()))
+      .weaponizeAgainst((t, m) -> "Oof, this sword is heavy to swing. But you connect. " + m.attackWith(t.damage()))
       .thing();
 
     kitchen.placeThing(table, "against the wall");
