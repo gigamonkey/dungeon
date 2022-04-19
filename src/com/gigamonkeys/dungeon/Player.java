@@ -92,11 +92,14 @@ public class Player implements Location {
         notTaken.add(t.name());
       }
     }
-    var desc = new StringBuilder("Okay. Took " + commify(taken) + ".");
-    if (!notTaken.isEmpty()) {
-      desc.append(" Can't take " + commify(notTaken) + ".");
+    var desc = new ArrayList<String>();
+    if (!taken.isEmpty()) {
+      desc.add("Okay, took " + commify(taken) + ".");
     }
-    return desc.toString();
+    if (!notTaken.isEmpty()) {
+      desc.add("Can't take " + commify(notTaken) + ".");
+    }
+    return String.join(" ", desc);
   }
 
   public String drop(Thing t) {
