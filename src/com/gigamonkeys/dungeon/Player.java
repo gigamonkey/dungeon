@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Text.*;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -72,7 +74,7 @@ public class Player implements Location {
       inventory.placeThing(t, "in your bag");
       return "You put the " + t.name() + " in your bag.";
     } else {
-      return "You can't take " + t.a() + " " + t.name() + "!";
+      return "You can't take " + a(t.name()) + "!";
     }
   }
 
@@ -90,7 +92,7 @@ public class Player implements Location {
     var desc = new StringBuilder("You have:\n");
     for (var pt : inventory.things()) {
       Thing t = pt.thing();
-      desc.append(" - " + t.a() + " " + t.description() + " " + pt.where() + "\n");
+      desc.append(" - " + a(t.description()) + " " + pt.where() + "\n");
     }
     return desc.toString();
   }

@@ -122,13 +122,6 @@ public interface Thing extends Location {
   // Some default implementations. Probably don't need to override these.
 
   /**
-   * Return 'a' or 'an'.
-   */
-  public default String a() {
-    return "AEIOUH".indexOf(name().charAt(0)) != -1 ? "an" : "a";
-  }
-
-  /**
    * Is the thing alive?
    */
   public default boolean alive() {

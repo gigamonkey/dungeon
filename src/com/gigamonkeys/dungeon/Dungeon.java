@@ -175,8 +175,8 @@ public class Dungeon {
     var blobbyblobLair = new Room("the lair of a horrible creature");
     var dining = new Room("a grand dining room with a crystal chandelier and tapestries on the walls");
 
-    entry.connect("an oaken door", kitchen, EAST);
-    entry.connect("a dank tunnel", blobbyblobLair, SOUTH);
+    entry.connect("oaken door", kitchen, EAST);
+    entry.connect("dank tunnel", blobbyblobLair, SOUTH);
     kitchen.connect("swinging door", dining, EAST);
 
     var pedestal = new ThingBuilder("PEDESTAL").description("stone pedestal").isPortable(false).thing();

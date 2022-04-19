@@ -1,12 +1,16 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Text.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * An abstract implementation of Thing with the bits that shouldn't change.
+ * An abstract implementation of Thing with the bits that shouldn't change. At
+ * the moment the only concrete implementation is DynamicThing so we could
+ * collapse them.
  */
 public abstract class AbstractThing implements Thing {
 
@@ -55,7 +59,7 @@ public abstract class AbstractThing implements Thing {
     var desc = new ArrayList<String>();
     for (var pt : things()) {
       var t = pt.thing();
-      desc.add(pt.where() + " the " + name() + " is " + t.a() + " " + t.description() + ".");
+      desc.add(pt.where() + " the " + name() + " is " + a(t.description()) + ".");
     }
     for (var pt : things()) {
       desc.add(pt.thing().describeThings());

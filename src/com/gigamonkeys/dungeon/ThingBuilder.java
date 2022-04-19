@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Text.*;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -26,7 +28,7 @@ public class ThingBuilder {
   private Function<Thing, String> describeDead = t -> t.name();
   private Function<Thing, String> eat = null; // protocol method kludge.
   private Function<Thing, String> eatIfEdible = t -> "Yum";
-  private Function<Thing, String> eatIfInedible = t -> "Yuck. You can't eat " + t.a() + " " + t.description() + ".";
+  private Function<Thing, String> eatIfInedible = t -> "Yuck. You can't eat " + a(t.description()) + ".";
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
@@ -203,7 +205,7 @@ public class ThingBuilder {
 
   private static String defaultWeaponizeAgainst(Thing t, Thing m) {
     if (t.damage() == 0) {
-      return t.a() + " " + t.description() + " is not an effective weapon. You do zero damage.";
+      return a(t.description()) + " is not an effective weapon. You do zero damage.";
     } else {
       return m.attackWith(t.damage());
     }

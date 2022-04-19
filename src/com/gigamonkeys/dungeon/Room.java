@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Text.*;
+
 import java.util.*;
 import java.util.HashMap;
 import java.util.List;
@@ -99,7 +101,7 @@ public class Room implements Location {
     var things = things().stream().filter(pt -> p.test(pt.thing())).toList();
     for (var pt : things) {
       var t = pt.thing();
-      desc.add(pt.where() + " is " + t.a() + " " + t.description() + ".");
+      desc.add(pt.where() + " is " + a(t.description()) + ".");
       desc.add(t.describeThings());
     }
   }
@@ -107,7 +109,7 @@ public class Room implements Location {
   private void describeDoors(List<String> desc) {
     for (var d : Direction.class.getEnumConstants()) {
       if (doors.containsKey(d)) {
-        desc.add("To the " + d + " there is " + doors.get(d).description() + ".");
+        desc.add("To the " + d + " there is " + a(doors.get(d).description()) + ".");
       }
     }
   }
