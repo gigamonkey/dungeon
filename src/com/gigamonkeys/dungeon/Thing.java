@@ -29,7 +29,7 @@ public interface Thing {
   public void clearLocation();
 
   /**
-   * Longer description of the thing used to refer to in in sentences.
+   * Longer description of the thing used to refer to it in sentences.
    */
   public String description();
 
