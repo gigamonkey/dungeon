@@ -4,6 +4,21 @@ import java.util.List;
 
 class Text {
 
+  public static String wrap(String text, int width) {
+    var sb = new StringBuilder();
+    int col = 0;
+    for (var t : text.split("\\s+")) {
+      if (col + t.length() > width) {
+        sb.append("\n");
+        col = 0;
+      }
+      sb.append(t);
+      sb.append(" ");
+      col += t.length();
+    }
+    return sb.toString();
+  }
+
   public static String a(String thing) {
     var a = "AEIOUY".indexOf(Character.toUpperCase(thing.charAt(0))) != -1 ? "an " : "a ";
     return a + thing;
