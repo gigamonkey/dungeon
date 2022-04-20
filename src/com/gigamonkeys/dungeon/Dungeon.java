@@ -20,10 +20,6 @@ import java.util.regex.Pattern;
  */
 public class Dungeon {
 
-  private static interface Command {
-    String run(String[] args);
-  }
-
   private static final Pattern wordPattern = Pattern.compile("\\W*(\\w+)\\W*");
 
   private final Player player;
@@ -39,18 +35,31 @@ public class Dungeon {
     this.in = new BufferedReader(new InputStreamReader(in));
     this.out = out;
 
-    commands.put("ATTACK", this::attack);
-    commands.put("DROP", this::drop);
-    commands.put("EAT", this::eat);
-    commands.put("GO", this::go);
-    commands.put("INVENTORY", this::inventory);
-    commands.put("LOOK", this::look);
-    commands.put("QUIT", this::quit);
-    commands.put("TAKE", this::take);
+    registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", this::attack));
+    registerCommand(new Command("DROP", "Drop a named item you are carrying.", this::drop));
+    registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", this::eat));
+    registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", this::go));
+    registerCommand(new Command("INVENTORY", "List the items you are holding.", this::inventory));
+    registerCommand(new Command("LOOK", "Look at the room your are in again.", this::look));
+    registerCommand(new Command("QUIT", "Quit the game", this::quit));
+    registerCommand(new Command("TAKE", "Take an item from the room.", this::take));
+    registerCommand(new Command("HELP", "Get help on commands.", this::help));
+  }
+
+  public void registerCommand(Command command) {
+    commands.put(command.verb(), command);
   }
 
   ////////////////////////////////////////////////////////////////////
   // Commands
+
+  String help(String[] args) {
+    var desc = new ArrayList<String>();
+    for (var c : commands.values()) {
+      desc.add(c.verb() + " - " + c.help());
+    }
+    return String.join("\n", desc);
+  }
 
   String quit(String[] args) {
     gameOver = true;
@@ -162,7 +171,7 @@ public class Dungeon {
 
   public String doCommand(String line) {
     var tokens = wordPattern.matcher(line).results().map(r -> r.group(1)).toList().toArray(new String[0]);
-    var c = commands.getOrDefault(tokens[0], args -> "Don't know how to " + args[0]);
+    var c = commands.getOrDefault(tokens[0], new Command(tokens[0], "", args -> "Don't know how to " + tokens[0]));
     var desc = new ArrayList<String>();
     desc.add(c.run(tokens));
     player.room().describeAttacks(desc, player);
@@ -283,7 +292,7 @@ public class Dungeon {
 
   public static void main(String[] args) {
     try {
-      Player p = new Player(buildMaze(), 20);
+      var p = new Player(buildMaze(), 20);
       new Dungeon(p, System.in, System.out).loop();
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);
