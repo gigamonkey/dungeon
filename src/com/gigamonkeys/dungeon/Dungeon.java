@@ -130,7 +130,9 @@ public class Dungeon {
     for (var i = start; i < args.length; i++) {
       var maybe = player.roomThing(args[i]);
       if (!maybe.isPresent()) {
-        return Optional.empty();
+        if (!args[i].equals("AND")) {
+          return Optional.empty();
+        }
       } else {
         things.add(maybe.get());
       }
