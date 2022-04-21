@@ -1,11 +1,10 @@
 package com.gigamonkeys.dungeon;
 
-public record Command(String verb, String help, Action action) {
-  public static interface Action {
-    public String run(String[] args);
-  }
+import java.util.function.Function;
+
+public record Command(String verb, String help, Function<String[], String> action) {
 
   public String run(String[] args) {
-    return action.run(args);
+    return action.apply(args);
   }
 }
