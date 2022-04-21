@@ -58,7 +58,7 @@ public class Dungeon {
     for (var c : commands.values()) {
       desc.add(c.verb() + " - " + c.help());
     }
-    return String.join("\n", desc);
+    return "Commands: " + String.join("\n", desc);
   }
 
   String quit(String[] args) {
