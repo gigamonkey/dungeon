@@ -1,0 +1,37 @@
+- The action needs to be described. "You enter a blah blah blah room."
+
+- Action may make changes to the state of the world (i.e. object states
+  need to be updated.) no output.
+
+- The results of the action may need to be described. (Things change, e.g.
+  a monter dies or is wounded.)
+
+- Things may take actions after the player's action (e.g. a monster may
+  attack) which need to be described.
+
+- The results of those actions need to be described. (Player's state may
+  have changed or the state of Things, e.g. a monster's attack could smash
+  an object which is now broken.)
+
+Command:
+
+Verb that invokes it.
+
+How tokens are parsed.
+
+Optional description of the action itself ("you swing your axe with great effort")
+
+Changes it makes to the state of the world. Each change may optionally
+generate a description of the change. ("you hit the monster in the neck
+leaving a deep gash")
+
+After each command the things in the room get a turn to potentially do
+something which may generate other changes that may need to be described.
+
+changes = action.perform()
+
+on attacking pirate, the parrot flies to the ceiling.
+on putting bread on the ground, parrot flies down to eat it.
+
+Things listen for events they care about, things generate events. Also the
+room generates events when the player enters or exits.

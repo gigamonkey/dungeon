@@ -65,12 +65,6 @@ public class Room implements Location {
     other.doors.put(d.opposite(), door);
   }
 
-  public String enter(Player player) {
-    List<String> desc = new ArrayList<>();
-    desc.add(description());
-    return String.join(" ", desc);
-  }
-
   public String description() {
     List<String> desc = new ArrayList<>();
     desc.add("You are in");
@@ -78,7 +72,7 @@ public class Room implements Location {
     describeThings(desc, t -> !t.isMonster());
     describeThings(desc, t -> t.isMonster());
     describeDoors(desc);
-    return String.join(" ", desc);
+    return wrap(String.join(" ", desc), 60);
   }
 
   public Door getDoor(Direction d) {

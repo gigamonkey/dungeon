@@ -63,7 +63,7 @@ public class Dungeon {
 
   String quit(String[] args) {
     gameOver = true;
-    return "Okay. Bye!";
+    throw new SpecialCommandOutput("Okay. Bye!");
   }
 
   String go(String[] args) {
@@ -165,17 +165,14 @@ public class Dungeon {
 
   private void say(String s) {
     out.println();
-    out.println(wrap(s.toUpperCase(), 60));
+    out.println(s.toUpperCase());
     out.println();
   }
 
   public String doCommand(String line) {
     var tokens = wordPattern.matcher(line).results().map(r -> r.group(1)).toList().toArray(new String[0]);
-    var c = commands.getOrDefault(tokens[0], new Command(tokens[0], "", args -> "Don't know how to " + tokens[0]));
-    var desc = new ArrayList<String>();
-    desc.add(c.run(tokens));
-    player.room().describeAttacks(desc, player);
-    return String.join(" ", desc);
+    var c = commands.getOrDefault(tokens[0], Command.unknown(tokens[0]));
+    return c.run(tokens, player);
   }
 
   public static Room buildMaze() {

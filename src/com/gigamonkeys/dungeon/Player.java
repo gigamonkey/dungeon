@@ -62,7 +62,7 @@ public class Player implements Location {
       return "No door to the " + d;
     } else {
       room = door.from(room);
-      return room.enter(this);
+      return room.description();
     }
   }
 
@@ -132,8 +132,8 @@ public class Player implements Location {
   public String loseHitPoints(int amount) {
     hitPoints -= amount;
     var s = amount != 1 ? "s" : "";
-    var status = hitPoints > 0 ? "You're down to " + hitPoints : "You feel consciousness slipping away.";
-    return "You take " + amount + " hit point" + s + " of damage. " + status;
+    var status = hitPoints > 0 ? "You're down to " + hitPoints + "." : "You feel consciousness slipping away.";
+    return "You take " + amount + plural(" hit point", amount) + " of damage. " + status;
   }
 
   public boolean alive() {
