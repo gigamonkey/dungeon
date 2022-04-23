@@ -14,6 +14,7 @@ public class Things implements Location {
   private final Map<String, PlacedThing> things = new HashMap<>();
 
   public void placeThing(Thing thing, String where) {
+    thing.location().ifPresent(l -> l.removeThing(thing));
     things.put(thing.name(), new PlacedThing(thing, where));
     thing.setLocation(this);
   }

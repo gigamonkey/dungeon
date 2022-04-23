@@ -17,7 +17,7 @@ public abstract class AbstractThing implements Thing {
   private final Things things = new Things();
   private final String name;
   private int hitPoints;
-  private Location location = null;
+  private Optional<Location> location = Optional.empty();
 
   public AbstractThing(String name, int hitPoints) {
     this.name = name.toUpperCase();
@@ -30,18 +30,18 @@ public abstract class AbstractThing implements Thing {
   }
 
   @Override
-  public final Location location() {
+  public final Optional<Location> location() {
     return location;
   }
 
   @Override
   public final void setLocation(Location location) {
-    this.location = location;
+    this.location = Optional.of(location);
   }
 
   @Override
   public final void clearLocation() {
-    location = null;
+    location = Optional.empty();
   }
 
   @Override

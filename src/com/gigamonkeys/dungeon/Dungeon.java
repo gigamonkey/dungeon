@@ -187,7 +187,8 @@ public class Dungeon {
       var c = commands.getOrDefault(tokens[0], Command.unknown(tokens[0]));
       return c.run(tokens, player);
     } else {
-      // FIXME: This results in too many blank lines being printed. Input loop needs refactoring.
+      // FIXME: This results in too many blank lines being printed. Input loop
+      // needs refactoring.
       return "";
     }
   }

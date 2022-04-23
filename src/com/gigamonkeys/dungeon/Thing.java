@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import java.util.Optional;
+
 /**
  * The interface for all the things in the Dungeon other than the
  * Player, Rooms, and Doors. We don't distinguish between different
@@ -21,7 +23,7 @@ public interface Thing extends Location {
   /**
    * Get the thing's location.
    */
-  public Location location();
+  public Optional<Location> location();
 
   /**
    * Clear the thing's location. (Such as when the thing is eaten or otherwise destroyed.)
@@ -129,6 +131,6 @@ public interface Thing extends Location {
   }
 
   public default void destroy() {
-    location().removeThing(this);
+    location().ifPresent(l -> l.removeThing(this));
   }
 }

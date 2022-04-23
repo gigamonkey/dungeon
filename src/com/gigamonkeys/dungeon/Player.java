@@ -72,7 +72,6 @@ public class Player implements Location {
 
   public String take(Thing t) {
     if (t.isPortable()) {
-      t.location().removeThing(t);
       inventory.placeThing(t, "in your stuff");
       return "Okay. You have " + a(t.description());
     } else {
@@ -85,7 +84,6 @@ public class Player implements Location {
     var notTaken = new ArrayList<String>();
     for (var t : things) {
       if (t.isPortable()) {
-        t.location().removeThing(t);
         inventory.placeThing(t, "in your stuff");
         taken.add(t.description());
       } else {
@@ -104,7 +102,6 @@ public class Player implements Location {
 
   public String drop(Thing t) {
     room.drop(t);
-    inventory.removeThing(t);
     return "You drop the " + t.name();
   }
 
