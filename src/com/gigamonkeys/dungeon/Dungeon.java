@@ -1,7 +1,6 @@
 package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Direction.*;
-import static com.gigamonkeys.dungeon.Text.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * The main class for the game.
@@ -36,14 +37,14 @@ public class Dungeon {
     this.out = out;
 
     registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", this::attack));
-    registerCommand(new Command("DROP", "Drop a named item you are carrying.", this::drop));
+    registerCommand(new Command("DROP", "Drop an item you are carrying.", this::drop));
     registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", this::eat));
     registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", this::go));
+    registerCommand(new Command("HELP", "Get help on commands.", this::help));
     registerCommand(new Command("INVENTORY", "List the items you are holding.", this::inventory));
     registerCommand(new Command("LOOK", "Look at the room your are in again.", this::look));
     registerCommand(new Command("QUIT", "Quit the game", this::quit));
     registerCommand(new Command("TAKE", "Take an item from the room.", this::take));
-    registerCommand(new Command("HELP", "Get help on commands.", this::help));
   }
 
   public void registerCommand(Command command) {
@@ -54,11 +55,22 @@ public class Dungeon {
   // Commands
 
   String help(String[] args) {
-    var desc = new ArrayList<String>();
-    for (var c : commands.values()) {
-      desc.add(c.verb() + " - " + c.help());
-    }
-    return "Commands: " + String.join("\n", desc);
+    var w = commands.values().stream().mapToInt(c -> c.verb().length()).max().getAsInt();
+
+    var docs = commands
+      .values()
+      .stream()
+      .sorted((a, b) -> a.verb().compareTo(b.verb()))
+      .map(c -> {
+        var padding = IntStream
+          .range(0, (w + 2) - c.verb().length())
+          .mapToObj(i -> " ")
+          .collect(Collectors.joining(""));
+        return "  " + c.verb() + padding + c.help();
+      })
+      .toList();
+
+    throw new SpecialCommandOutput("I understand the following commands:\n\n" + String.join("\n", docs));
   }
 
   String quit(String[] args) {
