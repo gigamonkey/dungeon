@@ -247,17 +247,7 @@ public class Dungeon {
       .describeAlive(t -> t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad")
       .describeDead(t -> "dead " + t.name() + " decaying into puddle of goo")
       .isEdible(t -> !t.alive())
-      .eatIfEdible(t -> {
-        if (t.hitPoints() < -100) {
-          return (
-            "The " +
-            t.name() +
-            " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
-          );
-        } else {
-          return "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger.";
-        }
-      })
+      .eatIfEdible(Dungeon::blobbyBlobEatIfEdible)
       .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
       .attackPlayer(t -> {
         if (t.alive()) {
@@ -299,9 +289,138 @@ public class Dungeon {
     return entry;
   }
 
+  public static Room buildMaze2() {
+    var maze = new MazeBuilder();
+
+    maze
+      .room("entry", "a dusty entryway to a castle")
+      .room("kitchen", "what appears to be a kitchen")
+      .room("blobbybloblair", "the lair of a horrible creature")
+      .room("dining", "a grand dining room with a crystal chandelier and tapestries on the walls");
+
+    maze
+      .toEastOf("entry", "kitchen", "oaken door")
+      .toSouthOf("entry", "blobbybloblair", "dank tunnel")
+      .toEastOf("kitchen", "dining", "swinging door");
+
+    maze.thing("pedestal").description("stone pedestal").isPortable(false).thing();
+
+    maze.thing("table").description("wooden table").isPortable(false).thing();
+
+    maze.thing("tray").description("tv tray").isPortable(false).thing();
+
+    maze
+      .thing("ring")
+      .description("ring of great power")
+      .damage(1000)
+      .weaponizeAgainst((t, m) ->
+        "A sphere of light emanates from the ring blasting the " +
+        m.name() +
+        " to smithereens. " +
+        m.attackWith(t.damage())
+      )
+      .thing();
+
+    maze
+      .thing("axe")
+      .damage(2)
+      .eatIfInedible("Axes are not good for eating. Now your teeth hurt and you are no less hungry.")
+      .weaponizeAgainst((t, m) -> "You swing your axe and connect! " + m.attackWith(t.damage()))
+      .thing();
+
+    maze
+      .thing("sword")
+      .description("broadsword with a rusty iron hilt")
+      .damage(5)
+      .weaponizeAgainst((t, m) -> "Oof, this sword is heavy to swing, but you connect. " + m.attackWith(t.damage()))
+      .thing();
+
+    maze
+      .thing("bread")
+      .description("loaf of bread")
+      .isEdible(true)
+      .eatIfEdible("Ah, delicious. Could use some mayonnaise though.")
+      .thing();
+
+    maze
+      .thing("sandwich")
+      .description("ham and cheese sandwich")
+      .isEdible(true)
+      .eatIfEdible("Mmmm, tasty. But I think you got a spot of mustard on your tunic.")
+      .thing();
+
+    maze
+      .thing("blobbyblob")
+      .isMonster(true)
+      .initialHitPoints(7)
+      .damage(3)
+      .describeAlive(t -> t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad")
+      .describeDead(t -> "dead " + t.name() + " decaying into puddle of goo")
+      .isEdible(t -> !t.alive())
+      .eatIfEdible(Dungeon::blobbyBlobEatIfEdible)
+      .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
+      .attackPlayer(t -> {
+        if (t.alive()) {
+          return new Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!");
+        } else {
+          return Attack.EMPTY;
+        }
+      })
+      .thing();
+
+    maze
+      .thing("pirate")
+      .isMonster(true)
+      .initialHitPoints(10)
+      .damage(2)
+      .describeAlive("pirate with a wooden leg and and an eye patch")
+      .describeDead("dead pirate with his eye patch askew")
+      .thing();
+
+    maze
+      .thing("parrot")
+      .isMonster(true)
+      .initialHitPoints(5)
+      .damage(1)
+      .describeAlive("green and blue parrot with a tiny eye patch")
+      .describeDead("dead parrot")
+      .thing();
+
+    maze
+      .place("pedestal", "ring", "on")
+      .place("pirate", "parrot", "on the right shoulder of")
+      .place("dining", "pirate", "in the middle of the room")
+      .place("kitchen", "table", "against the wall")
+      .place("table", "bread", "on")
+      .place("blobbybloblair", "axe", "on floor")
+      .place("blobbybloblair", "blobbyblob", "across from you")
+      .place("entry", "pedestal", "in the center of the room")
+      .place("entry", "tray", "by the door")
+      .place("tray", "sandwich", "on")
+      .place("dining", "sword", "propped against a wall");
+
+    return maze.room("entry");
+  }
+
+  private static String blobbyBlobEatIfEdible(Thing t) {
+    if (t.hitPoints() < -100) {
+      return (
+        "The " +
+        t.name() +
+        " is blasted all over the room. " +
+        "There is nothing to eat unless you have a squeege and a straw."
+      );
+    } else {
+      return (
+        "Ugh. This is worse than the worst jello casserole you have ever tasted. " +
+        "But it does slightly sate your hunger."
+      );
+    }
+  }
+
   public static void main(String[] args) {
     try {
-      var p = new Player(buildMaze(), 20);
+      var p = new Player(buildMaze2(), 20);
       new Dungeon(p, System.in, System.out).loop();
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);
