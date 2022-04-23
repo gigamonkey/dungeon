@@ -10,10 +10,16 @@ public record Command(String verb, String help, Function<String[], String> actio
     try {
       var desc = new ArrayList<String>();
       desc.add(action.apply(args));
-      p.room().describeAttacks(desc, p);
+
+      int origHitPoints = p.hitPoints();
+      desc.addAll(p.room().attacks(p));
+      if (p.hitPoints() < origHitPoints) {
+        desc.add(p.describeDamage(origHitPoints - p.hitPoints()));
+      }
+
       return wrap(String.join(" ", desc), 60);
     } catch (SpecialCommandOutput output) {
-      // Can't decideif this is a kludge or elegant.
+      // Can't decide if this is a kludge or elegant.
       return output.text();
     }
   }

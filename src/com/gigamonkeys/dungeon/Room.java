@@ -108,15 +108,7 @@ public class Room implements Location {
     }
   }
 
-  public void describeAttacks(List<String> desc, Player player) {
-    var totalDamage = 0;
-    for (var m : monsters().toList()) {
-      var a = m.attackPlayer();
-      totalDamage += a.damage();
-      desc.add(a.description());
-    }
-    if (totalDamage > 0) {
-      desc.add(player.loseHitPoints(totalDamage));
-    }
+  public List<String> attacks(Player player) {
+    return monsters().map(Thing::attackPlayer).map(a -> a.doAction(player)).toList();
   }
 }

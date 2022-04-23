@@ -183,8 +183,13 @@ public class Dungeon {
 
   public String doCommand(String line) {
     var tokens = wordPattern.matcher(line).results().map(r -> r.group(1)).toList().toArray(new String[0]);
-    var c = commands.getOrDefault(tokens[0], Command.unknown(tokens[0]));
-    return c.run(tokens, player);
+    if (tokens.length > 0) {
+      var c = commands.getOrDefault(tokens[0], Command.unknown(tokens[0]));
+      return c.run(tokens, player);
+    } else {
+      // FIXME: This results in too many blank lines being printed. Input loop needs refactoring.
+      return "";
+    }
   }
 
   public static Room buildMaze() {

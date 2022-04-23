@@ -129,9 +129,15 @@ public class Player implements Location {
     return "Can't hear anything!"; // FIXME: implement
   }
 
-  public String loseHitPoints(int amount) {
+  public int hitPoints() {
+    return hitPoints;
+  }
+
+  public void takeDamage(int amount) {
     hitPoints -= amount;
-    var s = amount != 1 ? "s" : "";
+  }
+
+  public String describeDamage(int amount) {
     var status = hitPoints > 0 ? "You're down to " + hitPoints + "." : "You feel consciousness slipping away.";
     return "You take " + amount + plural(" hit point", amount) + " of damage. " + status;
   }
