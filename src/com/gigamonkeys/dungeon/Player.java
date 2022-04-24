@@ -62,7 +62,15 @@ public class Player implements Location {
       return "No door to the " + d;
     } else {
       room = door.from(room);
-      return room.description();
+
+      var desc = new ArrayList<String>();
+      desc.add(room.description());
+
+      desc.addAll(
+        room().allThings().map(PlacedThing::thing).flatMap(t -> t.onEnter(this)).map(a -> a.doAction(this)).toList()
+      );
+
+      return String.join(" ", desc);
     }
   }
 

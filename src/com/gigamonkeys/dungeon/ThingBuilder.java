@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * A builder for DynamicThings. (See https://en.wikipedia.org/wiki/Builder_pattern)
@@ -21,7 +22,6 @@ public class ThingBuilder {
 
   private BiFunction<Thing, Integer, String> attackWith = ThingBuilder::defaultAttackWith;
   private BiFunction<Thing, Thing, String> weaponizeAgainst = ThingBuilder::defaultWeaponizeAgainst;
-  private Function<Thing, Attack> attackPlayer = t -> Attack.EMPTY;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = null; // protocol method kludge.
   private Function<Thing, String> describeAlive = t -> t.name();
@@ -32,6 +32,8 @@ public class ThingBuilder {
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
+  private BiFunction<Thing, Player, Stream<Action>> onEnter = (t, p) -> Stream.empty();
+  private BiFunction<Thing, Player, Stream<Action>> onTurn = (t, p) -> Stream.empty();
 
   public ThingBuilder(String name) {
     this.name = name;
@@ -44,15 +46,6 @@ public class ThingBuilder {
 
   ThingBuilder initialHitPoints(int initialHitPoints) {
     return initialHitPoints(() -> initialHitPoints);
-  }
-
-  ThingBuilder attackPlayer(Function<Thing, Attack> attackPlayer) {
-    this.attackPlayer = attackPlayer;
-    return this;
-  }
-
-  ThingBuilder attackPlayer(Attack attackPlayer) {
-    return attackPlayer(t -> attackPlayer);
   }
 
   ThingBuilder attackWith(BiFunction<Thing, Integer, String> attackWith) {
@@ -163,6 +156,24 @@ public class ThingBuilder {
     return weaponizeAgainst((t1, t2) -> weaponizeAgainst);
   }
 
+  ThingBuilder onEnter(BiFunction<Thing, Player, Stream<Action>> onEnter) {
+    this.onEnter = onEnter;
+    return this;
+  }
+
+  ThingBuilder onEnter(Stream<Action> onEnter) {
+    return onEnter((t, p) -> onEnter);
+  }
+
+  ThingBuilder onTurn(BiFunction<Thing, Player, Stream<Action>> onTurn) {
+    this.onTurn = onTurn;
+    return this;
+  }
+
+  ThingBuilder onTurn(Stream<Action> onTurn) {
+    return onTurn((t, p) -> onTurn);
+  }
+
   public Thing thing() {
     return new DynamicThing(
       name,
@@ -170,7 +181,6 @@ public class ThingBuilder {
       new DynamicThing.Dynamic(
         attackWith,
         weaponizeAgainst,
-        attackPlayer,
         damage,
         description,
         describeAlive,
@@ -180,7 +190,9 @@ public class ThingBuilder {
         eatIfInedible,
         isEdible,
         isMonster,
-        isPortable
+        isPortable,
+        onEnter,
+        onTurn
       )
     );
   }

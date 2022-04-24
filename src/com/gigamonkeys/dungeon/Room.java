@@ -107,8 +107,4 @@ public class Room implements Location {
       }
     }
   }
-
-  public List<String> attacks(Player player) {
-    return monsters().map(Thing::attackPlayer).map(a -> a.doAction(player)).toList();
-  }
 }

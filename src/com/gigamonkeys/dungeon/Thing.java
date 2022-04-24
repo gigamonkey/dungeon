@@ -1,6 +1,7 @@
 package com.gigamonkeys.dungeon;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * The interface for all the things in the Dungeon other than the
@@ -95,11 +96,6 @@ public interface Thing extends Location {
    */
   public boolean isMonster();
 
-  /**
-   * Generate an attack against the player.
-   */
-  public Attack attackPlayer();
-
   //////////////////////////////////////////////////////////////////////////////
   // Some protocols
 
@@ -133,4 +129,8 @@ public interface Thing extends Location {
   public default void destroy() {
     location().ifPresent(l -> l.removeThing(this));
   }
+
+  public Stream<Action> onEnter(Player p);
+
+  public Stream<Action> onTurn(Player p);
 }

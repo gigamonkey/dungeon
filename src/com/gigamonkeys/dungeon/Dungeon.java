@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * The main class for the game.
@@ -255,13 +256,7 @@ public class Dungeon {
       .isEdible(t -> !t.alive())
       .eatIfEdible(Dungeon::blobbyBlobEatIfEdible)
       .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
-      .attackPlayer(t -> {
-        if (t.alive()) {
-          return new Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!");
-        } else {
-          return Attack.EMPTY;
-        }
-      })
+      .onTurn(Dungeon::blobbyBlobAttack)
       .thing();
 
     var pirate = new ThingBuilder("PIRATE")
@@ -365,13 +360,7 @@ public class Dungeon {
       .isEdible(t -> !t.alive())
       .eatIfEdible(Dungeon::blobbyBlobEatIfEdible)
       .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
-      .attackPlayer(t -> {
-        if (t.alive()) {
-          return new Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!");
-        } else {
-          return Attack.EMPTY;
-        }
-      })
+      .onTurn(Dungeon::blobbyBlobAttack)
       .thing();
 
     maze
@@ -421,6 +410,14 @@ public class Dungeon {
         "Ugh. This is worse than the worst jello casserole you have ever tasted. " +
         "But it does slightly sate your hunger."
       );
+    }
+  }
+
+  private static Stream<Action> blobbyBlobAttack(Thing t, Player p) {
+    if (t.alive()) {
+      return Stream.of(new Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!"));
+    } else {
+      return Stream.empty();
     }
   }
 

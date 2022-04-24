@@ -1,6 +1,9 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * An implementation of the Thing interface that can be put together
@@ -12,7 +15,6 @@ public class DynamicThing extends AbstractThing {
   static record Dynamic(
     BiFunction<Thing, Integer, String> attackWith,
     BiFunction<Thing, Thing, String> weaponizeAgainst,
-    Function<Thing, Attack> attackPlayer,
     Function<Thing, Integer> damage,
     Function<Thing, String> description,
     Function<Thing, String> describeAlive,
@@ -22,7 +24,9 @@ public class DynamicThing extends AbstractThing {
     Function<Thing, String> eatIfInedible,
     Predicate<Thing> isEdible,
     Predicate<Thing> isMonster,
-    Predicate<Thing> isPortable
+    Predicate<Thing> isPortable,
+    BiFunction<Thing, Player, Stream<Action>> onEnter,
+    BiFunction<Thing, Player, Stream<Action>> onTurn
   ) {}
 
   private final Dynamic dynamic;
@@ -86,8 +90,13 @@ public class DynamicThing extends AbstractThing {
   }
 
   @Override
-  public Attack attackPlayer() {
-    return dynamic.attackPlayer().apply(this);
+  public Stream<Action> onEnter(Player p) {
+    return dynamic.onEnter.apply(this, p);
+  }
+
+  @Override
+  public Stream<Action> onTurn(Player p) {
+    return dynamic.onTurn.apply(this, p);
   }
 
   //////////////////////////////////////////////////////////////////////////////
