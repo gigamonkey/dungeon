@@ -25,6 +25,13 @@ public interface Action {
 
   public static record NoAction(String description) implements Action {}
 
+  public static record Quit(Dungeon d) implements Action {
+    public String description() {
+      d.endGame();
+      return "Okay. Bye!";
+    }
+  }
+
   public static record Go(Player p, Direction d) implements Action {
     public String description() {
       return p.go(d);

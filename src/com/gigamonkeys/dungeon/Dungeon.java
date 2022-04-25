@@ -44,7 +44,7 @@ public class Dungeon {
     // registerCommand(new Command("HELP", "Get help on commands.", this::help));
     // registerCommand(new Command("INVENTORY", "List the items you are holding.", this::inventory));
     // registerCommand(new Command("LOOK", "Look at the room your are in again.", this::look));
-    // registerCommand(new Command("QUIT", "Quit the game", this::quit));
+    registerCommand(new Command("QUIT", "Quit the game", this::quit));
     // registerCommand(new Command("TAKE", "Take an item from the room.", this::take));
   }
 
@@ -74,9 +74,12 @@ public class Dungeon {
     throw new SpecialCommandOutput("I understand the following commands:\n\n" + String.join("\n", docs));
   }
 
-  String quit(String[] args) {
+  public void endGame() {
     gameOver = true;
-    throw new SpecialCommandOutput("Okay. Bye!");
+  }
+
+  Action quit(String[] args) {
+    return new Action.Quit(this);
   }
 
   Action go(String[] args) {
