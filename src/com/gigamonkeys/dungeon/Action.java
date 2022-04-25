@@ -49,7 +49,11 @@ public interface Action {
   }
 
   public static Action take(Player p, List<Thing> things) {
-    return () -> p.takeThings(things);
+    return new Take(p, things);
+  }
+
+  public static Action say(Thing who, String what) {
+    return new Say(who, what);
   }
 
   public static Action drop(Player p, Thing thing) {
@@ -91,6 +95,22 @@ public interface Action {
     public String description() {
       p.takeDamage(damage);
       return text;
+    }
+  }
+
+  public static record Take(Player p, List<Thing> things) implements Action {
+    public String description() {
+      return p.takeThings(things);
+    }
+
+    public Stream<Action> event(Thing t) {
+      return t.onTake(this);
+    }
+  }
+
+  public static record Say(Thing who, String what) implements Action {
+    public String description() {
+      return "'" + what + "' says the " + who.name() + ".";
     }
   }
 }

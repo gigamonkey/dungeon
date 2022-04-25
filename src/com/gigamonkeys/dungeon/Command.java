@@ -22,8 +22,9 @@ public record Command(String verb, String help, Function<String[], Action> parse
   }
 
   public Stream<String> results(Action action, Player player) {
-    // N.B. Need to wrap player in stream to avoid getting the current room
-    // rather than the room after the command has been executed.
+    // N.B. Need to wrap player in stream to avoid defer getting the current
+    // room so that we get the room after the action has been described (with
+    // it's possible side effect of changing the player's room)
     var things = Stream.of(player).flatMap(p -> p.room().allThings().map(PlacedThing::thing));
     var reactions = things.flatMap(t -> action.event(t));
     return Stream.concat(Stream.of(action.description()), reactions.flatMap(a -> results(a, player)));

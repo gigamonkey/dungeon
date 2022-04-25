@@ -141,4 +141,6 @@ public interface Thing extends Location {
   public default Stream<Action> onTurn(Player p) {
     return Stream.empty();
   }
+
+  public Stream<Action> onTake(Action.Take a);
 }

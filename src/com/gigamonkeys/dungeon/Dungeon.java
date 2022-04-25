@@ -280,6 +280,7 @@ public class Dungeon {
       .describeAlive("pirate with a wooden leg and and an eye patch")
       .describeDead("dead pirate with his eye patch askew")
       .onEnter(Dungeon::pirateGreeting)
+      .onTake(Dungeon::pirateTake)
       .thing();
 
     maze
@@ -336,7 +337,15 @@ public class Dungeon {
 
   private static Stream<Action> pirateGreeting(Thing t, Action.Go action) {
     if (t.alive()) {
-      return Stream.of(Action.none("'Arr, matey!' says the " + t.name()));
+      return Stream.of(Action.say(t, "Arr, matey!"));
+    } else {
+      return Stream.empty();
+    }
+  }
+
+  private static Stream<Action> pirateTake(Thing t, Action.Take action) {
+    if (t.alive() && t.thing("PARROT").map(p -> action.things().contains(p)).orElse(false)) {
+      return Stream.of(Action.say(t, "Oi, ye swarthy dog! Hands off me parrot!"));
     } else {
       return Stream.empty();
     }
