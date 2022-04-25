@@ -20,7 +20,7 @@ public class ThingBuilder {
   // DynamicThing.Dynamic
   private Supplier<Integer> initialHitPoints = () -> 0;
 
-  private BiFunction<Thing, Integer, String> attackWith = ThingBuilder::defaultAttackWith;
+  private BiFunction<Thing, Attack, String> applyAttack = ThingBuilder::defaultApplyAttack;
   private Function<Thing, Attack> attack = ThingBuilder::defaultAttack;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = null; // protocol method kludge.
@@ -49,13 +49,13 @@ public class ThingBuilder {
     return initialHitPoints(() -> initialHitPoints);
   }
 
-  ThingBuilder attackWith(BiFunction<Thing, Integer, String> attackWith) {
-    this.attackWith = attackWith;
+  ThingBuilder applyAttack(BiFunction<Thing, Attack, String> applyAttack) {
+    this.applyAttack = applyAttack;
     return this;
   }
 
-  ThingBuilder attackWith(String attackWith) {
-    return attackWith((t, i) -> attackWith);
+  ThingBuilder applyAttack(String applyAttack) {
+    return applyAttack((t, a) -> applyAttack);
   }
 
   ThingBuilder attack(Function<Thing, Attack> attack) {
@@ -189,7 +189,7 @@ public class ThingBuilder {
       name,
       initialHitPoints.get(),
       new DynamicThing.Dynamic(
-        attackWith,
+        applyAttack,
         damage,
         attack,
         description,
@@ -211,10 +211,10 @@ public class ThingBuilder {
   ////////////////////////////////////////////////////////////////////
   // Default implementation of more complex methods.
 
-  private static String defaultAttackWith(Thing t, int damage) {
+  private static String defaultApplyAttack(Thing t, Attack attack) {
     if (t.isMonster()) {
-      t.takeDamage(damage);
-      var s = "You hit, doing " + damage + " points of damage.";
+      t.takeDamage(attack.damage());
+      var s = "You hit, doing " + attack.damage() + " points of damage.";
       if (t.alive()) {
         s += " The " + t.name() + " is wounded but still alive. And now it's mad.";
       } else {

@@ -77,16 +77,19 @@ public interface Thing extends Location {
   public String eatIfInedible();
 
   /**
-   * Describe an attack on the thing with the given amount of damage.
-   */
-  public String attackWith(int damage);
-
-  /**
    * The damage this thing does when used as a weapon.
    */
   public int damage();
 
+  /**
+   * Generate attack.
+   */
   public Attack attack();
+
+  /**
+   * Apply the attack to this thing.
+   */
+  public String applyAttack(Attack attack);
 
   /**
    * Is the thing a monster.

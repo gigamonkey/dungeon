@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 public class DynamicThing extends AbstractThing {
 
   static record Dynamic(
-    BiFunction<Thing, Integer, String> attackWith,
+    BiFunction<Thing, Attack, String> applyAttack,
     Function<Thing, Integer> damage,
     Function<Thing, Attack> attack,
     Function<Thing, String> description,
@@ -71,8 +71,8 @@ public class DynamicThing extends AbstractThing {
   }
 
   @Override
-  public String attackWith(int damage) {
-    return dynamic.attackWith().apply(this, damage);
+  public String applyAttack(Attack attack) {
+    return dynamic.applyAttack().apply(this, attack);
   }
 
   @Override
