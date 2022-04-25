@@ -1,7 +1,5 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Direction.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +13,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * The main class for the game.
@@ -38,14 +35,14 @@ public class Dungeon {
     this.out = out;
 
     registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", this::attack));
-    // registerCommand(new Command("DROP", "Drop an item you are carrying.", this::drop));
-    // registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", this::eat));
+    registerCommand(new Command("DROP", "Drop an item you are carrying.", this::drop));
+    registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", this::eat));
     registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", this::go));
-    // registerCommand(new Command("HELP", "Get help on commands.", this::help));
-    // registerCommand(new Command("INVENTORY", "List the items you are holding.", this::inventory));
-    // registerCommand(new Command("LOOK", "Look at the room your are in again.", this::look));
+    registerCommand(new Command("HELP", "Get help on commands.", this::help));
+    registerCommand(new Command("INVENTORY", "List the items you are holding.", this::inventory));
+    registerCommand(new Command("LOOK", "Look at the room your are in again.", this::look));
     registerCommand(new Command("QUIT", "Quit the game", this::quit));
-    // registerCommand(new Command("TAKE", "Take an item from the room.", this::take));
+    registerCommand(new Command("TAKE", "Take an item from the room.", this::take));
   }
 
   public void registerCommand(Command command) {
@@ -55,7 +52,7 @@ public class Dungeon {
   ////////////////////////////////////////////////////////////////////
   // Commands
 
-  String help(String[] args) {
+  Action help(String[] args) {
     var w = commands.values().stream().mapToInt(c -> c.verb().length()).max().getAsInt();
 
     var docs = commands
@@ -71,49 +68,51 @@ public class Dungeon {
       })
       .toList();
 
-    throw new SpecialCommandOutput("I understand the following commands:\n\n" + String.join("\n", docs));
-  }
-
-  public void endGame() {
-    gameOver = true;
+    return Action.noWrap("I understand the following commands:\n\n" + String.join("\n", docs));
   }
 
   Action quit(String[] args) {
-    return new Action.Quit(this);
+    return new Action() {
+      public String description() {
+        endGame();
+        return "Okay. Bye!";
+      }
+    };
   }
 
   Action go(String[] args) {
     return arg(args, 1)
-      .map(d ->
-        direction(d)
-          .map(dir -> (Action) new Action.Go(player, dir))
-          .orElse((Action) new Action.NoAction("Don't understand direction " + d))
+      .map(d -> direction(d).map(dir -> Action.go(player, dir)).orElse(Action.none("Don't understand direction " + d)))
+      .orElse(Action.none("Go where?"));
+  }
+
+  Action take(String[] args) {
+    return arg(args, 1)
+      .flatMap(n -> listOfThings(args, 1))
+      .map(ts -> Action.take(player, ts))
+      .orElse(Action.none("Take what?"));
+  }
+
+  Action drop(String[] args) {
+    return arg(args, 1)
+      .map(name -> player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!")))
+      .orElse(Action.none("Drop what?"));
+  }
+
+  Action look(String[] args) {
+    return Action.look(player);
+  }
+
+  Action inventory(String[] args) {
+    return Action.none(player.inventory());
+  }
+
+  Action eat(String[] args) {
+    return arg(args, 1)
+      .map(name ->
+        player.anyThing(name).map(t -> Action.eat(player, t)).orElse(Action.none("No " + name + " here to eat."))
       )
-      .orElse((Action) new Action.NoAction("Go where?"));
-  }
-
-  String take(String[] args) {
-    return arg(args, 1).flatMap(n -> listOfThings(args, 1)).map(player::takeThings).orElse("Take what?");
-  }
-
-  String drop(String[] args) {
-    return arg(args, 1)
-      .map(name -> player.thing(name).map(player::drop).orElse("No " + name + " to drop!"))
-      .orElse("Drop what?");
-  }
-
-  String look(String[] args) {
-    return player.room().description();
-  }
-
-  String inventory(String[] args) {
-    return player.inventory();
-  }
-
-  String eat(String[] args) {
-    return arg(args, 1)
-      .map(name -> player.anyThing(name).map(player::eat).orElse("No " + name + " here to eat."))
-      .orElse("Eat what?");
+      .orElse(Action.none("Eat what?"));
   }
 
   Action attack(String[] args) {
@@ -129,14 +128,10 @@ public class Dungeon {
     return target
       .map(t ->
         with
-          .map(e ->
-            weapon
-              .map(w -> (Action) new Action.PlayerAttack(t, w))
-              .orElse((Action) new Action.NoAction("Attack with what?"))
-          )
-          .orElse(new Action.NoAction("Don't understand 'ATTACK' with no 'WITH'."))
+          .map(e -> weapon.map(w -> Action.attack(t, w)).orElse(Action.none("Attack with what?")))
+          .orElse(Action.none("Don't understand 'ATTACK' with no 'WITH'."))
       )
-      .orElse(new Action.NoAction("Attack what?"));
+      .orElse(Action.none("Attack what?"));
   }
 
   // End commands
@@ -171,6 +166,10 @@ public class Dungeon {
       }
     }
     return Optional.of(things);
+  }
+
+  public void endGame() {
+    gameOver = true;
   }
 
   private void loop() throws IOException {
@@ -243,7 +242,7 @@ public class Dungeon {
       .thing("sword")
       .description("broadsword with a rusty iron hilt")
       .damage(5)
-      .attack(new Attack.Simple("Oof, this sword is heavy to swing, but you connect.", 5))
+      .attack(new Attack.Simple("Oof, this sword is heavy but you manage to swing it.", 5))
       .thing();
 
     maze

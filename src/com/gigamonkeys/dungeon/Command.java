@@ -7,7 +7,7 @@ import java.util.stream.*;
 
 public record Command(String verb, String help, Function<String[], Action> parser) {
   public static Command unknown(String verb) {
-    return new Command(verb, "", args -> new Action.NoAction("Don't know how to " + verb));
+    return new Command(verb, "", args -> Action.none("Don't know how to " + verb + "."));
   }
 
   public String run(String[] args, Player p) {

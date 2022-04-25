@@ -20,23 +20,50 @@ public interface Action {
     return Stream.empty();
   }
 
+  public static Action attack(Thing monster, Thing weapon) {
+    return new PlayerAttack(monster, weapon);
+  }
+
+  public static Action none(String description) {
+    return () -> description;
+  }
+
+  public static Action noWrap(String description) {
+    return new Action() {
+      public String description() {
+        throw new SpecialCommandOutput(description);
+      }
+    };
+  }
+
+  public static Action look(Player p) {
+    return () -> p.look();
+  }
+
+  public static Action go(Player p, Direction d) {
+    return () -> p.go(d);
+  }
+
+  public static Action eat(Player p, Thing t) {
+    return () -> p.eat(t);
+  }
+
+  public static Action take(Player p, List<Thing> things) {
+    return () -> p.takeThings(things);
+  }
+
+  public static Action drop(Player p, Thing thing) {
+    return new Action() {
+      public String description() {
+        return p.drop(thing);
+      }
+    };
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // Concrete actions.
 
-  public static record NoAction(String description) implements Action {}
-
-  public static record Quit(Dungeon d) implements Action {
-    public String description() {
-      d.endGame();
-      return "Okay. Bye!";
-    }
-  }
-
-  public static record Go(Player p, Direction d) implements Action {
-    public String description() {
-      return p.go(d);
-    }
-  }
+  // TODO: add event() method to all classes as appropriate.
 
   public static record PlayerAttack(Thing monster, Thing weapon) implements Action {
     public String description() {
