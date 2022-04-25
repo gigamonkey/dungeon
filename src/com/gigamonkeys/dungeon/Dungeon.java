@@ -304,17 +304,17 @@ public class Dungeon {
       .thing();
 
     maze
-      .place("pedestal", "ring", "on")
-      .place("pirate", "parrot", "on the right shoulder of")
-      .place("dining", "pirate", "in the middle of the room")
-      .place("kitchen", "table", "against the wall")
-      .place("table", "bread", "on")
-      .place("blobbybloblair", "axe", "on floor")
-      .place("blobbybloblair", "blobbyblob", "across from you")
-      .place("entry", "pedestal", "in the center of the room")
-      .place("entry", "tray", "by the door")
-      .place("tray", "sandwich", "on")
-      .place("dining", "sword", "propped against a wall");
+      .place("ring", "on", "pedestal")
+      .place("parrot", "on the right shoulder of", "pirate")
+      .place("pirate", "in the middle of the room", "dining")
+      .place("table", "against the wall", "kitchen")
+      .place("bread", "on", "table")
+      .place("axe", "on floor", "blobbybloblair")
+      .place("blobbyblob", "across from you", "blobbybloblair")
+      .place("pedestal", "in the center of the room", "entry")
+      .place("tray", "by the door", "entry")
+      .place("sandwich", "on", "tray")
+      .place("sword", "propped against a wall", "dining");
 
     return maze.room("entry");
   }

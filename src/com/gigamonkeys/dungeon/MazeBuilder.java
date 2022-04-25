@@ -29,7 +29,7 @@ class MazeBuilder {
     };
   }
 
-  public MazeBuilder place(String parent, String child, String place) {
+  public MazeBuilder place(String child, String place, String parent ) {
     location(parent).placeThing(things.get(child), place);
     return this;
   }
