@@ -2,7 +2,7 @@ package com.gigamonkeys.dungeon;
 
 public interface Attack {
   /**
-   * Get the description of the attack, e.g. "You swing your axe and hit."
+   * Get the description of the attack, e.g. "You swing your axe and connect!"
    */
   public String description();
 

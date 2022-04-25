@@ -215,19 +215,11 @@ public class ThingBuilder {
     }
   }
 
-  private static String defaultWeaponizeAgainst(Thing t, Thing m) {
-    if (t.damage() == 0) {
-      return a(t.description()) + " is not an effective weapon. You do zero damage.";
-    } else {
-      return m.attackWith(t.damage());
-    }
-  }
-
   private static Attack defaultAttack(Thing weapon) {
     if (weapon.damage() == 0) {
       return new Attack.Useless(a(weapon.description()) + " is not an effective weapon.");
     } else {
-      return new Attack.Simple("You attack with the " + weapon.name(), weapon.damage());
+      return new Attack.Simple("You attack with the " + weapon.name() + ".", weapon.damage());
     }
   }
 }

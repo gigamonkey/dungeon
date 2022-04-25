@@ -40,11 +40,8 @@ public interface Action {
 
   public static record PlayerAttack(Thing monster, Thing weapon) implements Action {
     public String description() {
-      var desc = new ArrayList<String>();
       var attack = weapon.attack();
-      desc.add("You " + attack.description() + ".");
-      desc.add(attack.result(monster) + ".");
-      return String.join(" ", desc);
+      return attack.description() + " " + attack.result(monster);
     }
 
     public Stream<Action> event(Thing t) {
