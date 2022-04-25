@@ -35,3 +35,31 @@ on putting bread on the ground, parrot flies down to eat it.
 
 Things listen for events they care about, things generate events. Also the
 room generates events when the player enters or exits.
+
+
+
+
+Listeners:
+
+When the player takes an action, it may be of interest to other things. Maybe
+only things in the same room but possibly things anywhere. And different things
+may only care about different actions.
+
+Simple event:
+
+Player enters room.
+
+  - Room decscribes itself.
+  - Some monsters may attack as soon as the player enters.
+  - A monster may run away.
+
+Player attacks.
+
+  - Monster may attack back
+  - Other monsters (e.g. the pirate's parrot when the pirate is attacked) may take their own action.
+
+
+
+Event bubbling:
+
+Player -> Room -> Things in room -> Things in those things, etc.
