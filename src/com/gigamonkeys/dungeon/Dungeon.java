@@ -73,11 +73,9 @@ public class Dungeon {
   }
 
   Action quit(String[] args) {
-    return new Action() {
-      public String description() {
-        endGame();
-        return "Okay. Bye!";
-      }
+    return () -> {
+      endGame();
+      return "Okay. Bye!";
     };
   }
 
