@@ -127,11 +127,18 @@ public interface Thing extends Location {
     location().ifPresent(l -> l.removeThing(this));
   }
 
-  public Stream<Action> onEnter(Player p);
-
-  public Stream<Action> onTurn(Player p);
+  //////////////////////////////////////////////////////////////////////////////
+  // Action events
 
   public default Stream<Action> onPlayerAttack(Action.PlayerAttack attack) {
+    return Stream.empty();
+  }
+
+  public default Stream<Action> onEnter(Action.Go go) {
+    return Stream.empty();
+  }
+
+  public default Stream<Action> onTurn(Player p) {
     return Stream.empty();
   }
 }

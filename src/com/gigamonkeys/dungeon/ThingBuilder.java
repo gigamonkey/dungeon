@@ -32,7 +32,7 @@ public class ThingBuilder {
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
-  private BiFunction<Thing, Player, Stream<Action>> onEnter = (t, p) -> Stream.empty();
+  private BiFunction<Thing, Action.Go, Stream<Action>> onEnter = (t, a) -> Stream.empty();
   private BiFunction<Thing, Player, Stream<Action>> onTurn = (t, p) -> Stream.empty();
 
   public ThingBuilder(String name) {
@@ -156,7 +156,7 @@ public class ThingBuilder {
     return isPortable(t -> isPortable);
   }
 
-  ThingBuilder onEnter(BiFunction<Thing, Player, Stream<Action>> onEnter) {
+  ThingBuilder onEnter(BiFunction<Thing, Action.Go, Stream<Action>> onEnter) {
     this.onEnter = onEnter;
     return this;
   }

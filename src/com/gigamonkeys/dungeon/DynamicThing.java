@@ -25,7 +25,7 @@ public class DynamicThing extends AbstractThing {
     Predicate<Thing> isEdible,
     Predicate<Thing> isMonster,
     Predicate<Thing> isPortable,
-    BiFunction<Thing, Player, Stream<Action>> onEnter,
+    BiFunction<Thing, Action.Go, Stream<Action>> onEnter,
     BiFunction<Thing, Player, Stream<Action>> onTurn
   ) {}
 
@@ -90,8 +90,8 @@ public class DynamicThing extends AbstractThing {
   }
 
   @Override
-  public Stream<Action> onEnter(Player p) {
-    return dynamic.onEnter.apply(this, p);
+  public Stream<Action> onEnter(Action.Go a) {
+    return dynamic.onEnter.apply(this, a);
   }
 
   @Override

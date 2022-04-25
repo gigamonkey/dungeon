@@ -41,7 +41,7 @@ public interface Action {
   }
 
   public static Action go(Player p, Direction d) {
-    return () -> p.go(d);
+    return new Go(p, d);
   }
 
   public static Action eat(Player p, Thing t) {
@@ -61,7 +61,8 @@ public interface Action {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Concrete actions.
+  // Concrete actions. All actions that generate events need to have a concrete
+  // class rather than a lambda.
 
   // TODO: add event() method to all classes as appropriate.
 
@@ -73,6 +74,23 @@ public interface Action {
 
     public Stream<Action> event(Thing t) {
       return t.onPlayerAttack(this);
+    }
+  }
+
+  public static record Go(Player player, Direction direction) implements Action {
+    public String description() {
+      return player.go(direction);
+    }
+
+    public Stream<Action> event(Thing t) {
+      return t.onEnter(this);
+    }
+  }
+
+  public static record Attack(int damage, String text, Player p) implements Action {
+    public String description() {
+      p.takeDamage(damage);
+      return text;
     }
   }
 }

@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * The main class for the game.
@@ -269,7 +269,7 @@ public class Dungeon {
       .isEdible(t -> !t.alive())
       .eatIfEdible(Dungeon::blobbyBlobEatIfEdible)
       .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
-      //.onTurn(Dungeon::blobbyBlobAttack)
+      .onTurn(Dungeon::blobbyBlobAttack)
       .thing();
 
     maze
@@ -279,7 +279,7 @@ public class Dungeon {
       .damage(2)
       .describeAlive("pirate with a wooden leg and and an eye patch")
       .describeDead("dead pirate with his eye patch askew")
-      //.onEnter(Dungeon::pirateGreeting)
+      .onEnter(Dungeon::pirateGreeting)
       .thing();
 
     maze
@@ -323,23 +323,24 @@ public class Dungeon {
     }
   }
 
-  /*
   private static Stream<Action> blobbyBlobAttack(Thing t, Player p) {
+    System.out.println("in blobbyBlobAttack");
     if (t.alive()) {
-      return Stream.of(new Action.Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!"));
+      return Stream.of(
+        new Action.Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!", p)
+      );
     } else {
       return Stream.empty();
     }
   }
 
-  private static Stream<Action> pirateGreeting(Thing t, Player p) {
+  private static Stream<Action> pirateGreeting(Thing t, Action.Go action) {
     if (t.alive()) {
-      return Stream.of(new Action.Say(t, "Arr, matey!"));
+      return Stream.of(Action.none("'Arr, matey!' says the " + t.name()));
     } else {
       return Stream.empty();
     }
   }
-  */
 
   public static void main(String[] args) {
     try {
