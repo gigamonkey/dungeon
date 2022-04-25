@@ -1,13 +1,26 @@
 package com.gigamonkeys.dungeon;
 
-/**
- * Represent an attack from a monster on the Player. Possibly should
- * use it from player attacking the monster too.
- */
-public record Attack(int damage, String description) implements Action {
-  public static final Attack EMPTY = new Attack(0, "");
+public interface Attack {
+  /**
+   * Get the description of the attack, e.g. "You swing your axe and hit."
+   */
+  public String description();
 
-  public void perform(Player p) {
-    p.takeDamage(damage());
+  /**
+   * Get the description of the result (which is partly determined by the thing
+   * being attacked.
+   */
+  public String result(Thing thing);
+
+  public static record Simple(String description, int damage) implements Attack {
+    public String result(Thing thing) {
+      return thing.attackWith(damage());
+    }
+  }
+
+  public static record Useless(String description) implements Attack {
+    public String result(Thing thing) {
+      return "doing zero damage";
+    }
   }
 }

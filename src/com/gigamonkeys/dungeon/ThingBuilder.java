@@ -21,7 +21,7 @@ public class ThingBuilder {
   private Supplier<Integer> initialHitPoints = () -> 0;
 
   private BiFunction<Thing, Integer, String> attackWith = ThingBuilder::defaultAttackWith;
-  private BiFunction<Thing, Thing, String> weaponizeAgainst = ThingBuilder::defaultWeaponizeAgainst;
+  private Function<Thing, Attack> attack = ThingBuilder::defaultAttack;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = null; // protocol method kludge.
   private Function<Thing, String> describeAlive = t -> t.name();
@@ -55,6 +55,15 @@ public class ThingBuilder {
 
   ThingBuilder attackWith(String attackWith) {
     return attackWith((t, i) -> attackWith);
+  }
+
+  ThingBuilder attack(Function<Thing, Attack> attack) {
+    this.attack = attack;
+    return this;
+  }
+
+  ThingBuilder attack(Attack attack) {
+    return attack(t -> attack);
   }
 
   ThingBuilder damage(Function<Thing, Integer> damage) {
@@ -147,15 +156,6 @@ public class ThingBuilder {
     return isPortable(t -> isPortable);
   }
 
-  ThingBuilder weaponizeAgainst(BiFunction<Thing, Thing, String> weaponizeAgainst) {
-    this.weaponizeAgainst = weaponizeAgainst;
-    return this;
-  }
-
-  ThingBuilder weaponizeAgainst(String weaponizeAgainst) {
-    return weaponizeAgainst((t1, t2) -> weaponizeAgainst);
-  }
-
   ThingBuilder onEnter(BiFunction<Thing, Player, Stream<Action>> onEnter) {
     this.onEnter = onEnter;
     return this;
@@ -180,8 +180,8 @@ public class ThingBuilder {
       initialHitPoints.get(),
       new DynamicThing.Dynamic(
         attackWith,
-        weaponizeAgainst,
         damage,
+        attack,
         description,
         describeAlive,
         describeDead,
@@ -220,6 +220,14 @@ public class ThingBuilder {
       return a(t.description()) + " is not an effective weapon. You do zero damage.";
     } else {
       return m.attackWith(t.damage());
+    }
+  }
+
+  private static Attack defaultAttack(Thing weapon) {
+    if (weapon.damage() == 0) {
+      return new Attack.Useless(a(weapon.description()) + " is not an effective weapon.");
+    } else {
+      return new Attack.Simple("You attack with the " + weapon.name(), weapon.damage());
     }
   }
 }

@@ -38,14 +38,14 @@ public class Dungeon {
     this.out = out;
 
     registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", this::attack));
-    registerCommand(new Command("DROP", "Drop an item you are carrying.", this::drop));
-    registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", this::eat));
+    // registerCommand(new Command("DROP", "Drop an item you are carrying.", this::drop));
+    // registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", this::eat));
     registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", this::go));
-    registerCommand(new Command("HELP", "Get help on commands.", this::help));
-    registerCommand(new Command("INVENTORY", "List the items you are holding.", this::inventory));
-    registerCommand(new Command("LOOK", "Look at the room your are in again.", this::look));
-    registerCommand(new Command("QUIT", "Quit the game", this::quit));
-    registerCommand(new Command("TAKE", "Take an item from the room.", this::take));
+    // registerCommand(new Command("HELP", "Get help on commands.", this::help));
+    // registerCommand(new Command("INVENTORY", "List the items you are holding.", this::inventory));
+    // registerCommand(new Command("LOOK", "Look at the room your are in again.", this::look));
+    // registerCommand(new Command("QUIT", "Quit the game", this::quit));
+    // registerCommand(new Command("TAKE", "Take an item from the room.", this::take));
   }
 
   public void registerCommand(Command command) {
@@ -79,10 +79,14 @@ public class Dungeon {
     throw new SpecialCommandOutput("Okay. Bye!");
   }
 
-  String go(String[] args) {
+  Action go(String[] args) {
     return arg(args, 1)
-      .map(d -> direction(d).map(player::go).orElse("Don't understand direction " + d))
-      .orElse("Go where?");
+      .map(d ->
+        direction(d)
+          .map(dir -> (Action) new Action.Go(player, dir))
+          .orElse((Action) new Action.NoAction("Don't understand direction " + d))
+      )
+      .orElse((Action) new Action.NoAction("Go where?"));
   }
 
   String take(String[] args) {
@@ -109,7 +113,7 @@ public class Dungeon {
       .orElse("Eat what?");
   }
 
-  String attack(String[] args) {
+  Action attack(String[] args) {
     var i = 1;
 
     var target = (args.length == 3 && args[i].equals("WITH"))
@@ -122,10 +126,14 @@ public class Dungeon {
     return target
       .map(t ->
         with
-          .map(e -> weapon.map(w -> w.weaponizeAgainst(t)).orElse("Attack with what?"))
-          .orElse("Don't understand 'ATTACK' with no 'WITH'.")
+          .map(e ->
+            weapon
+              .map(w -> (Action) new Action.PlayerAttack(t, w))
+              .orElse((Action) new Action.NoAction("Attack with what?"))
+          )
+          .orElse(new Action.NoAction("Don't understand 'ATTACK' with no 'WITH'."))
       )
-      .orElse("Attack what?");
+      .orElse(new Action.NoAction("Attack what?"));
   }
 
   // End commands
@@ -195,102 +203,6 @@ public class Dungeon {
   }
 
   public static Room buildMaze() {
-    var entry = new Room("a dusty entryway to a castle");
-    var kitchen = new Room("what appears to be a kitchen");
-    var blobbyblobLair = new Room("the lair of a horrible creature");
-    var dining = new Room("a grand dining room with a crystal chandelier and tapestries on the walls");
-
-    entry.connect("oaken door", kitchen, EAST);
-    entry.connect("dank tunnel", blobbyblobLair, SOUTH);
-    kitchen.connect("swinging door", dining, EAST);
-
-    var pedestal = new ThingBuilder("PEDESTAL").description("stone pedestal").isPortable(false).thing();
-
-    var table = new ThingBuilder("TABLE").description("wooden table").isPortable(false).thing();
-
-    var tvTray = new ThingBuilder("TRAY").description("tv tray").isPortable(false).thing();
-
-    var ring = new ThingBuilder("RING")
-      .description("ring of great power")
-      .damage(1000)
-      .weaponizeAgainst((t, m) ->
-        "A sphere of light emanates from the ring blasting the " +
-        m.name() +
-        " to smithereens. " +
-        m.attackWith(t.damage())
-      )
-      .thing();
-
-    pedestal.placeThing(ring, "on");
-
-    var axe = new ThingBuilder("AXE")
-      .damage(2)
-      .eatIfInedible("Axes are not good for eating. Now your teeth hurt and you are no less hungry.")
-      .weaponizeAgainst((t, m) -> "You swing your axe and connect! " + m.attackWith(t.damage()))
-      .thing();
-
-    var sword = new ThingBuilder("SWORD")
-      .description("broadsword with a rusty iron hilt")
-      .damage(5)
-      .weaponizeAgainst((t, m) -> "Oof, this sword is heavy to swing, but you connect. " + m.attackWith(t.damage()))
-      .thing();
-
-    var bread = new ThingBuilder("BREAD")
-      .description("loaf of bread")
-      .isEdible(true)
-      .eatIfEdible("Ah, delicious. Could use some mayonnaise though.")
-      .thing();
-
-    var sandwich = new ThingBuilder("SANDWICH")
-      .description("ham and cheese sandwich")
-      .isEdible(true)
-      .eatIfEdible("Mmmm, tasty. But I think you got a spot of mustard on your tunic.")
-      .thing();
-
-    var blobbyblob = new ThingBuilder("BLOBBYBLOB")
-      .isMonster(true)
-      .initialHitPoints(7)
-      .damage(3)
-      .describeAlive(t -> t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad")
-      .describeDead(t -> "dead " + t.name() + " decaying into puddle of goo")
-      .isEdible(t -> !t.alive())
-      .eatIfEdible(Dungeon::blobbyBlobEatIfEdible)
-      .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
-      .onTurn(Dungeon::blobbyBlobAttack)
-      .thing();
-
-    var pirate = new ThingBuilder("PIRATE")
-      .isMonster(true)
-      .initialHitPoints(10)
-      .damage(2)
-      .describeAlive("pirate with a wooden leg and and an eye patch")
-      .describeDead("dead pirate with his eye patch askew")
-      .thing();
-
-    var parrot = new ThingBuilder("PARROT")
-      .isMonster(true)
-      .initialHitPoints(5)
-      .damage(1)
-      .describeAlive("green and blue parrot with a tiny eye patch")
-      .describeDead("dead parrot")
-      .thing();
-
-    pirate.placeThing(parrot, "on the right shoulder of");
-    dining.placeThing(pirate, "in the middle of the room");
-
-    kitchen.placeThing(table, "against the wall");
-    table.placeThing(bread, "on");
-    blobbyblobLair.placeThing(axe, "on floor");
-    blobbyblobLair.placeThing(blobbyblob, "across from you");
-    entry.placeThing(pedestal, "in the center of the room");
-    entry.placeThing(tvTray, "by the door");
-    tvTray.placeThing(sandwich, "on");
-    dining.placeThing(sword, "propped against a wall");
-
-    return entry;
-  }
-
-  public static Room buildMaze2() {
     var maze = new MazeBuilder();
 
     maze
@@ -314,26 +226,21 @@ public class Dungeon {
       .thing("ring")
       .description("ring of great power")
       .damage(1000)
-      .weaponizeAgainst((t, m) ->
-        "A sphere of light emanates from the ring blasting the " +
-        m.name() +
-        " to smithereens. " +
-        m.attackWith(t.damage())
-      )
+      .attack(new Attack.Simple("A sphere of light emanates from the ring blasting the thing to smithereens.", 1000))
       .thing();
 
     maze
       .thing("axe")
       .damage(2)
       .eatIfInedible("Axes are not good for eating. Now your teeth hurt and you are no less hungry.")
-      .weaponizeAgainst((t, m) -> "You swing your axe and connect! " + m.attackWith(t.damage()))
+      .attack(new Attack.Simple("You swing your axe and connect!", 2))
       .thing();
 
     maze
       .thing("sword")
       .description("broadsword with a rusty iron hilt")
       .damage(5)
-      .weaponizeAgainst((t, m) -> "Oof, this sword is heavy to swing, but you connect. " + m.attackWith(t.damage()))
+      .attack(new Attack.Simple("Oof, this sword is heavy to swing, but you connect.", 5))
       .thing();
 
     maze
@@ -360,7 +267,7 @@ public class Dungeon {
       .isEdible(t -> !t.alive())
       .eatIfEdible(Dungeon::blobbyBlobEatIfEdible)
       .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
-      .onTurn(Dungeon::blobbyBlobAttack)
+      //.onTurn(Dungeon::blobbyBlobAttack)
       .thing();
 
     maze
@@ -370,6 +277,7 @@ public class Dungeon {
       .damage(2)
       .describeAlive("pirate with a wooden leg and and an eye patch")
       .describeDead("dead pirate with his eye patch askew")
+      //.onEnter(Dungeon::pirateGreeting)
       .thing();
 
     maze
@@ -413,17 +321,27 @@ public class Dungeon {
     }
   }
 
+  /*
   private static Stream<Action> blobbyBlobAttack(Thing t, Player p) {
     if (t.alive()) {
-      return Stream.of(new Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!"));
+      return Stream.of(new Action.Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!"));
     } else {
       return Stream.empty();
     }
   }
 
+  private static Stream<Action> pirateGreeting(Thing t, Player p) {
+    if (t.alive()) {
+      return Stream.of(new Action.Say(t, "Arr, matey!"));
+    } else {
+      return Stream.empty();
+    }
+  }
+  */
+
   public static void main(String[] args) {
     try {
-      var p = new Player(buildMaze2(), 20);
+      var p = new Player(buildMaze(), 20);
       new Dungeon(p, System.in, System.out).loop();
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);

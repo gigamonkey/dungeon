@@ -82,14 +82,11 @@ public interface Thing extends Location {
   public String attackWith(int damage);
 
   /**
-   * Use the thing to attack another thing and return the description.
-   */
-  public String weaponizeAgainst(Thing monster);
-
-  /**
    * The damage this thing does when used as a weapon.
    */
   public int damage();
+
+  public Attack attack();
 
   /**
    * Is the thing a monster.
@@ -133,4 +130,8 @@ public interface Thing extends Location {
   public Stream<Action> onEnter(Player p);
 
   public Stream<Action> onTurn(Player p);
+
+  public default Stream<Action> onPlayerAttack(Action.PlayerAttack attack) {
+    return Stream.empty();
+  }
 }

@@ -2,33 +2,34 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Text.wrap;
 
-import java.util.ArrayList;
-import java.util.function.Function;
+import java.util.function.*;
+import java.util.stream.*;
 
-public record Command(String verb, String help, Function<String[], String> action) {
+public record Command(String verb, String help, Function<String[], Action> parser) {
+  public static Command unknown(String verb) {
+    return new Command(verb, "", args -> new Action.NoAction("Don't know how to " + verb));
+  }
+
   public String run(String[] args, Player p) {
     try {
-      var desc = new ArrayList<String>();
-      int origHitPoints = p.hitPoints();
-
-      desc.add(action.apply(args));
-
-      desc.addAll(
-        p.room().allThings().map(PlacedThing::thing).flatMap(t -> t.onTurn(p)).map(a -> a.doAction(p)).toList()
-      );
-
-      if (p.hitPoints() < origHitPoints) {
-        desc.add(p.describeDamage(origHitPoints - p.hitPoints()));
-      }
-
-      return wrap(String.join(" ", desc), 60);
+      var action = parser.apply(args);
+      var all = Stream.concat(results(action, p), playerStateChange(p));
+      return wrap(all.collect(Collectors.joining(" ")), 60);
     } catch (SpecialCommandOutput output) {
       // Can't decide if this is a kludge or elegant.
       return output.text();
     }
   }
 
-  public static Command unknown(String verb) {
-    return new Command(verb, "", args -> "Don't know how to " + verb);
+  public Stream<String> results(Action action, Player p) {
+    var things = p.room().allThings().map(PlacedThing::thing);
+    var reactions = things.flatMap(t -> action.event(t));
+    return Stream.concat(Stream.of(action.description()), reactions.flatMap(a -> results(a, p)));
+  }
+
+  public Stream<String> playerStateChange(Player p) {
+    return Stream
+      .of(p.hitPoints())
+      .flatMap(orig -> p.hitPoints() < orig ? Stream.of(p.describeDamage(orig - p.hitPoints())) : Stream.empty());
   }
 }
