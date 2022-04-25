@@ -75,8 +75,8 @@ public class Room implements Location {
     return wrap(String.join(" ", desc), 60);
   }
 
-  public Door getDoor(Direction d) {
-    return doors.get(d);
+  public Optional<Door> getDoor(Direction d) {
+    return Optional.ofNullable(doors.get(d));
   }
 
   public void drop(Thing t) {

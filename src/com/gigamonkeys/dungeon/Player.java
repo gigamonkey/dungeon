@@ -56,14 +56,9 @@ public class Player implements Location {
     return thing(name).or(() -> roomThing(name));
   }
 
-  public String go(Direction d) {
-    var door = room.getDoor(d);
-    if (door == null) {
-      return "No door to the " + d;
-    } else {
-      room = door.from(room);
-      return room.description();
-    }
+  public String go(Door door) {
+    room = door.from(room);
+    return room.description();
   }
 
   public Room room() {

@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * The main class for the game.
@@ -81,9 +82,19 @@ public class Dungeon {
   }
 
   Action go(String[] args) {
-    return arg(args, 1)
-      .map(d -> direction(d).map(dir -> Action.go(player, dir)).orElse(Action.none("Don't understand direction " + d)))
-      .orElse(Action.none("Go where?"));
+    return arg(args, 1).map(this::goByArg).orElse(Action.none("Go where?"));
+  }
+
+  private Action goByArg(String arg) {
+    return direction(arg).map(this::goByDirection).orElse(Action.none("Don't understand direction " + arg + "."));
+  }
+
+  private Action goByDirection(Direction d) {
+    return player
+      .room()
+      .getDoor(d)
+      .map(door -> Action.go(player, door))
+      .orElse(Action.none("No door to the " + d + "."));
   }
 
   Action take(String[] args) {

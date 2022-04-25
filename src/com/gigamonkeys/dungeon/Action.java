@@ -40,8 +40,8 @@ public interface Action {
     return () -> p.look();
   }
 
-  public static Action go(Player p, Direction d) {
-    return new Go(p, d);
+  public static Action go(Player p, Door door) {
+    return new Go(p, door);
   }
 
   public static Action eat(Player p, Thing t) {
@@ -81,9 +81,9 @@ public interface Action {
     }
   }
 
-  public static record Go(Player player, Direction direction) implements Action {
+  public static record Go(Player player, Door door) implements Action {
     public String description() {
-      return player.go(direction);
+      return player.go(door);
     }
 
     public Stream<Action> event(Thing t) {
