@@ -2,7 +2,7 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Text.*;
 
-import java.util.stream.*;
+import java.util.stream.Stream;
 
 public record PlacedThing(Thing thing, String where) {
   public Stream<String> describe() {

@@ -1,9 +1,7 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Text.*;
-
-import java.util.function.*;
-import java.util.stream.*;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public record Command(String verb, String help, Function<String[], Action> parser) {
   /**

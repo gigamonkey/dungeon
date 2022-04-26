@@ -1,7 +1,8 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 class Text {
 

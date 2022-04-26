@@ -2,7 +2,8 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Direction.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 class MazeBuilder {
 

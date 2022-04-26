@@ -1,7 +1,7 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * An action that can occur in a turn, e.g. a monster attacks a player.
