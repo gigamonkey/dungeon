@@ -5,14 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -35,146 +31,21 @@ public class Dungeon {
     this.in = new BufferedReader(new InputStreamReader(in));
     this.out = out;
 
-    registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", this::attack));
-    registerCommand(new Command("DROP", "Drop an item you are carrying.", this::drop));
-    registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", this::eat));
-    registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", this::go));
-    registerCommand(new Command("HELP", "Get help on commands.", this::help));
-    registerCommand(new Command("INVENTORY", "List the items you are holding.", this::inventory));
-    registerCommand(new Command("LOOK", "Look at the room your are in again.", this::look));
-    registerCommand(new Command("QUIT", "Quit the game", this::quit));
-    registerCommand(new Command("TAKE", "Take an item from the room.", this::take));
+    var parser = new CommandParser(player, this, commands);
+
+    registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", parser::attack));
+    registerCommand(new Command("DROP", "Drop an item you are carrying.", parser::drop));
+    registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", parser::eat));
+    registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
+    registerCommand(new Command("HELP", "Get help on commands.", parser::help));
+    registerCommand(new Command("INVENTORY", "List the items you are holding.", parser::inventory));
+    registerCommand(new Command("LOOK", "Look at the room your are in again.", parser::look));
+    registerCommand(new Command("QUIT", "Quit the game", parser::quit));
+    registerCommand(new Command("TAKE", "Take an item from the room.", parser::take));
   }
 
   public void registerCommand(Command command) {
     commands.put(command.verb(), command);
-  }
-
-  ////////////////////////////////////////////////////////////////////
-  // Commands
-
-  Action help(String[] args) {
-    var w = commands.values().stream().mapToInt(c -> c.verb().length()).max().getAsInt();
-
-    var docs = commands
-      .values()
-      .stream()
-      .sorted((a, b) -> a.verb().compareTo(b.verb()))
-      .map(c -> {
-        var padding = IntStream
-          .range(0, (w + 2) - c.verb().length())
-          .mapToObj(i -> " ")
-          .collect(Collectors.joining(""));
-        return "  " + c.verb() + padding + c.help();
-      })
-      .toList();
-
-    return Action.noWrap("I understand the following commands:\n\n" + String.join("\n", docs));
-  }
-
-  Action quit(String[] args) {
-    return () -> {
-      endGame();
-      return "Okay. Bye!";
-    };
-  }
-
-  Action go(String[] args) {
-    return arg(args, 1).map(this::goByArg).orElse(Action.none("Go where?"));
-  }
-
-  private Action goByArg(String arg) {
-    return direction(arg).map(this::goByDirection).orElse(Action.none("Don't understand direction " + arg + "."));
-  }
-
-  private Action goByDirection(Direction d) {
-    return player
-      .room()
-      .getDoor(d)
-      .map(door -> Action.go(player, door))
-      .orElse(Action.none("No door to the " + d + "."));
-  }
-
-  Action take(String[] args) {
-    return arg(args, 1)
-      .flatMap(n -> listOfThings(args, 1))
-      .map(ts -> Action.take(player, ts))
-      .orElse(Action.none("Take what?"));
-  }
-
-  Action drop(String[] args) {
-    return arg(args, 1)
-      .map(name -> player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!")))
-      .orElse(Action.none("Drop what?"));
-  }
-
-  Action look(String[] args) {
-    return Action.look(player);
-  }
-
-  Action inventory(String[] args) {
-    return Action.none(player.inventory());
-  }
-
-  Action eat(String[] args) {
-    return arg(args, 1)
-      .map(name ->
-        player.anyThing(name).map(t -> Action.eat(player, t)).orElse(Action.none("No " + name + " here to eat."))
-      )
-      .orElse(Action.none("Eat what?"));
-  }
-
-  Action attack(String[] args) {
-    var i = 1;
-
-    var target = (args.length == 3 && args[i].equals("WITH"))
-      ? onlyMonster()
-      : arg(args, i++).flatMap(n -> player.roomThing(n));
-
-    var with = arg(args, i++).flatMap(n -> expect("WITH", n));
-    var weapon = arg(args, i++).flatMap(n -> player.anyThing(n));
-
-    return target
-      .map(t ->
-        with
-          .map(e -> weapon.map(w -> Action.attack(t, w)).orElse(Action.none("Attack with what?")))
-          .orElse(Action.none("Don't understand 'ATTACK' with no 'WITH'."))
-      )
-      .orElse(Action.none("Attack what?"));
-  }
-
-  // End commands
-  ////////////////////////////////////////////////////////////////////
-
-  Optional<String> arg(String[] args, int idx) {
-    return Optional.of(idx).filter(i -> i < args.length).map(i -> args[i]);
-  }
-
-  Optional<Direction> direction(String name) {
-    return Direction.fromString(name);
-  }
-
-  Optional<String> expect(String expected, String s) {
-    return Optional.of(s).filter(v -> expected.equals(v));
-  }
-
-  Optional<Thing> onlyMonster() {
-    return player.room().onlyMonster();
-  }
-
-  Optional<List<Thing>> listOfThings(String[] args, int start) {
-    var things = new ArrayList<Thing>();
-    for (var i = start; i < args.length; i++) {
-      var maybe = player.roomThing(args[i]);
-      if (!maybe.isPresent()) {
-        if (!args[i].equals("AND")) {
-          return Optional.empty();
-        }
-      } else {
-        things.add(maybe.get());
-      }
-    }
-    return Optional.of(things);
   }
 
   public void endGame() {
@@ -350,7 +221,6 @@ public class Dungeon {
   }
 
   private static Stream<Action> blobbyBlobAttack(Thing t, Player p) {
-    System.out.println("in blobbyBlobAttack");
     if (t.alive()) {
       return Stream.of(
         new Action.Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!", p)
