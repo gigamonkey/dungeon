@@ -21,11 +21,7 @@ public interface Action {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Static methods for creataing Actions.
-
-  public static Action attack(Thing monster, Thing weapon) {
-    return new PlayerAttack(monster, weapon);
-  }
+  // Non event generating pseudo actions.
 
   public static Action none(String description) {
     return () -> description;
@@ -39,8 +35,15 @@ public interface Action {
     };
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Static methods for creataing Actions.
+
+  public static Action attack(Thing monster, Thing weapon) {
+    return new PlayerAttack(monster, weapon);
+  }
+
   public static Action look(Player p) {
-    return () -> p.look();
+    return new Look(p);
   }
 
   public static Action go(Player p, Door door) {
@@ -48,7 +51,7 @@ public interface Action {
   }
 
   public static Action eat(Player p, Thing t) {
-    return () -> p.eat(t);
+    return new Eat(p, t);
   }
 
   public static Action take(Player p, List<Thing> things) {
@@ -60,16 +63,30 @@ public interface Action {
   }
 
   public static Action drop(Player p, Thing thing) {
-    return new Action() {
-      public String description() {
-        return p.drop(thing);
-      }
-    };
+    return new Drop(p, thing);
   }
 
   //////////////////////////////////////////////////////////////////////////////
   // Concrete actions. All actions that generate events need to have a concrete
   // class rather than a lambda.
+
+  public static record Look(Player player) implements Action {
+    public String description() {
+      return player.look();
+    }
+    public Stream<Action> event(Thing t) {
+      return t.onLook(this);
+    }
+  }
+
+  public static record Eat(Player player, Thing food) implements Action {
+    public String description() {
+      return player.eat(food);
+    }
+    public Stream<Action> event(Thing t) {
+      return t.onEat(this);
+    }
+  }
 
   public static record PlayerAttack(Thing monster, Thing weapon) implements Action {
     public String description() {
@@ -109,9 +126,23 @@ public interface Action {
     }
   }
 
-  public static record Say(Thing who, String what) implements Action {
+  public static record Drop(Player player, Thing thing) implements Action {
     public String description() {
-      return "'" + what + "' says the " + who.name() + ".";
+      return player.drop(thing);
+    }
+
+    public Stream<Action> event(Thing t) {
+      return t.onDrop(this);
+    }
+  }
+
+  public static record Say(Thing speaker, String what) implements Action {
+    public String description() {
+      return "'" + what + "' says the " + speaker.name() + ".";
+    }
+
+    public Stream<Action> event(Thing t) {
+      return t.onSay(this);
     }
   }
 }

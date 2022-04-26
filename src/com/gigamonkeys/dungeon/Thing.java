@@ -57,16 +57,6 @@ public interface Thing extends Location {
   public int hitPoints();
 
   /**
-   * Can the thing be taken by the player.
-   */
-  public boolean isPortable();
-
-  /**
-   * Can the thing be eaten by the player.
-   */
-  public boolean isEdible();
-
-  /**
    * Describe eating the thing if it is edible.
    */
   public String eatIfEdible();
@@ -82,14 +72,24 @@ public interface Thing extends Location {
   public int damage();
 
   /**
-   * Generate attack.
+   * Generate an attack when used as a weapon.
    */
   public Attack attack();
 
   /**
-   * Apply the attack to this thing.
+   * Apply an attack to this thing as a target.
    */
   public String applyAttack(Attack attack);
+
+  /**
+   * Can the thing be taken by the player.
+   */
+  public boolean isPortable();
+
+  /**
+   * Can the thing be eaten by the player.
+   */
+  public boolean isEdible();
 
   /**
    * Is the thing a monster.
@@ -133,6 +133,14 @@ public interface Thing extends Location {
   //////////////////////////////////////////////////////////////////////////////
   // Action events
 
+  /**
+   * A special event that is not triggered by an Action but rather by the fact
+   * of a new turn.
+   */
+  public default Stream<Action> onTurn(Player p) {
+    return Stream.empty();
+  }
+
   public default Stream<Action> onPlayerAttack(Action.PlayerAttack attack) {
     return Stream.empty();
   }
@@ -141,9 +149,23 @@ public interface Thing extends Location {
     return Stream.empty();
   }
 
-  public default Stream<Action> onTurn(Player p) {
+  public default Stream<Action> onTake(Action.Take a) {
     return Stream.empty();
   }
 
-  public Stream<Action> onTake(Action.Take a);
+  public default Stream<Action> onDrop(Action.Drop a) {
+    return Stream.empty();
+  }
+
+  public default Stream<Action> onLook(Action.Look a) {
+    return Stream.empty();
+  }
+
+  public default Stream<Action> onEat(Action.Eat a) {
+    return Stream.empty();
+  }
+
+  public default Stream<Action> onSay(Action.Say a) {
+    return Stream.empty();
+  }
 }
