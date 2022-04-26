@@ -65,11 +65,6 @@ public interface Thing extends Location {
    */
   public String describeThings();
 
-  /**
-   * Apply an attack to this thing as a target.
-   */
-  public String applyAttack(Attack attack);
-
   //////////////////////////////////////////////////////////////////////////////
   // Predicates
 
@@ -95,6 +90,25 @@ public interface Thing extends Location {
 
   public default void destroy() {
     location().ifPresent(l -> l.removeThing(this));
+  }
+
+  /**
+   * Apply an attack to this thing as a target.
+   */
+  public default String applyAttack(Attack attack) {
+    if (isMonster()) {
+      takeDamage(attack.damage());
+      return (
+        "After " +
+        attack.damage() +
+        " points of damage, the " +
+        name() +
+        " is " +
+        (alive() ? "wounded but still alive. And now it's mad." : "dead. Good job, murderer.")
+      );
+    } else {
+      return "I don't know why you're attacking an innocent " + name() + ".";
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////

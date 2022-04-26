@@ -20,7 +20,6 @@ public class ThingBuilder {
   // DynamicThing.Dynamic
   private Supplier<Integer> initialHitPoints = () -> 0;
 
-  private BiFunction<Thing, Attack, String> applyAttack = ThingBuilder::defaultApplyAttack;
   private Function<Thing, Attack> attack = t -> new Attack.Useless(a(t.description()) + " is not an effective weapon.");
   private Function<Thing, String> description = t -> t.name();
   private Function<Thing, String> eat = t -> "Yuck. You can't eat " + a(t.description()) + ".";
@@ -41,15 +40,6 @@ public class ThingBuilder {
 
   ThingBuilder initialHitPoints(int initialHitPoints) {
     return initialHitPoints(() -> initialHitPoints);
-  }
-
-  ThingBuilder applyAttack(BiFunction<Thing, Attack, String> applyAttack) {
-    this.applyAttack = applyAttack;
-    return this;
-  }
-
-  ThingBuilder applyAttack(String applyAttack) {
-    return applyAttack((t, a) -> applyAttack);
   }
 
   ThingBuilder attack(Function<Thing, Attack> attack) {
@@ -128,26 +118,8 @@ public class ThingBuilder {
     return new DynamicThing(
       name,
       initialHitPoints.get(),
-      new DynamicThing.Dynamic(applyAttack, attack, description, eat, isMonster, isPortable, onEnter, onTake, onTurn)
+      new DynamicThing.Dynamic(attack, description, eat, isMonster, isPortable, onEnter, onTake, onTurn)
     );
   }
 
-  ////////////////////////////////////////////////////////////////////
-  // Default implementation of more complex methods.
-
-  private static String defaultApplyAttack(Thing t, Attack attack) {
-    if (t.isMonster()) {
-      t.takeDamage(attack.damage());
-      return (
-        "After " +
-        attack.damage() +
-        " points of damage, the " +
-        t.name() +
-        " is " +
-        (t.alive() ? "wounded but still alive. And now it's mad." : "dead. Good job, murderer.")
-      );
-    } else {
-      return "I don't know why you're attacking an innocent " + t.name() + ".";
-    }
-  }
 }
