@@ -32,16 +32,6 @@ public interface Thing extends Location {
   public void clearLocation();
 
   /**
-   * Describe the thing itself.
-   */
-  public String description();
-
-  /**
-   * Describe any things located on this thing.
-   */
-  public String describeThings();
-
-  /**
    * Take damage.
    */
   public void takeDamage(int damage);
@@ -61,10 +51,32 @@ public interface Thing extends Location {
    */
   public Attack attack();
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Descriptors -- string renderedings of the thing or consequences of taking
+  // certain actions on the thing.
+
+  /**
+   * Describe eating the thing.
+   */
+  public String eat();
+
+  /**
+   * Describe the thing itself.
+   */
+  public String description();
+
+  /**
+   * Describe any things located on this thing.
+   */
+  public String describeThings();
+
   /**
    * Apply an attack to this thing as a target.
    */
   public String applyAttack(Attack attack);
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Predicates
 
   /**
    * Can the thing be taken by the player.
@@ -75,11 +87,6 @@ public interface Thing extends Location {
    * Can the thing be eaten by the player.
    */
   public boolean isEdible();
-
-  /**
-   * Describe eating the thing.
-   */
-  public String eat();
 
   /**
    * Is the thing a monster.
