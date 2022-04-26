@@ -39,7 +39,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   }
 
   Action go(String[] args) {
-    return arg(args, 1).map(this::goByArg).orElse(Action.none("Go where?"));
+    return arg(args, 1).map(this::goNamed).orElse(Action.none("Go where?"));
   }
 
   Action take(String[] args) {
@@ -50,9 +50,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   }
 
   Action drop(String[] args) {
-    return arg(args, 1)
-      .map(name -> player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!")))
-      .orElse(Action.none("Drop what?"));
+    return arg(args, 1).map(this::dropNamed).orElse(Action.none("Drop what?"));
   }
 
   Action look(String[] args) {
@@ -64,19 +62,13 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   }
 
   Action eat(String[] args) {
-    return arg(args, 1)
-      .map(name ->
-        player.anyThing(name).map(t -> Action.eat(player, t)).orElse(Action.none("No " + name + " here to eat."))
-      )
-      .orElse(Action.none("Eat what?"));
+    return arg(args, 1).map(this::eatNamed).orElse(Action.none("Eat what?"));
   }
 
   Action attack(String[] args) {
     var i = 1;
 
-    var target = args.length == 3 && args[i].equals("WITH")
-      ? onlyMonster()
-      : arg(args, i++).flatMap(n -> player.roomThing(n));
+    var target = args.length == 3 && args[i].equals("WITH") ? onlyMonster() : arg(args, i++).flatMap(player::roomThing);
 
     final var idx = i;
 
@@ -95,7 +87,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   }
 
   private Optional<String> expect(String expected, String s) {
-    return Optional.of(s).filter(v -> expected.equals(v));
+    return Optional.of(s).filter(expected::equals);
   }
 
   private Optional<Thing> onlyMonster() {
@@ -117,6 +109,29 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
     return Optional.of(things);
   }
 
+  private Action goNamed(String name) {
+    return direction(name).map(this::goDirection).orElse(Action.none("Don't understand direction " + name + "."));
+  }
+
+  private Action dropNamed(String name) {
+    return player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!"));
+  }
+
+  private Action goDirection(Direction d) {
+    return player
+      .room()
+      .getDoor(d)
+      .map(door -> Action.go(player, door))
+      .orElse(Action.none("No door to the " + d + "."));
+  }
+
+  private Action eatNamed(String name) {
+    return player
+      .anyThing(name)
+      .map(food -> Action.eat(player, food))
+      .orElse(Action.none("No " + name + " here to eat."));
+  }
+
   private Action attackTarget(Thing target, String[] args, int i) {
     return arg(args, i)
       .flatMap(n -> expect("WITH", n))
@@ -126,20 +141,8 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
 
   private Action attackTargetWithWeapon(Thing target, String[] args, int i) {
     return arg(args, i)
-      .flatMap(n -> player.anyThing(n))
+      .flatMap(player::anyThing)
       .map(w -> Action.attack(target, w))
       .orElse(Action.none("Attack with what?"));
-  }
-
-  private Action goByArg(String arg) {
-    return direction(arg).map(this::goByDirection).orElse(Action.none("Don't understand direction " + arg + "."));
-  }
-
-  private Action goByDirection(Direction d) {
-    return player
-      .room()
-      .getDoor(d)
-      .map(door -> Action.go(player, door))
-      .orElse(Action.none("No door to the " + d + "."));
   }
 }
