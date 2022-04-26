@@ -30,7 +30,7 @@ public interface Action {
   public static Action noWrap(String description) {
     return new Action() {
       public String description() {
-        throw new SpecialCommandOutput(description);
+        throw new Command.SpecialOutput(description);
       }
     };
   }

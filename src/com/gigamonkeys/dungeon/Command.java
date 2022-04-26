@@ -14,9 +14,9 @@ public record Command(String verb, String help, Function<String[], Action> parse
       var action = parser.apply(args);
       var all = Stream.concat(results(action, p), Stream.concat(forTurn(p), playerStateChange(p)));
       return wrap(all.collect(Collectors.joining(" ")), 60);
-    } catch (SpecialCommandOutput output) {
+    } catch (SpecialOutput output) {
       // Can't decide if this is a kludge or elegant.
-      return output.text();
+      return output.text;
     }
   }
 
@@ -53,5 +53,14 @@ public record Command(String verb, String help, Function<String[], Action> parse
     return Stream
       .of(p.hitPoints())
       .flatMap(orig -> p.hitPoints() < orig ? Stream.of(p.describeDamage(orig - p.hitPoints())) : Stream.empty());
+  }
+
+  static class SpecialOutput extends RuntimeException {
+
+    final String text;
+
+    public SpecialOutput(String text) {
+      this.text = text;
+    }
   }
 }
