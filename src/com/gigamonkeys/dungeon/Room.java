@@ -66,13 +66,12 @@ public class Room implements Location {
   }
 
   public String description() {
-    List<String> desc = new ArrayList<>();
-    desc.add("You are in");
-    desc.add(description + ".");
-    describeThings(desc, t -> !t.isMonster());
-    describeThings(desc, t -> t.isMonster());
-    describeDoors(desc);
-    return wrap(String.join(" ", desc), 60);
+    return new Text.Wrapped(60)
+      .add("You are in " + description + ".")
+      .add(describeThings(t -> !t.isMonster()))
+      .add(describeThings(t -> t.isMonster()))
+      .add(describeDoors())
+      .toString();
   }
 
   public Optional<Door> getDoor(Direction d) {
@@ -91,20 +90,17 @@ public class Room implements Location {
     return allThings().map(pt -> pt.thing()).filter(t -> t.isMonster());
   }
 
-  private void describeThings(List<String> desc, Predicate<Thing> p) {
-    var things = things().stream().filter(pt -> p.test(pt.thing())).toList();
-    for (var pt : things) {
-      var t = pt.thing();
-      desc.add(pt.where() + " is " + a(t.description()) + ".");
-      desc.add(t.describeThings());
-    }
+  private Stream<String> describeThings(Predicate<Thing> p) {
+    return things().stream().filter(pt -> p.test(pt.thing())).flatMap(PlacedThing::describe);
   }
 
-  private void describeDoors(List<String> desc) {
-    for (var d : Direction.class.getEnumConstants()) {
-      if (doors.containsKey(d)) {
-        desc.add("To the " + d + " there is " + a(doors.get(d).description()) + ".");
-      }
-    }
+  private String describeDoors() {
+    var ds = Arrays
+      .stream(Direction.class.getEnumConstants())
+      .filter(doors::containsKey)
+      .map(d -> a(doors.get(d).description()) + " to the " + d)
+      .toList();
+
+    return "There is " + commify(ds) + ".";
   }
 }

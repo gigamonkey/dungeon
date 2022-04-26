@@ -1,23 +1,9 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.*;
 
 class Text {
-
-  public static String wrap(String text, int width) {
-    var sb = new StringBuilder();
-    int col = 0;
-    for (var t : text.split("\\s+")) {
-      if (col + t.length() > width) {
-        sb.append("\n");
-        col = 0;
-      }
-      sb.append(t);
-      sb.append(" ");
-      col += t.length();
-    }
-    return sb.toString();
-  }
 
   public static String a(String thing) {
     var a = "AEIOUY".indexOf(Character.toUpperCase(thing.charAt(0))) != -1 ? "an " : "a ";
@@ -51,5 +37,42 @@ class Text {
       case 2 -> items.get(0) + " and " + items.get(1);
       default -> String.join(comma + " ", items.subList(0, items.size() - 1)) + ", and " + items.get(items.size() - 1);
     };
+  }
+
+  public static class Wrapped {
+
+    private final int width;
+    private List<String> items = new ArrayList<>();
+
+    Wrapped(int width) {
+      this.width = width;
+    }
+
+    public Wrapped add(Stream<String> ss) {
+      ss.forEach(items::add);
+      return this;
+    }
+
+    public Wrapped add(String s) {
+      items.add(s);
+      return this;
+    }
+
+    public String toString() {
+      var sb = new StringBuilder();
+      int col = 0;
+      for (var text : items) {
+        for (var t : text.split("\\s+")) {
+          if (col + t.length() > width) {
+            sb.append("\n");
+            col = 0;
+          }
+          sb.append(t);
+          sb.append(" ");
+          col += t.length();
+        }
+      }
+      return sb.toString();
+    }
   }
 }

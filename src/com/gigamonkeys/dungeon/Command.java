@@ -1,6 +1,6 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Text.wrap;
+import static com.gigamonkeys.dungeon.Text.*;
 
 import java.util.function.*;
 import java.util.stream.*;
@@ -12,8 +12,7 @@ public record Command(String verb, String help, Function<String[], Action> parse
   public String run(String[] args, Player p) {
     try {
       var action = parser.apply(args);
-      var all = Stream.concat(results(action, p), Stream.concat(forTurn(p), playerStateChange(p)));
-      return wrap(all.collect(Collectors.joining(" ")), 60);
+      return new Text.Wrapped(60).add(results(action, p)).add(forTurn(p)).add(playerStateChange(p)).toString();
     } catch (SpecialOutput output) {
       // Can't decide if this is a kludge or elegant.
       return output.text;
