@@ -17,8 +17,6 @@ public class DynamicThing extends AbstractThing {
     Function<Thing, Integer> damage,
     Function<Thing, Attack> attack,
     Function<Thing, String> description,
-    Function<Thing, String> describeAlive,
-    Function<Thing, String> describeDead,
     Function<Thing, String> eat,
     Predicate<Thing> isEdible,
     Predicate<Thing> isMonster,
@@ -39,13 +37,8 @@ public class DynamicThing extends AbstractThing {
   // Dynamic bits.
 
   @Override
-  public String describeAlive() {
-    return dynamic.describeAlive().apply(this);
-  }
-
-  @Override
-  public String describeDead() {
-    return dynamic.describeDead().apply(this);
+  public String description() {
+    return dynamic.description().apply(this);
   }
 
   @Override
@@ -96,19 +89,5 @@ public class DynamicThing extends AbstractThing {
   @Override
   public Stream<Action> onTurn(Player p) {
     return dynamic.onTurn.apply(this, p);
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // For protocol methods we have to do this kind of kludgy thing. I can't
-  // figure out a value we can set on dynamic that will invoke the default
-  // implementation properly.
-
-  @Override
-  public String description() {
-    if (dynamic.description() == null) {
-      return super.description();
-    } else {
-      return dynamic.description().apply(this);
-    }
   }
 }

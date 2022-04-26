@@ -32,14 +32,9 @@ public interface Thing extends Location {
   public void clearLocation();
 
   /**
-   * Longer description of the thing when it is alive.
+   * Describe the thing itself.
    */
-  public String describeAlive();
-
-  /**
-   * Longer description of the thing when it is dead.
-   */
-  public String describeDead();
+  public String description();
 
   /**
    * Describe any things located on this thing.
@@ -90,13 +85,6 @@ public interface Thing extends Location {
    * Is the thing a monster.
    */
   public boolean isMonster();
-
-  //////////////////////////////////////////////////////////////////////////////
-  // Some protocols
-
-  public default String description() {
-    return alive() ? describeAlive() : describeDead();
-  }
 
   //////////////////////////////////////////////////////////////////////////////
   // Some default implementations. Probably don't need to override these.

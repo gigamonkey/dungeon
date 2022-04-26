@@ -11,7 +11,11 @@ public record Command(String verb, String help, Function<String[], Action> parse
     try {
       var action = parser.apply(args);
       int origHitPoints = p.hitPoints();
-      return new Text.Wrapped(60).add(results(action, p)).add(forTurn(p)).add(playerStateChange(p, origHitPoints)).toString();
+      return new Text.Wrapped(60)
+        .add(results(action, p))
+        .add(forTurn(p))
+        .add(playerStateChange(p, origHitPoints))
+        .toString();
     } catch (SpecialOutput output) {
       // Can't decide if this is a kludge or elegant.
       return output.text;
@@ -48,9 +52,7 @@ public record Command(String verb, String help, Function<String[], Action> parse
     // At the moment, the only relevant state is the player's hit point count.
     // If we add other state that can change, would need to thread it through
     // here.
-    return Stream.of(p.hitPoints())
-      .filter(hp -> hp < orig)
-      .map(hp -> p.describeDamage(orig - hp));
+    return Stream.of(p.hitPoints()).filter(hp -> hp < orig).map(hp -> p.describeDamage(orig - hp));
   }
 
   static class SpecialOutput extends RuntimeException {

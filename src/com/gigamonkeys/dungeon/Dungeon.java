@@ -8,9 +8,9 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.*;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import java.util.function.*;
 
 /**
  * The main class for the game.
@@ -161,12 +161,22 @@ public class Dungeon {
       .isMonster(true)
       .initialHitPoints(7)
       .damage(3)
-      .describeAlive(t -> t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad")
-      .describeDead(t -> "dead " + t.name() + " decaying into puddle of goo")
+      .description(t -> {
+        if (t.alive()) {
+          return t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad";
+        }
+        if (t.hitPoints() > -100) {
+          return "dead " + t.name() + " decaying into puddle of goo";
+        } else {
+          return "a spattering of blobbyblob bits all over the room";
+        }
+      })
       .isEdible(t -> !t.alive())
-      .eat(t -> t.isEdible()
-           ? consume(blobbyBlobEatIfEdible(t)).apply(t)
-           : "Are you out of your mind?! This is a live and jiggling " + t.name())
+      .eat(t ->
+        t.isEdible()
+          ? consume(blobbyBlobEatIfEdible(t)).apply(t)
+          : "Are you out of your mind?! This is a live and jiggling " + t.name()
+      )
       .onTurn(Dungeon::blobbyBlobAttack)
       .thing();
 
@@ -175,8 +185,7 @@ public class Dungeon {
       .isMonster(true)
       .initialHitPoints(10)
       .damage(2)
-      .describeAlive("pirate with a wooden leg and and an eye patch")
-      .describeDead("dead pirate with his eye patch askew")
+      .description(aliveOrDead("pirate with a wooden leg and and an eye patch", "dead pirate with his eye patch askew"))
       .onEnter(Dungeon::pirateGreeting)
       .onTake(Dungeon::pirateTake)
       .thing();
@@ -186,8 +195,7 @@ public class Dungeon {
       .isMonster(true)
       .initialHitPoints(5)
       .damage(1)
-      .describeAlive("green and blue parrot with a tiny eye patch")
-      .describeDead("dead parrot")
+      .description(aliveOrDead("green and blue parrot with a tiny eye patch", "dead parrot"))
       .thing();
 
     maze
@@ -211,6 +219,10 @@ public class Dungeon {
       t.destroy();
       return s;
     };
+  }
+
+  private static Function<Thing, String> aliveOrDead(String alive, String dead) {
+    return t -> t.alive() ? alive : dead;
   }
 
   private static String blobbyBlobEatIfEdible(Thing t) {

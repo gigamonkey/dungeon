@@ -24,8 +24,6 @@ public class ThingBuilder {
   private Function<Thing, Attack> attack = ThingBuilder::defaultAttack;
   private Function<Thing, Integer> damage = t -> 0;
   private Function<Thing, String> description = null; // protocol method kludge.
-  private Function<Thing, String> describeAlive = t -> t.name();
-  private Function<Thing, String> describeDead = t -> t.name();
   private Function<Thing, String> eat = t -> "Yuck. You can't eat " + a(t.description()) + ".";
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
@@ -81,24 +79,6 @@ public class ThingBuilder {
 
   ThingBuilder description(String description) {
     return description(t -> description);
-  }
-
-  ThingBuilder describeAlive(Function<Thing, String> describeAlive) {
-    this.describeAlive = describeAlive;
-    return this;
-  }
-
-  ThingBuilder describeAlive(String describeAlive) {
-    return describeAlive(t -> describeAlive);
-  }
-
-  ThingBuilder describeDead(Function<Thing, String> describeDead) {
-    this.describeDead = describeDead;
-    return this;
-  }
-
-  ThingBuilder describeDead(String describeDead) {
-    return describeDead(t -> describeDead);
   }
 
   ThingBuilder eat(Function<Thing, String> eat) {
@@ -173,8 +153,6 @@ public class ThingBuilder {
         damage,
         attack,
         description,
-        describeAlive,
-        describeDead,
         eat,
         isEdible,
         isMonster,
