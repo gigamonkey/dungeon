@@ -74,20 +74,13 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   Action attack(String[] args) {
     var i = 1;
 
-    var target = (args.length == 3 && args[i].equals("WITH"))
+    var target = args.length == 3 && args[i].equals("WITH")
       ? onlyMonster()
       : arg(args, i++).flatMap(n -> player.roomThing(n));
 
-    var with = arg(args, i++).flatMap(n -> expect("WITH", n));
-    var weapon = arg(args, i++).flatMap(n -> player.anyThing(n));
+    final var idx = i;
 
-    return target
-      .map(t ->
-        with
-          .map(e -> weapon.map(w -> Action.attack(t, w)).orElse(Action.none("Attack with what?")))
-          .orElse(Action.none("Don't understand 'ATTACK' with no 'WITH'."))
-      )
-      .orElse(Action.none("Attack what?"));
+    return target.map(t -> attackTarget(t, args, idx)).orElse(Action.none("Attack what?"));
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -122,6 +115,20 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
       }
     }
     return Optional.of(things);
+  }
+
+  private Action attackTarget(Thing target, String[] args, int i) {
+    return arg(args, i)
+      .flatMap(n -> expect("WITH", n))
+      .map(e -> attackTargetWithWeapon(target, args, i + 1))
+      .orElse(Action.none("Don't understand 'ATTACK' with no 'WITH'."));
+  }
+
+  private Action attackTargetWithWeapon(Thing target, String[] args, int i) {
+    return arg(args, i)
+      .flatMap(n -> player.anyThing(n))
+      .map(w -> Action.attack(target, w))
+      .orElse(Action.none("Attack with what?"));
   }
 
   private Action goByArg(String arg) {
