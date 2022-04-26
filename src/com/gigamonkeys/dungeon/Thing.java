@@ -42,11 +42,6 @@ public interface Thing extends Location {
   public int hitPoints();
 
   /**
-   * The damage this thing does when used as a weapon.
-   */
-  public int damage();
-
-  /**
    * Generate an attack when used as a weapon.
    */
   public Attack attack();

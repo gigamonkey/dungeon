@@ -21,9 +21,8 @@ public class ThingBuilder {
   private Supplier<Integer> initialHitPoints = () -> 0;
 
   private BiFunction<Thing, Attack, String> applyAttack = ThingBuilder::defaultApplyAttack;
-  private Function<Thing, Attack> attack = ThingBuilder::defaultAttack;
-  private Function<Thing, Integer> damage = t -> 0;
-  private Function<Thing, String> description = null; // protocol method kludge.
+  private Function<Thing, Attack> attack = t -> new Attack.Useless(a(t.description()) + " is not an effective weapon.");
+  private Function<Thing, String> description = t -> t.name();
   private Function<Thing, String> eat = t -> "Yuck. You can't eat " + a(t.description()) + ".";
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
@@ -61,15 +60,6 @@ public class ThingBuilder {
 
   ThingBuilder attack(Attack attack) {
     return attack(t -> attack);
-  }
-
-  ThingBuilder damage(Function<Thing, Integer> damage) {
-    this.damage = damage;
-    return this;
-  }
-
-  ThingBuilder damage(int damage) {
-    return damage(t -> damage);
   }
 
   ThingBuilder description(Function<Thing, String> description) {
@@ -150,7 +140,6 @@ public class ThingBuilder {
       initialHitPoints.get(),
       new DynamicThing.Dynamic(
         applyAttack,
-        damage,
         attack,
         description,
         eat,
@@ -170,24 +159,16 @@ public class ThingBuilder {
   private static String defaultApplyAttack(Thing t, Attack attack) {
     if (t.isMonster()) {
       t.takeDamage(attack.damage());
-      var s =
+      return (
         "After " +
         attack.damage() +
         " points of damage, the " +
         t.name() +
         " is " +
-        (t.alive() ? "wounded but still alive. And now it's mad." : "dead. Good job, murderer.");
-      return s;
+        (t.alive() ? "wounded but still alive. And now it's mad." : "dead. Good job, murderer.")
+      );
     } else {
       return "I don't know why you're attacking an innocent " + t.name() + ".";
-    }
-  }
-
-  private static Attack defaultAttack(Thing weapon) {
-    if (weapon.damage() == 0) {
-      return new Attack.Useless(a(weapon.description()) + " is not an effective weapon.");
-    } else {
-      return new Attack.Simple("You attack with the " + weapon.name() + ".", weapon.damage());
     }
   }
 }

@@ -14,7 +14,6 @@ public class DynamicThing extends AbstractThing {
 
   static record Dynamic(
     BiFunction<Thing, Attack, String> applyAttack,
-    Function<Thing, Integer> damage,
     Function<Thing, Attack> attack,
     Function<Thing, String> description,
     Function<Thing, String> eat,
@@ -59,11 +58,6 @@ public class DynamicThing extends AbstractThing {
   @Override
   public String applyAttack(Attack attack) {
     return dynamic.applyAttack().apply(this, attack);
-  }
-
-  @Override
-  public int damage() {
-    return dynamic.damage().apply(this);
   }
 
   @Override

@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import java.util.function.*;
+
 public interface Attack {
   /**
    * Get the description of the attack, e.g. "You swing your axe and connect!"
@@ -30,6 +32,12 @@ public interface Attack {
     }
     public String result(Thing thing) {
       return "doing zero damage";
+    }
+  }
+
+  public static record Full(String description, int damage, Function<Thing, String> resultFn) implements Attack {
+    public String result(Thing t) {
+      return resultFn.apply(t) + " " + t.applyAttack(this);
     }
   }
 }

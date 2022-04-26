@@ -110,27 +110,17 @@ public class Dungeon {
     maze
       .thing("ring")
       .description("ring of great power")
-      .damage(1000)
       .attack(
-        new Attack() {
-          public String description() {
-            return "A sphere of light emanates from the ring";
-          }
-
-          public int damage() {
-            return 1000;
-          }
-
-          public String result(Thing t) {
-            return " blasting the " + t.name() + " to smithereens. " + t.applyAttack(this);
-          }
-        }
+        new Attack.Full(
+          "A sphere of light emanates from the ring",
+          1000,
+          (t -> " blasting the " + t.name() + " to smithereens.")
+        )
       )
       .thing();
 
     maze
       .thing("axe")
-      .damage(2)
       .eat("Axes are not good for eating. Now your teeth hurt and you are no less hungry.")
       .attack(new Attack.Simple("You swing your axe and connect!", 2))
       .thing();
@@ -138,7 +128,6 @@ public class Dungeon {
     maze
       .thing("sword")
       .description("broadsword with a rusty iron hilt")
-      .damage(5)
       .attack(new Attack.Simple("Oof, this sword is heavy but you manage to swing it.", 5))
       .thing();
 
@@ -160,7 +149,6 @@ public class Dungeon {
       .thing("blobbyblob")
       .isMonster(true)
       .initialHitPoints(7)
-      .damage(3)
       .description(t -> {
         if (t.alive()) {
           return t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad";
@@ -184,7 +172,6 @@ public class Dungeon {
       .thing("pirate")
       .isMonster(true)
       .initialHitPoints(10)
-      .damage(2)
       .description(aliveOrDead("pirate with a wooden leg and and an eye patch", "dead pirate with his eye patch askew"))
       .onEnter(Dungeon::pirateGreeting)
       .onTake(Dungeon::pirateTake)
@@ -194,7 +181,6 @@ public class Dungeon {
       .thing("parrot")
       .isMonster(true)
       .initialHitPoints(5)
-      .damage(1)
       .description(aliveOrDead("green and blue parrot with a tiny eye patch", "dead parrot"))
       .thing();
 
@@ -243,9 +229,7 @@ public class Dungeon {
 
   private static Stream<Action> blobbyBlobAttack(Thing t, Player p) {
     if (t.alive()) {
-      return Stream.of(
-        new Action.Attack(t.damage(), "The " + t.name() + " extrudes a blobby arm and smashes at you!", p)
-      );
+      return Stream.of(new Action.Attack(3, "The " + t.name() + " extrudes a blobby arm and smashes at you!", p));
     } else {
       return Stream.empty();
     }
