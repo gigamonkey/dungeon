@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * The main class for the game.
+ * Methods that can serve as the parsers needed by Command objects.
  */
 public record CommandParser(Player player, Dungeon dungeon, Map<String, Command> commands) {
   Action help(String[] args) {
@@ -31,6 +31,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   }
 
   Action quit(String[] args) {
+    // Doesn't need a real Action because it's the end of the road.
     return () -> {
       dungeon.endGame();
       return "Okay. Bye!";
@@ -39,18 +40,6 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
 
   Action go(String[] args) {
     return arg(args, 1).map(this::goByArg).orElse(Action.none("Go where?"));
-  }
-
-  private Action goByArg(String arg) {
-    return direction(arg).map(this::goByDirection).orElse(Action.none("Don't understand direction " + arg + "."));
-  }
-
-  private Action goByDirection(Direction d) {
-    return player
-      .room()
-      .getDoor(d)
-      .map(door -> Action.go(player, door))
-      .orElse(Action.none("No door to the " + d + "."));
   }
 
   Action take(String[] args) {
@@ -101,26 +90,26 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
       .orElse(Action.none("Attack what?"));
   }
 
-  // End commands
   ////////////////////////////////////////////////////////////////////
+  // Helper methods.
 
-  Optional<String> arg(String[] args, int idx) {
+  private Optional<String> arg(String[] args, int idx) {
     return Optional.of(idx).filter(i -> i < args.length).map(i -> args[i]);
   }
 
-  Optional<Direction> direction(String name) {
+  private Optional<Direction> direction(String name) {
     return Direction.fromString(name);
   }
 
-  Optional<String> expect(String expected, String s) {
+  private Optional<String> expect(String expected, String s) {
     return Optional.of(s).filter(v -> expected.equals(v));
   }
 
-  Optional<Thing> onlyMonster() {
+  private Optional<Thing> onlyMonster() {
     return player.room().onlyMonster();
   }
 
-  Optional<List<Thing>> listOfThings(String[] args, int start) {
+  private Optional<List<Thing>> listOfThings(String[] args, int start) {
     var things = new ArrayList<Thing>();
     for (var i = start; i < args.length; i++) {
       var maybe = player.roomThing(args[i]);
@@ -133,5 +122,17 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
       }
     }
     return Optional.of(things);
+  }
+
+  private Action goByArg(String arg) {
+    return direction(arg).map(this::goByDirection).orElse(Action.none("Don't understand direction " + arg + "."));
+  }
+
+  private Action goByDirection(Direction d) {
+    return player
+      .room()
+      .getDoor(d)
+      .map(door -> Action.go(player, door))
+      .orElse(Action.none("No door to the " + d + "."));
   }
 }
