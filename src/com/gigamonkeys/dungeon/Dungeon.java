@@ -204,8 +204,10 @@ public class Dungeon {
   public String doCommand(String line) {
     var tokens = wordPattern.matcher(line).results().map(r -> r.group(1)).toList().toArray(new String[0]);
     if (tokens.length > 0) {
-      var c = commands.getOrDefault(tokens[0], Command.unknown(tokens[0]));
-      return c.run(tokens, player);
+      return Optional
+        .ofNullable(commands.get(tokens[0]))
+        .map(c -> c.run(tokens, player))
+        .orElse("Don't know how to " + tokens[0] + ".");
     } else {
       // FIXME: This results in too many blank lines being printed. Input loop
       // needs refactoring.
