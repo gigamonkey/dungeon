@@ -17,7 +17,6 @@ public class DynamicThing extends AbstractThing {
     Function<Thing, Attack> attack,
     Function<Thing, String> description,
     Function<Thing, String> eat,
-    Predicate<Thing> isEdible,
     Predicate<Thing> isMonster,
     Predicate<Thing> isPortable,
     BiFunction<Thing, Action.Go, Stream<Action>> onEnter,
@@ -43,11 +42,6 @@ public class DynamicThing extends AbstractThing {
   @Override
   public boolean isPortable() {
     return dynamic.isPortable().test(this);
-  }
-
-  @Override
-  public boolean isEdible() {
-    return dynamic.isEdible().test(this);
   }
 
   @Override

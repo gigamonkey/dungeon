@@ -134,14 +134,12 @@ public class Dungeon {
     maze
       .thing("bread")
       .description("loaf of bread")
-      .isEdible(true)
       .eat(consume("Ah, delicious. Could use some mayonnaise though."))
       .thing();
 
     maze
       .thing("sandwich")
       .description("ham and cheese sandwich")
-      .isEdible(true)
       .eat(consume("Mmmm, tasty. But I think you got a spot of mustard on your tunic."))
       .thing();
 
@@ -159,11 +157,10 @@ public class Dungeon {
           return "a spattering of blobbyblob bits all over the room";
         }
       })
-      .isEdible(t -> !t.alive())
       .eat(t ->
-        t.isEdible()
-          ? consume(blobbyBlobEatIfEdible(t)).apply(t)
-          : "Are you out of your mind?! This is a live and jiggling " + t.name()
+        t.alive()
+          ? "Are you out of your mind?! This is a live and jiggling " + t.name()
+          : consume(blobbyBlobEatIfEdible(t)).apply(t)
       )
       .onTurn(Dungeon::blobbyBlobAttack)
       .thing();

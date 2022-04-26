@@ -24,7 +24,6 @@ public class ThingBuilder {
   private Function<Thing, Attack> attack = t -> new Attack.Useless(a(t.description()) + " is not an effective weapon.");
   private Function<Thing, String> description = t -> t.name();
   private Function<Thing, String> eat = t -> "Yuck. You can't eat " + a(t.description()) + ".";
-  private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
   private BiFunction<Thing, Action.Go, Stream<Action>> onEnter = (t, a) -> Stream.empty();
@@ -80,15 +79,6 @@ public class ThingBuilder {
     return eat(t -> eat);
   }
 
-  ThingBuilder isEdible(Predicate<Thing> isEdible) {
-    this.isEdible = isEdible;
-    return this;
-  }
-
-  ThingBuilder isEdible(boolean isEdible) {
-    return isEdible(t -> isEdible);
-  }
-
   ThingBuilder isMonster(Predicate<Thing> isMonster) {
     this.isMonster = isMonster;
     return this;
@@ -138,18 +128,7 @@ public class ThingBuilder {
     return new DynamicThing(
       name,
       initialHitPoints.get(),
-      new DynamicThing.Dynamic(
-        applyAttack,
-        attack,
-        description,
-        eat,
-        isEdible,
-        isMonster,
-        isPortable,
-        onEnter,
-        onTake,
-        onTurn
-      )
+      new DynamicThing.Dynamic(applyAttack, attack, description, eat, isMonster, isPortable, onEnter, onTake, onTurn)
     );
   }
 

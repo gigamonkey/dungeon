@@ -74,17 +74,12 @@ public interface Thing extends Location {
   // Predicates
 
   /**
-   * Can the thing be taken by the player.
+   * Can the thing be taken by the player?
    */
   public boolean isPortable();
 
   /**
-   * Can the thing be eaten by the player.
-   */
-  public boolean isEdible();
-
-  /**
-   * Is the thing a monster.
+   * Is the thing a monster?
    */
   public boolean isMonster();
 
