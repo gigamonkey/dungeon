@@ -13,7 +13,7 @@ public interface Attack {
   public int damage();
 
   /**
-   * Get the description of the result (which is partly determined by the thing
+   * Get the description of the result which may be determined by the thing
    * being attacked.
    */
   public String result(Thing thing);

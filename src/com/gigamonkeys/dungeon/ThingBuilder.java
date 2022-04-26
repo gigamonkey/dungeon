@@ -214,12 +214,13 @@ public class ThingBuilder {
   private static String defaultApplyAttack(Thing t, Attack attack) {
     if (t.isMonster()) {
       t.takeDamage(attack.damage());
-      var s = "You hit, doing " + attack.damage() + " points of damage.";
-      if (t.alive()) {
-        s += " The " + t.name() + " is wounded but still alive. And now it's mad.";
-      } else {
-        s += " The " + t.name() + " is dead. Good job, murderer.";
-      }
+      var s =
+        "After " +
+        attack.damage() +
+        " points of damage, the " +
+        t.name() +
+        " is " +
+        (t.alive() ? "wounded but still alive. And now it's mad." : "dead. Good job, murderer.");
       return s;
     } else {
       return "I don't know why you're attacking an innocent " + t.name() + ".";

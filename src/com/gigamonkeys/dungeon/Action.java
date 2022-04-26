@@ -20,6 +20,9 @@ public interface Action {
     return Stream.empty();
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  // Static methods for creataing Actions.
+
   public static Action attack(Thing monster, Thing weapon) {
     return new PlayerAttack(monster, weapon);
   }
@@ -67,8 +70,6 @@ public interface Action {
   //////////////////////////////////////////////////////////////////////////////
   // Concrete actions. All actions that generate events need to have a concrete
   // class rather than a lambda.
-
-  // TODO: add event() method to all classes as appropriate.
 
   public static record PlayerAttack(Thing monster, Thing weapon) implements Action {
     public String description() {

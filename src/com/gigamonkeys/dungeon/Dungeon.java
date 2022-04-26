@@ -237,7 +237,21 @@ public class Dungeon {
       .thing("ring")
       .description("ring of great power")
       .damage(1000)
-      .attack(new Attack.Simple("A sphere of light emanates from the ring blasting the thing to smithereens.", 1000))
+      .attack(
+        new Attack() {
+          public String description() {
+            return "A sphere of light emanates from the ring";
+          }
+
+          public int damage() {
+            return 1000;
+          }
+
+          public String result(Thing t) {
+            return " blasting the " + t.name() + " to smithereens. " + t.applyAttack(this);
+          }
+        }
+      )
       .thing();
 
     maze
