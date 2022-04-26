@@ -57,16 +57,6 @@ public interface Thing extends Location {
   public int hitPoints();
 
   /**
-   * Describe eating the thing if it is edible.
-   */
-  public String eatIfEdible();
-
-  /**
-   * Describe eating the thing if it is inedible.
-   */
-  public String eatIfInedible();
-
-  /**
    * The damage this thing does when used as a weapon.
    */
   public int damage();
@@ -92,25 +82,17 @@ public interface Thing extends Location {
   public boolean isEdible();
 
   /**
+   * Describe eating the thing.
+   */
+  public String eat();
+
+  /**
    * Is the thing a monster.
    */
   public boolean isMonster();
 
   //////////////////////////////////////////////////////////////////////////////
   // Some protocols
-
-  /**
-   * Describe eating the thing. Default implementation delegates to
-   * eatIfEdible() and eatIfInedible().
-   */
-  public default String eat() {
-    if (isEdible()) {
-      destroy();
-      return eatIfEdible();
-    } else {
-      return eatIfInedible();
-    }
-  }
 
   public default String description() {
     return alive() ? describeAlive() : describeDead();

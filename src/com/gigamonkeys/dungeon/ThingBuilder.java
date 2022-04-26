@@ -26,9 +26,7 @@ public class ThingBuilder {
   private Function<Thing, String> description = null; // protocol method kludge.
   private Function<Thing, String> describeAlive = t -> t.name();
   private Function<Thing, String> describeDead = t -> t.name();
-  private Function<Thing, String> eat = null; // protocol method kludge.
-  private Function<Thing, String> eatIfEdible = t -> "Yum";
-  private Function<Thing, String> eatIfInedible = t -> "Yuck. You can't eat " + a(t.description()) + ".";
+  private Function<Thing, String> eat = t -> "Yuck. You can't eat " + a(t.description()) + ".";
   private Predicate<Thing> isEdible = t -> false;
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
@@ -112,24 +110,6 @@ public class ThingBuilder {
     return eat(t -> eat);
   }
 
-  ThingBuilder eatIfEdible(Function<Thing, String> eatIfEdible) {
-    this.eatIfEdible = eatIfEdible;
-    return this;
-  }
-
-  ThingBuilder eatIfEdible(String eatIfEdible) {
-    return eatIfEdible(t -> eatIfEdible);
-  }
-
-  ThingBuilder eatIfInedible(Function<Thing, String> eatIfInedible) {
-    this.eatIfInedible = eatIfInedible;
-    return this;
-  }
-
-  ThingBuilder eatIfInedible(String eatIfInedible) {
-    return eatIfInedible(t -> eatIfInedible);
-  }
-
   ThingBuilder isEdible(Predicate<Thing> isEdible) {
     this.isEdible = isEdible;
     return this;
@@ -196,8 +176,6 @@ public class ThingBuilder {
         describeAlive,
         describeDead,
         eat,
-        eatIfEdible,
-        eatIfInedible,
         isEdible,
         isMonster,
         isPortable,

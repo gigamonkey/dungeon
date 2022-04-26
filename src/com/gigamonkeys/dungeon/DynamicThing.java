@@ -20,8 +20,6 @@ public class DynamicThing extends AbstractThing {
     Function<Thing, String> describeAlive,
     Function<Thing, String> describeDead,
     Function<Thing, String> eat,
-    Function<Thing, String> eatIfEdible,
-    Function<Thing, String> eatIfInedible,
     Predicate<Thing> isEdible,
     Predicate<Thing> isMonster,
     Predicate<Thing> isPortable,
@@ -61,13 +59,8 @@ public class DynamicThing extends AbstractThing {
   }
 
   @Override
-  public String eatIfEdible() {
-    return dynamic.eatIfEdible().apply(this);
-  }
-
-  @Override
-  public String eatIfInedible() {
-    return dynamic.eatIfInedible().apply(this);
+  public String eat() {
+    return dynamic.eat().apply(this);
   }
 
   @Override
@@ -109,15 +102,6 @@ public class DynamicThing extends AbstractThing {
   // For protocol methods we have to do this kind of kludgy thing. I can't
   // figure out a value we can set on dynamic that will invoke the default
   // implementation properly.
-
-  @Override
-  public String eat() {
-    if (dynamic.eat() == null) {
-      return super.eat();
-    } else {
-      return dynamic.eat().apply(this);
-    }
-  }
 
   @Override
   public String description() {

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import java.util.function.*;
 
 /**
  * The main class for the game.
@@ -130,7 +131,7 @@ public class Dungeon {
     maze
       .thing("axe")
       .damage(2)
-      .eatIfInedible("Axes are not good for eating. Now your teeth hurt and you are no less hungry.")
+      .eat("Axes are not good for eating. Now your teeth hurt and you are no less hungry.")
       .attack(new Attack.Simple("You swing your axe and connect!", 2))
       .thing();
 
@@ -145,14 +146,14 @@ public class Dungeon {
       .thing("bread")
       .description("loaf of bread")
       .isEdible(true)
-      .eatIfEdible("Ah, delicious. Could use some mayonnaise though.")
+      .eat(consume("Ah, delicious. Could use some mayonnaise though."))
       .thing();
 
     maze
       .thing("sandwich")
       .description("ham and cheese sandwich")
       .isEdible(true)
-      .eatIfEdible("Mmmm, tasty. But I think you got a spot of mustard on your tunic.")
+      .eat(consume("Mmmm, tasty. But I think you got a spot of mustard on your tunic."))
       .thing();
 
     maze
@@ -163,8 +164,9 @@ public class Dungeon {
       .describeAlive(t -> t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad")
       .describeDead(t -> "dead " + t.name() + " decaying into puddle of goo")
       .isEdible(t -> !t.alive())
-      .eatIfEdible(Dungeon::blobbyBlobEatIfEdible)
-      .eatIfInedible("Are you out of your mind?! This is a live and jiggling BlobbyBlob!")
+      .eat(t -> t.isEdible()
+           ? consume(blobbyBlobEatIfEdible(t)).apply(t)
+           : "Are you out of your mind?! This is a live and jiggling " + t.name())
       .onTurn(Dungeon::blobbyBlobAttack)
       .thing();
 
@@ -202,6 +204,13 @@ public class Dungeon {
       .place("sword", "propped against a wall", "dining");
 
     return maze.room("entry");
+  }
+
+  private static Function<Thing, String> consume(String s) {
+    return t -> {
+      t.destroy();
+      return s;
+    };
   }
 
   private static String blobbyBlobEatIfEdible(Thing t) {

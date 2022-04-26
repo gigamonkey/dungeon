@@ -54,8 +54,8 @@ class MazeBuilder {
   public MazeBuilder connect(String room1, String room2, String doorDescription, Direction d) {
     var r1 = rooms.get(room1);
     var r2 = rooms.get(room2);
-    if (r1 == null) throw new Error("No room " + room1);
-    if (r2 == null) throw new Error("No room " + room2);
+    if (r1 == null) throw new RuntimeException("No room " + room1);
+    if (r2 == null) throw new RuntimeException("No room " + room2);
 
     rooms.get(room1).connect(doorDescription, rooms.get(room2), d);
     return this;
