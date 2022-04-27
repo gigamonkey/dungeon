@@ -8,7 +8,6 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.*;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -19,7 +18,6 @@ public class Dungeon {
 
   private static final Pattern wordPattern = Pattern.compile("\\W*(\\w+)\\W*");
 
-  private final Player player;
   private final BufferedReader in;
   private final PrintStream out;
 
@@ -27,37 +25,24 @@ public class Dungeon {
 
   private boolean gameOver = false;
 
-  Dungeon(Player player, InputStream in, PrintStream out) {
-    this.player = player;
+  Dungeon(InputStream in, PrintStream out) {
     this.in = new BufferedReader(new InputStreamReader(in));
     this.out = out;
-
-    var parser = new CommandParser(player, this, commands);
-
-    registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", parser::attack));
-    registerCommand(new Command("DROP", "Drop an item you are carrying.", parser::drop));
-    registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", parser::eat));
-    registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
-    registerCommand(new Command("HELP", "Get help on commands.", parser::help));
-    registerCommand(new Command("INVENTORY", "List the items you are holding.", parser::inventory));
-    registerCommand(new Command("LOOK", "Look at the room your are in again.", parser::look));
-    registerCommand(new Command("QUIT", "Quit the game", parser::quit));
-    registerCommand(new Command("TAKE", "Take an item from the room.", parser::take));
-  }
-
-  public void registerCommand(Command command) {
-    commands.put(command.verb(), command);
   }
 
   public void endGame() {
     gameOver = true;
   }
 
-  private void loop() throws IOException {
+  private void loop(Player player) throws IOException {
+    registerCommands(player);
+    player.setStart(buildMaze());
+
     say(player.room().description());
     out.print("> ");
     while (!gameOver) {
-      say(doCommand(in.readLine().toUpperCase()));
+      var cmd = in.readLine().toUpperCase();
+      say(doCommand(cmd, player));
       if (!player.alive()) {
         say("Ooops. You're dead. Game over.");
         gameOver = true;
@@ -73,7 +58,7 @@ public class Dungeon {
     out.println();
   }
 
-  public String doCommand(String line) {
+  public String doCommand(String line, Player player) {
     var tokens = wordPattern.matcher(line).results().map(r -> r.group(1)).toList().toArray(new String[0]);
     if (tokens.length > 0) {
       return Optional
@@ -87,7 +72,25 @@ public class Dungeon {
     }
   }
 
-  public static Room buildMaze() {
+  private void registerCommand(Command command) {
+    commands.put(command.verb(), command);
+  }
+
+  private void registerCommands(Player player) {
+    commands.clear();
+    var parser = new CommandParser(player, this, commands);
+    registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", parser::attack));
+    registerCommand(new Command("DROP", "Drop an item you are carrying.", parser::drop));
+    registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", parser::eat));
+    registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
+    registerCommand(new Command("HELP", "Get help on commands.", parser::help));
+    registerCommand(new Command("INVENTORY", "List the items you are holding.", parser::inventory));
+    registerCommand(new Command("LOOK", "Look at the room your are in again.", parser::look));
+    registerCommand(new Command("QUIT", "Quit the game", parser::quit));
+    registerCommand(new Command("TAKE", "Take an item from the room.", parser::take));
+  }
+
+  private Room buildMaze() {
     var maze = new MazeBuilder();
 
     maze
@@ -135,41 +138,36 @@ public class Dungeon {
     maze
       .thing("bread")
       .description("loaf of bread")
-      .eat(consume("Ah, delicious. Could use some mayonnaise though."))
+      .eat(t -> t.consuming("Ah, delicious. Could use some mayonnaise though."))
       .thing();
 
     maze
       .thing("sandwich")
       .description("ham and cheese sandwich")
-      .eat(consume("Mmmm, tasty. But I think you got a spot of mustard on your tunic."))
+      .eat(t -> t.consuming("Mmmm, tasty. But I think you got a spot of mustard on your tunic."))
       .thing();
 
     maze
       .thing("blobbyblob")
       .isMonster(true)
       .initialHitPoints(7)
-      .description(t -> {
-        if (t.alive()) {
-          return t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad";
-        }
-        if (t.hitPoints() > -100) {
-          return "dead " + t.name() + " decaying into puddle of goo";
-        } else {
-          return "a spattering of blobbyblob bits all over the room";
-        }
-      })
+      .description(t ->
+        t.alive()
+          ? t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad"
+          : t.hitPoints() > -100
+            ? "dead " + t.name() + " decaying into puddle of goo"
+            : "a spattering of blobbyblob bits"
+      )
       .eat(t ->
         t.alive()
           ? "Are you out of your mind?! This is a live and jiggling " + t.name()
-          : consume(
+          : t.consuming(
             t.hitPoints() < -100
               ? "The " +
               t.name() +
-              " is blasted all over the room. " +
-              "There is nothing to eat unless you have a squeege and a straw."
+              " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
               : "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger."
           )
-            .apply(t)
       )
       .onTurn((t, p) ->
         streamIf(t.alive(), new Action.Attack(3, "The " + t.name() + " extrudes a blobby arm and smashes at you!", p))
@@ -180,7 +178,8 @@ public class Dungeon {
       .thing("pirate")
       .isMonster(true)
       .initialHitPoints(10)
-      .description(aliveOrDead("pirate with a wooden leg and an eye patch", "dead pirate with his eye patch askew"))
+      .description(t -> t.alive() ? "pirate with a wooden leg and an eye patch" : "dead pirate with his eye patch askew"
+      )
       .onEnter((t, a) -> Stream.ofNullable(t.alive() ? Action.say(t, "Arr, matey!") : null))
       .onTake((t, a) ->
         streamIf(
@@ -194,7 +193,7 @@ public class Dungeon {
       .thing("parrot")
       .isMonster(true)
       .initialHitPoints(5)
-      .description(aliveOrDead("green and blue parrot with a tiny eye patch", "dead parrot"))
+      .description(t -> t.alive() ? "green and blue parrot with a tiny eye patch" : "dead parrot")
       .thing();
 
     maze
@@ -213,25 +212,13 @@ public class Dungeon {
     return maze.room("entry");
   }
 
-  private static Function<Thing, String> consume(String s) {
-    return t -> {
-      t.destroy();
-      return s;
-    };
-  }
-
-  private static Function<Thing, String> aliveOrDead(String alive, String dead) {
-    return t -> t.alive() ? alive : dead;
-  }
-
   private static <T> Stream<T> streamIf(boolean test, T v) {
     return Stream.ofNullable(test ? v : null);
   }
 
   public static void main(String[] args) {
     try {
-      var p = new Player(buildMaze(), 20);
-      new Dungeon(p, System.in, System.out).loop();
+      new Dungeon(System.in, System.out).loop(new Player(20));
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);
     }

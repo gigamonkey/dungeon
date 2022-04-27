@@ -17,9 +17,12 @@ public class Player implements Location {
   private Room room;
   private int hitPoints;
 
-  public Player(Room startingRoom, int hitPoints) {
-    this.room = startingRoom;
+  public Player(int hitPoints) {
     this.hitPoints = hitPoints;
+  }
+
+  public void setStart(Room room) {
+    this.room = room;
   }
 
   //////////////////////////////////////////////////////////////////////////////

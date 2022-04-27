@@ -92,6 +92,11 @@ public interface Thing extends Location {
     location().ifPresent(l -> l.removeThing(this));
   }
 
+  public default String consuming(String s) {
+    destroy();
+    return s;
+  }
+
   /**
    * Apply an attack to this thing as a target.
    */
