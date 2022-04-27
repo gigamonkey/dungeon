@@ -57,13 +57,13 @@ public abstract class AbstractThing implements Thing {
   @Override
   public String describeThings() {
     var desc = new ArrayList<String>();
-    for (var pt : things()) {
-      var t = pt.thing();
-      desc.add(pt.where() + " the " + name() + " is " + a(t.description()) + ".");
-    }
-    for (var pt : things()) {
-      desc.add(pt.thing().describeThings());
-    }
+    things()
+      .stream()
+      .map(pt -> pt.where() + " the " + name() + " is " + a(pt.thing().description()) + ".")
+      .forEach(desc::add);
+
+    things().stream().map(PlacedThing::thing).map(Thing::describeThings).forEach(desc::add);
+
     return String.join(" ", desc);
   }
 
