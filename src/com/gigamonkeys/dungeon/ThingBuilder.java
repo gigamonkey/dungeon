@@ -121,5 +121,4 @@ public class ThingBuilder {
       new DynamicThing.Dynamic(attack, description, eat, isMonster, isPortable, onEnter, onTake, onTurn)
     );
   }
-
 }

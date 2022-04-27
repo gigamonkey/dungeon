@@ -161,9 +161,19 @@ public class Dungeon {
       .eat(t ->
         t.alive()
           ? "Are you out of your mind?! This is a live and jiggling " + t.name()
-          : consume(blobbyBlobEatIfEdible(t)).apply(t)
+          : consume(
+            t.hitPoints() < -100
+              ? "The " +
+              t.name() +
+              " is blasted all over the room. " +
+              "There is nothing to eat unless you have a squeege and a straw."
+              : "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger."
+          )
+            .apply(t)
       )
-      .onTurn(Dungeon::blobbyBlobAttack)
+      .onTurn((t, p) ->
+        streamIf(t.alive(), new Action.Attack(3, "The " + t.name() + " extrudes a blobby arm and smashes at you!", p))
+      )
       .thing();
 
     maze
@@ -171,8 +181,13 @@ public class Dungeon {
       .isMonster(true)
       .initialHitPoints(10)
       .description(aliveOrDead("pirate with a wooden leg and an eye patch", "dead pirate with his eye patch askew"))
-      .onEnter(Dungeon::pirateGreeting)
-      .onTake(Dungeon::pirateTake)
+      .onEnter((t, a) -> Stream.ofNullable(t.alive() ? Action.say(t, "Arr, matey!") : null))
+      .onTake((t, a) ->
+        streamIf(
+          t.alive() && t.thing("PARROT").map(p -> a.things().contains(p)).orElse(false),
+          Action.say(t, "Oi, ye swarthy dog! Hands off me parrot!")
+        )
+      )
       .thing();
 
     maze
@@ -209,44 +224,8 @@ public class Dungeon {
     return t -> t.alive() ? alive : dead;
   }
 
-  private static String blobbyBlobEatIfEdible(Thing t) {
-    if (t.hitPoints() < -100) {
-      return (
-        "The " +
-        t.name() +
-        " is blasted all over the room. " +
-        "There is nothing to eat unless you have a squeege and a straw."
-      );
-    } else {
-      return (
-        "Ugh. This is worse than the worst jello casserole you have ever tasted. " +
-        "But it does slightly sate your hunger."
-      );
-    }
-  }
-
-  private static Stream<Action> blobbyBlobAttack(Thing t, Player p) {
-    if (t.alive()) {
-      return Stream.of(new Action.Attack(3, "The " + t.name() + " extrudes a blobby arm and smashes at you!", p));
-    } else {
-      return Stream.empty();
-    }
-  }
-
-  private static Stream<Action> pirateGreeting(Thing t, Action.Go action) {
-    if (t.alive()) {
-      return Stream.of(Action.say(t, "Arr, matey!"));
-    } else {
-      return Stream.empty();
-    }
-  }
-
-  private static Stream<Action> pirateTake(Thing t, Action.Take action) {
-    if (t.alive() && t.thing("PARROT").map(p -> action.things().contains(p)).orElse(false)) {
-      return Stream.of(Action.say(t, "Oi, ye swarthy dog! Hands off me parrot!"));
-    } else {
-      return Stream.empty();
-    }
+  private static <T> Stream<T> streamIf(boolean test, T v) {
+    return Stream.ofNullable(test ? v : null);
   }
 
   public static void main(String[] args) {
