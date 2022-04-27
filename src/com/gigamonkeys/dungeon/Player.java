@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  */
 public class Player implements Location, ActualLocation {
 
-  private final Things inventory = new Things(this);
+  private final Items inventory = new Items(this);
   private Room room;
   private int hitPoints;
 

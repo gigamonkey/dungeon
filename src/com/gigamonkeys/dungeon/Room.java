@@ -19,7 +19,7 @@ public class Room implements Location, ActualLocation {
 
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
-  private final Things things = new Things(this);
+  private final Items things = new Items(this);
 
   public Room(String description) {
     this.description = description;

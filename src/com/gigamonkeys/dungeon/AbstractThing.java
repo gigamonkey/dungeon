@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractThing implements Thing, ActualLocation {
 
-  private final Things things = new Things(this);
+  private final Items things = new Items(this);
   private final String name;
   private int hitPoints;
   private Optional<Location> location = Optional.empty();

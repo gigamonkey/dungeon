@@ -11,12 +11,12 @@ import java.util.stream.Stream;
  * manages the data structure for managing the things and places but note that
  * canTake delegates back to the ActualLocation since this class doesn't know.
  */
-public class Things implements Location {
+public class Items implements Location {
 
   private final Map<String, PlacedThing> things = new HashMap<>();
   private final ActualLocation actual;
 
-  public Things(ActualLocation actual) {
+  public Items(ActualLocation actual) {
     this.actual = actual;
   }
 
