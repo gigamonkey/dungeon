@@ -11,9 +11,9 @@ import java.util.stream.Stream;
 /**
  * Represent the player.
  */
-public class Player implements Location {
+public class Player implements Location, ActualLocation {
 
-  private final Things inventory = new Things();
+  private final Things inventory = new Things(this);
   private Room room;
   private int hitPoints;
 
@@ -46,6 +46,10 @@ public class Player implements Location {
 
   public Stream<PlacedThing> allThings() {
     return inventory.allThings();
+  }
+
+  public boolean canTake(Thing thing) {
+    return true;
   }
 
   //
@@ -81,7 +85,7 @@ public class Player implements Location {
     var taken = new ArrayList<String>();
     var notTaken = new ArrayList<String>();
     for (var t : things) {
-      if (t.isPortable()) {
+      if (t.canBeTaken()) {
         inventory.placeThing(t, "in your stuff");
         taken.add(t.description());
       } else {

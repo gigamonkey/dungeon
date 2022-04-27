@@ -195,6 +195,7 @@ public class Dungeon {
     maze
       .thing("parrot")
       .isMonster(true)
+      .isPortable(true)
       .initialHitPoints(5)
       .description(t -> t.alive() ? "green and blue parrot with a tiny eye patch" : "dead parrot")
       .thing();

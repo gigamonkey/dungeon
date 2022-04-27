@@ -33,4 +33,9 @@ public interface Location {
    * All things accessible from this location.
    */
   public Stream<PlacedThing> allThings();
+
+  /**
+   * Can the player take the Thing from this location.
+   */
+  public boolean canTake(Thing thing);
 }

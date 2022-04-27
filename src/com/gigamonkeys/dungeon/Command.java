@@ -27,12 +27,17 @@ public record Command(String verb, String help, Function<String[], Action> parse
    * reactions, recursively.
    */
   private Stream<String> results(Action action, Player player) {
-    // N.B. Need to wrap player in stream to avoid defer getting the current
-    // room so that we get the room after the action has been described (with
-    // it's possible side effect of changing the player's room)
-    var things = Stream.of(player).flatMap(p -> p.room().allThings().map(PlacedThing::thing));
-    var reactions = things.flatMap(t -> action.event(t));
-    return Stream.concat(Stream.of(action.description()), reactions.flatMap(a -> results(a, player)));
+    // N.B. Need to wrap the player in the second stream to avoid defer getting
+    // the current room so that we get the room after the action has been
+    // described (with its possible side effect of changing the player's room)
+    return Stream.concat(
+      Stream.of(action.description()),
+      Stream
+        .of(player)
+        .flatMap(p -> p.room().allThings().map(PlacedThing::thing))
+        .flatMap(action::event)
+        .flatMap(a -> results(a, player))
+    );
   }
 
   /**

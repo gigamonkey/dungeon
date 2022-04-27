@@ -15,11 +15,11 @@ import java.util.stream.Stream;
  * Doors. They also contain Things which can be weapons, food,
  * monsters, etc.
  */
-public class Room implements Location {
+public class Room implements Location, ActualLocation {
 
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
-  private final Things things = new Things();
+  private final Things things = new Things(this);
 
   public Room(String description) {
     this.description = description;
@@ -46,6 +46,10 @@ public class Room implements Location {
 
   public Stream<PlacedThing> allThings() {
     return things.allThings();
+  }
+
+  public boolean canTake(Thing thing) {
+    return true;
   }
 
   //

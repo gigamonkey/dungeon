@@ -7,11 +7,18 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * A concrete implementation of Location, to be used via composition.
+ * A concrete implementation of Location, to be used via composition. This class
+ * manages the data structure for managing the things and places but note that
+ * canTake delegates back to the ActualLocation since this class doesn't know.
  */
 public class Things implements Location {
 
   private final Map<String, PlacedThing> things = new HashMap<>();
+  private final ActualLocation actual;
+
+  public Things(ActualLocation actual) {
+    this.actual = actual;
+  }
 
   public void placeThing(Thing thing, String where) {
     thing.location().ifPresent(l -> l.removeThing(thing));
@@ -44,5 +51,9 @@ public class Things implements Location {
 
   public Stream<PlacedThing> allThings() {
     return things.values().stream().flatMap(pt -> Stream.concat(Stream.of(pt), pt.thing().allThings()));
+  }
+
+  public boolean canTake(Thing thing) {
+    return actual.canTake(thing);
   }
 }

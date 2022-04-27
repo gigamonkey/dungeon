@@ -12,9 +12,9 @@ import java.util.stream.Stream;
  * the moment the only concrete implementation is DynamicThing so we could
  * collapse them.
  */
-public abstract class AbstractThing implements Thing {
+public abstract class AbstractThing implements Thing, ActualLocation {
 
-  private final Things things = new Things();
+  private final Things things = new Things(this);
   private final String name;
   private int hitPoints;
   private Optional<Location> location = Optional.empty();
@@ -89,6 +89,11 @@ public abstract class AbstractThing implements Thing {
   public Stream<PlacedThing> allThings() {
     return things.allThings();
   }
+
+  public boolean canTake(Thing thing) {
+    return !alive();
+  }
+
   //
   //////////////////////////////////////////////////////////////////////////////
 

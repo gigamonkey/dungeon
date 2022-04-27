@@ -116,6 +116,14 @@ public interface Thing extends Location {
     }
   }
 
+  /**
+   * Can this thing be taken from it's current location. It needs to be both
+   * inherently portable and the location needs to allow it to be taken.
+   */
+  public default boolean canBeTaken() {
+    return isPortable() && location().map(l -> l.canTake(this)).orElse(false);
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // Action events
 
