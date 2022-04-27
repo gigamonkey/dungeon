@@ -19,7 +19,7 @@ public interface Thing extends Location {
   /**
    * Set the thing's location.
    */
-  public void setLocation(Location location);
+  public void moveTo(Location location);
 
   /**
    * Get the thing's location.

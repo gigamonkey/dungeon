@@ -35,7 +35,7 @@ public abstract class AbstractThing implements Thing {
   }
 
   @Override
-  public final void setLocation(Location location) {
+  public final void moveTo(Location location) {
     this.location = Optional.of(location);
   }
 

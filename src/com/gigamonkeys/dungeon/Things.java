@@ -16,7 +16,7 @@ public class Things implements Location {
   public void placeThing(Thing thing, String where) {
     thing.location().ifPresent(l -> l.removeThing(thing));
     things.put(thing.name(), new PlacedThing(thing, where));
-    thing.setLocation(this);
+    thing.moveTo(this);
   }
 
   public void removeThing(Thing thing) {
