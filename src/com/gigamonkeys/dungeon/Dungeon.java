@@ -39,17 +39,22 @@ public class Dungeon {
     player.setStart(buildMaze());
 
     say(player.room().description());
-    out.print("> ");
     while (!gameOver) {
-      var cmd = in.readLine().toUpperCase();
-      say(doCommand(cmd, player));
-      if (!player.alive()) {
-        say("Ooops. You're dead. Game over.");
-        gameOver = true;
-      } else {
-        out.print("> ");
+      out.print("> ");
+      var tokens = parseLine(in.readLine().toUpperCase());
+      if (tokens.length > 0) {
+        say(doCommand(tokens, player));
+        if (!player.alive()) {
+          say("Ooops. You're dead. Game over.");
+          endGame();
+          break;
+        }
       }
     }
+  }
+
+  private String[] parseLine(String line) {
+    return wordPattern.matcher(line).results().map(r -> r.group(1)).toList().toArray(new String[0]);
   }
 
   private void say(String s) {
@@ -58,18 +63,11 @@ public class Dungeon {
     out.println();
   }
 
-  public String doCommand(String line, Player player) {
-    var tokens = wordPattern.matcher(line).results().map(r -> r.group(1)).toList().toArray(new String[0]);
-    if (tokens.length > 0) {
-      return Optional
-        .ofNullable(commands.get(tokens[0]))
-        .map(c -> c.run(tokens, player))
-        .orElse("Don't know how to " + tokens[0] + ".");
-    } else {
-      // FIXME: This results in too many blank lines being printed. Input loop
-      // needs refactoring.
-      return "";
-    }
+  public String doCommand(String[] tokens, Player player) {
+    return Optional
+      .ofNullable(commands.get(tokens[0]))
+      .map(c -> c.run(tokens, player))
+      .orElse("Don't know how to " + tokens[0] + ".");
   }
 
   private void registerCommand(Command command) {

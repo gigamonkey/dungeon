@@ -93,7 +93,6 @@ public abstract class AbstractThing implements Thing, ActualLocation {
   public boolean canTake(Thing thing) {
     return !alive();
   }
-
   //
   //////////////////////////////////////////////////////////////////////////////
 
