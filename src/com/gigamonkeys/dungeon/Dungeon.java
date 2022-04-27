@@ -128,6 +128,7 @@ public class Dungeon {
     maze
       .thing("sword")
       .description("broadsword with a rusty iron hilt")
+      .eat("What are you, a sword swallower?! You can't eat a sword.")
       .attack(new Attack.Simple("Oof, this sword is heavy but you manage to swing it.", 5))
       .thing();
 
@@ -169,7 +170,7 @@ public class Dungeon {
       .thing("pirate")
       .isMonster(true)
       .initialHitPoints(10)
-      .description(aliveOrDead("pirate with a wooden leg and and an eye patch", "dead pirate with his eye patch askew"))
+      .description(aliveOrDead("pirate with a wooden leg and an eye patch", "dead pirate with his eye patch askew"))
       .onEnter(Dungeon::pirateGreeting)
       .onTake(Dungeon::pirateTake)
       .thing();
