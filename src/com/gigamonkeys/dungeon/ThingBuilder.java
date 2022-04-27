@@ -25,7 +25,12 @@ public class ThingBuilder {
   private Function<Thing, String> eat = t -> "Yuck. You can't eat " + a(t.description()) + ".";
   private Predicate<Thing> isMonster = t -> false;
   private Predicate<Thing> isPortable = t -> !t.isMonster();
+  private BiFunction<Thing, Action.Drop, Stream<Action>> onDrop = (t, a) -> Stream.empty();
+  private BiFunction<Thing, Action.Eat, Stream<Action>> onEat = (t, a) -> Stream.empty();
   private BiFunction<Thing, Action.Go, Stream<Action>> onEnter = (t, a) -> Stream.empty();
+  private BiFunction<Thing, Action.Look, Stream<Action>> onLook = (t, a) -> Stream.empty();
+  private BiFunction<Thing, Action.PlayerAttack, Stream<Action>> onPlayerAttack = (t, a) -> Stream.empty();
+  private BiFunction<Thing, Action.Say, Stream<Action>> onSay = (t, a) -> Stream.empty();
   private BiFunction<Thing, Action.Take, Stream<Action>> onTake = (t, a) -> Stream.empty();
   private BiFunction<Thing, Action.Turn, Stream<Action>> onTurn = (t, a) -> Stream.empty();
 
@@ -87,6 +92,24 @@ public class ThingBuilder {
     return isPortable(t -> isPortable);
   }
 
+  ThingBuilder onDrop(BiFunction<Thing, Action.Drop, Stream<Action>> onDrop) {
+    this.onDrop = onDrop;
+    return this;
+  }
+
+  ThingBuilder onDrop(Stream<Action> onDrop) {
+    return onDrop((t, p) -> onDrop);
+  }
+
+  ThingBuilder onEat(BiFunction<Thing, Action.Eat, Stream<Action>> onEat) {
+    this.onEat = onEat;
+    return this;
+  }
+
+  ThingBuilder onEat(Stream<Action> onEat) {
+    return onEat((t, p) -> onEat);
+  }
+
   ThingBuilder onEnter(BiFunction<Thing, Action.Go, Stream<Action>> onEnter) {
     this.onEnter = onEnter;
     return this;
@@ -94,6 +117,33 @@ public class ThingBuilder {
 
   ThingBuilder onEnter(Stream<Action> onEnter) {
     return onEnter((t, p) -> onEnter);
+  }
+
+  ThingBuilder onLook(BiFunction<Thing, Action.Look, Stream<Action>> onLook) {
+    this.onLook = onLook;
+    return this;
+  }
+
+  ThingBuilder onLook(Stream<Action> onLook) {
+    return onLook((t, p) -> onLook);
+  }
+
+  ThingBuilder onPlayerAttack(BiFunction<Thing, Action.PlayerAttack, Stream<Action>> onPlayerAttack) {
+    this.onPlayerAttack = onPlayerAttack;
+    return this;
+  }
+
+  ThingBuilder onPlayerAttack(Stream<Action> onPlayerAttack) {
+    return onPlayerAttack((t, p) -> onPlayerAttack);
+  }
+
+  ThingBuilder onSay(BiFunction<Thing, Action.Say, Stream<Action>> onSay) {
+    this.onSay = onSay;
+    return this;
+  }
+
+  ThingBuilder onSay(Stream<Action> onSay) {
+    return onSay((t, p) -> onSay);
   }
 
   ThingBuilder onTake(BiFunction<Thing, Action.Take, Stream<Action>> onTake) {
@@ -118,7 +168,21 @@ public class ThingBuilder {
     return new DynamicThing(
       name,
       initialHitPoints.get(),
-      new DynamicThing.Dynamic(attack, description, eat, isMonster, isPortable, onEnter, onTake, onTurn)
+      new DynamicThing.Dynamic(
+        attack,
+        description,
+        eat,
+        isMonster,
+        isPortable,
+        onDrop,
+        onEat,
+        onEnter,
+        onLook,
+        onPlayerAttack,
+        onSay,
+        onTake,
+        onTurn
+      )
     );
   }
 }

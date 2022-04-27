@@ -127,39 +127,19 @@ public interface Thing extends Location {
   //////////////////////////////////////////////////////////////////////////////
   // Action events
 
-  /**
-   * A special event that is not triggered by an Action but rather by the fact
-   * of a new turn.
-   */
-  public default Stream<Action> onTurn(Action.Turn a) {
-    return Stream.empty();
-  }
+  public Stream<Action> onTurn(Action.Turn a);
 
-  public default Stream<Action> onPlayerAttack(Action.PlayerAttack a) {
-    return Stream.empty();
-  }
+  public Stream<Action> onPlayerAttack(Action.PlayerAttack a);
 
-  public default Stream<Action> onEnter(Action.Go a) {
-    return Stream.empty();
-  }
+  public Stream<Action> onEnter(Action.Go a);
 
-  public default Stream<Action> onTake(Action.Take a) {
-    return Stream.empty();
-  }
+  public Stream<Action> onTake(Action.Take a);
 
-  public default Stream<Action> onDrop(Action.Drop a) {
-    return Stream.empty();
-  }
+  public Stream<Action> onDrop(Action.Drop a);
 
-  public default Stream<Action> onLook(Action.Look a) {
-    return Stream.empty();
-  }
+  public Stream<Action> onLook(Action.Look a);
 
-  public default Stream<Action> onEat(Action.Eat a) {
-    return Stream.empty();
-  }
+  public Stream<Action> onEat(Action.Eat a);
 
-  public default Stream<Action> onSay(Action.Say a) {
-    return Stream.empty();
-  }
+  public Stream<Action> onSay(Action.Say a);
 }
