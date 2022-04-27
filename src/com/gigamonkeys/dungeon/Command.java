@@ -40,9 +40,8 @@ public record Command(String verb, String help, Function<String[], Action> parse
    * onTurn event.
    */
   private Stream<String> forTurn(Player p) {
-    var things = p.room().allThings().map(PlacedThing::thing);
-    var reactions = things.flatMap(t -> t.onTurn(p));
-    return reactions.flatMap(a -> results(a, p));
+    var turn = new Action.Turn(p);
+    return p.room().allThings().map(PlacedThing::thing).flatMap(t -> t.onTurn(turn)).flatMap(a -> results(a, p));
   }
 
   /**

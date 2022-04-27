@@ -138,13 +138,13 @@ public class Dungeon {
     maze
       .thing("bread")
       .description("loaf of bread")
-      .eat(t -> t.consuming("Ah, delicious. Could use some mayonnaise though."))
+      .eat(t -> t.destroy("Ah, delicious. Could use some mayonnaise though."))
       .thing();
 
     maze
       .thing("sandwich")
       .description("ham and cheese sandwich")
-      .eat(t -> t.consuming("Mmmm, tasty. But I think you got a spot of mustard on your tunic."))
+      .eat(t -> t.destroy("Mmmm, tasty. But I think you got a spot of mustard on your tunic."))
       .thing();
 
     maze
@@ -161,7 +161,7 @@ public class Dungeon {
       .eat(t ->
         t.alive()
           ? "Are you out of your mind?! This is a live and jiggling " + t.name()
-          : t.consuming(
+          : t.destroy(
             t.hitPoints() < -100
               ? "The " +
               t.name() +
@@ -169,8 +169,11 @@ public class Dungeon {
               : "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger."
           )
       )
-      .onTurn((t, p) ->
-        streamIf(t.alive(), new Action.Attack(3, "The " + t.name() + " extrudes a blobby arm and smashes at you!", p))
+      .onTurn((t, a) ->
+        streamIf(
+          t.alive(),
+          new Action.Attack(3, "The " + t.name() + " extrudes a blobby arm and smashes at you!", a.player())
+        )
       )
       .thing();
 
@@ -180,7 +183,7 @@ public class Dungeon {
       .initialHitPoints(10)
       .description(t -> t.alive() ? "pirate with a wooden leg and an eye patch" : "dead pirate with his eye patch askew"
       )
-      .onEnter((t, a) -> Stream.ofNullable(t.alive() ? Action.say(t, "Arr, matey!") : null))
+      .onEnter((t, a) -> streamIf(t.alive(), Action.say(t, "Arr, matey!")))
       .onTake((t, a) ->
         streamIf(
           t.alive() && t.thing("PARROT").map(p -> a.things().contains(p)).orElse(false),

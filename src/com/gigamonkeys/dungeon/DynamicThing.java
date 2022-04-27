@@ -20,7 +20,7 @@ public class DynamicThing extends AbstractThing {
     Predicate<Thing> isPortable,
     BiFunction<Thing, Action.Go, Stream<Action>> onEnter,
     BiFunction<Thing, Action.Take, Stream<Action>> onTake,
-    BiFunction<Thing, Player, Stream<Action>> onTurn
+    BiFunction<Thing, Action.Turn, Stream<Action>> onTurn
   ) {}
 
   private final Dynamic dynamic;
@@ -69,7 +69,7 @@ public class DynamicThing extends AbstractThing {
   }
 
   @Override
-  public Stream<Action> onTurn(Player p) {
-    return dynamic.onTurn.apply(this, p);
+  public Stream<Action> onTurn(Action.Turn a) {
+    return dynamic.onTurn.apply(this, a);
   }
 }

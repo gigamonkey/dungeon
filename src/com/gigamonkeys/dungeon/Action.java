@@ -145,4 +145,14 @@ public interface Action {
       return t.onSay(this);
     }
   }
+
+  public static record Turn(Player player) implements Action {
+    public String description() {
+      return ""; // This is a pseudo action so no description.
+    }
+
+    public Stream<Action> event(Thing t) {
+      return t.onTurn(this);
+    }
+  }
 }

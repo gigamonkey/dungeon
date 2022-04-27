@@ -88,12 +88,12 @@ public interface Thing extends Location {
     return hitPoints() > 0;
   }
 
-  public default void destroy() {
+  /**
+   * Destroy the thing by unlinking it from any location and return a
+   * description of the destruction.
+   */
+  public default String destroy(String s) {
     location().ifPresent(l -> l.removeThing(this));
-  }
-
-  public default String consuming(String s) {
-    destroy();
     return s;
   }
 
@@ -123,15 +123,15 @@ public interface Thing extends Location {
    * A special event that is not triggered by an Action but rather by the fact
    * of a new turn.
    */
-  public default Stream<Action> onTurn(Player p) {
+  public default Stream<Action> onTurn(Action.Turn a) {
     return Stream.empty();
   }
 
-  public default Stream<Action> onPlayerAttack(Action.PlayerAttack attack) {
+  public default Stream<Action> onPlayerAttack(Action.PlayerAttack a) {
     return Stream.empty();
   }
 
-  public default Stream<Action> onEnter(Action.Go go) {
+  public default Stream<Action> onEnter(Action.Go a) {
     return Stream.empty();
   }
 
