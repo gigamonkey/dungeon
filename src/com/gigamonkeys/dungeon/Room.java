@@ -1,7 +1,7 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Text.*;
 import static com.gigamonkeys.dungeon.Location.PlacedThing;
+import static com.gigamonkeys.dungeon.Text.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,11 +16,11 @@ import java.util.stream.Stream;
  * Doors. They also contain Things which can be weapons, food,
  * monsters, etc.
  */
-public class Room implements Location, Items.ActualLocation {
+public class Room implements Location {
 
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
-  private final Items things = new Items(this);
+  private final Location.Helper things = new Location.Helper(this);
 
   public Room(String description) {
     this.description = description;

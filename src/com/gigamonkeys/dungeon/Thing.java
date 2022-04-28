@@ -1,7 +1,7 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Text.*;
 import static com.gigamonkeys.dungeon.Location.PlacedThing;
+import static com.gigamonkeys.dungeon.Text.*;
 
 import java.util.*;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * actually have to deal with the player applying any verb to any
  * thing.
  */
-public class Thing implements Items.ActualLocation {
+public class Thing implements Location {
 
   static class Monster extends Thing {
 
@@ -66,7 +66,7 @@ public class Thing implements Items.ActualLocation {
     }
   }
 
-  private final Items things = new Items(this);
+  private final Location.Helper things = new Location.Helper(this);
 
   private final String name;
   private final String description;

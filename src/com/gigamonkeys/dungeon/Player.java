@@ -1,7 +1,7 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Text.*;
 import static com.gigamonkeys.dungeon.Location.PlacedThing;
+import static com.gigamonkeys.dungeon.Text.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 /**
  * Represent the player.
  */
-public class Player implements Location, Items.ActualLocation {
+public class Player implements Location {
 
-  private final Items inventory = new Items(this);
+  private final Location.Helper inventory = new Location.Helper(this);
   private Room room;
   private int hitPoints;
 
