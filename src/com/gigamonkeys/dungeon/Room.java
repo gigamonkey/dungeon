@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * Doors. They also contain Things which can be weapons, food,
  * monsters, etc.
  */
-public class Room implements Location, ActualLocation {
+public class Room implements Location, Items.ActualLocation {
 
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();

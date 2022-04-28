@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 /**
  * Represent the player.
  */
-public class Player implements Location, ActualLocation {
+public class Player implements Location, Items.ActualLocation {
 
   private final Items inventory = new Items(this);
   private Room room;

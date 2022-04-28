@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * actually have to deal with the player applying any verb to any
  * thing.
  */
-public class Thing implements ActualLocation {
+public class Thing implements Items.ActualLocation {
 
   static class Monster extends Thing {
 

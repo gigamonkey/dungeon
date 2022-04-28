@@ -13,6 +13,10 @@ import java.util.stream.Stream;
  */
 public class Items implements Location {
 
+  public static interface ActualLocation {
+    public boolean canTake(Thing thing);
+  }
+
   private final Map<String, PlacedThing> things = new HashMap<>();
   private final ActualLocation actual;
 
