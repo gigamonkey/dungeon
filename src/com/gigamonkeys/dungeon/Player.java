@@ -1,6 +1,7 @@
 package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Text.*;
+import static com.gigamonkeys.dungeon.Location.PlacedThing;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Text.*;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -38,4 +40,10 @@ public interface Location {
    * Can the player take the Thing from this location.
    */
   public boolean canTake(Thing thing);
+
+  public static record PlacedThing(Thing thing, String where) {
+    public Stream<String> describe() {
+      return Stream.of(where + " is " + a(thing.description()) + ".", thing.describeThings());
+    }
+  }
 }

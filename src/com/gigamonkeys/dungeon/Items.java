@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Location.PlacedThing;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
