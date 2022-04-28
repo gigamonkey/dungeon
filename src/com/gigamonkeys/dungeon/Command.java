@@ -34,9 +34,9 @@ public record Command(String verb, String help, Function<String[], Action> parse
    * reactions, recursively.
    */
   private Stream<String> results(Action action, Player player) {
-    // N.B. Need to wrap the player in the second stream to avoid defer getting
-    // the current room so that we get the room after the action has been
-    // described (with its possible side effect of changing the player's room)
+    // N.B. Need to wrap the player in the second stream to defer getting the
+    // current room so that we get the room after the action has been described
+    // (with its possible side effect of changing the player's room)
     return Stream.concat(
       Stream.of(action.description()),
       Stream
