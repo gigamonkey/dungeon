@@ -6,15 +6,16 @@ import static com.gigamonkeys.dungeon.Text.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
+
 
 /**
  * Represent the player.
  */
 public class Player implements Location {
 
-  private final Location.Helper inventory = new Location.Helper(this);
+  private final Map<String, PlacedThing> inventory = new HashMap<>();
   private Room room;
   private int hitPoints;
 
@@ -29,28 +30,9 @@ public class Player implements Location {
   //////////////////////////////////////////////////////////////////////////////
   // Location implementation
 
-  public void placeThing(Thing thing, String where) {
-    inventory.placeThing(thing, where);
-  }
 
-  public void removeThing(Thing thing) {
-    inventory.removeThing(thing);
-  }
-
-  public Optional<Thing> thing(String name) {
-    return inventory.thing(name);
-  }
-
-  public Collection<PlacedThing> things() {
-    return inventory.things();
-  }
-
-  public Stream<PlacedThing> allThings() {
-    return inventory.allThings();
-  }
-
-  public boolean canTake(Thing thing) {
-    return true;
+  public Map<String, PlacedThing> locationMap() {
+    return inventory;
   }
 
   //
@@ -75,7 +57,7 @@ public class Player implements Location {
 
   public String take(Thing t) {
     if (t.isPortable()) {
-      inventory.placeThing(t, "in your stuff");
+      placeThing(t, "in your stuff");
       return "Okay. You have " + a(t.description());
     } else {
       return "You can't take the " + t.name() + "!";
@@ -87,7 +69,7 @@ public class Player implements Location {
     var notTaken = new ArrayList<String>();
     for (var t : things) {
       if (t.canBeTaken()) {
-        inventory.placeThing(t, "in your stuff");
+        placeThing(t, "in your stuff");
         taken.add(t.description());
       } else {
         notTaken.add(t.name());
@@ -113,10 +95,10 @@ public class Player implements Location {
   }
 
   public String inventory() {
-    if (inventory.things().isEmpty()) {
+    if (things().isEmpty()) {
       return "You've got nothing!";
     } else {
-      var items = inventory.things().stream().map(t -> a(t.thing().description())).toList();
+      var items = things().stream().map(t -> a(t.thing().description())).toList();
       return new StringBuilder("You have ").append(commify(items)).append(".").toString();
     }
   }

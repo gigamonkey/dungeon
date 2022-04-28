@@ -20,7 +20,7 @@ public class Room implements Location {
 
   private final String description;
   private final Map<Direction, Door> doors = new HashMap<Direction, Door>();
-  private final Location.Helper things = new Location.Helper(this);
+  private final Map<String, PlacedThing> things = new HashMap<>();
 
   public Room(String description) {
     this.description = description;
@@ -29,28 +29,8 @@ public class Room implements Location {
   //////////////////////////////////////////////////////////////////////////////
   // Location implementation
 
-  public void placeThing(Thing thing, String where) {
-    things.placeThing(thing, where);
-  }
-
-  public void removeThing(Thing thing) {
-    things.removeThing(thing);
-  }
-
-  public Optional<Thing> thing(String name) {
-    return things.thing(name);
-  }
-
-  public Collection<PlacedThing> things() {
-    return things.things();
-  }
-
-  public Stream<PlacedThing> allThings() {
-    return things.allThings();
-  }
-
-  public boolean canTake(Thing thing) {
-    return true;
+  public Map<String, PlacedThing> locationMap() {
+    return things;
   }
 
   //

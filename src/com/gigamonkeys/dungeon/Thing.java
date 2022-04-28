@@ -66,7 +66,7 @@ public class Thing implements Location {
     }
   }
 
-  private final Location.Helper things = new Location.Helper(this);
+  private final Map<String, PlacedThing> things = new HashMap<>();
 
   private final String name;
   private final String description;
@@ -189,32 +189,14 @@ public class Thing implements Location {
   //////////////////////////////////////////////////////////////////////////////
   // Location implementation -- things can contain things.
 
-  public void placeThing(Thing thing, String where) {
-    things.placeThing(thing, where);
-  }
-
-  public void removeThing(Thing thing) {
-    things.removeThing(thing);
-  }
-
-  public Optional<Thing> thing(String name) {
-    return things.thing(name);
-  }
-
-  public Collection<PlacedThing> things() {
-    return things.things();
-  }
-
-  public Stream<PlacedThing> allThings() {
-    return things.allThings();
+  public Map<String, PlacedThing> locationMap() {
+    return things;
   }
 
   public boolean canTake(Thing thing) {
     return !alive();
   }
 
-  //
-  //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
   // Action events
