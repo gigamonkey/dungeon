@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Location.PlacedThing;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +105,9 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
           return Optional.empty();
         }
       } else {
-        things.add(maybe.get());
+        var thing = maybe.get();
+        things.add(thing);
+        thing.allThings().map(PlacedThing::thing).forEach(things::add);
       }
     }
     return Optional.of(things);

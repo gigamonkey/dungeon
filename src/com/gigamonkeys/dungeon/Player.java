@@ -52,16 +52,7 @@ public class Player implements Location {
     return room;
   }
 
-  public String take(Thing t) {
-    if (t.isPortable()) {
-      placeThing(t, "in your stuff");
-      return "Okay. You have " + a(t.description());
-    } else {
-      return "You can't take the " + t.name() + "!";
-    }
-  }
-
-  public String takeThings(List<Thing> things) {
+  public String take(List<Thing> things) {
     var taken = new ArrayList<String>();
     var notTaken = new ArrayList<String>();
     for (var t : things) {

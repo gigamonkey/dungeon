@@ -122,7 +122,7 @@ public interface Action {
 
   public static record Take(Player p, List<Thing> things) implements Action {
     public String description() {
-      return p.takeThings(things);
+      return p.take(things);
     }
 
     public Stream<Action> event(Thing t) {
