@@ -200,19 +200,7 @@ public class Thing implements Location {
   //////////////////////////////////////////////////////////////////////////////
   // Action events
 
-  public Stream<Action> onTurn(Action.Turn a) {
-    return Stream.empty();
-  }
-
-  public Stream<Action> onPlayerAttack(Action.PlayerAttack a) {
-    return Stream.empty();
-  }
-
-  public Stream<Action> onEnter(Action.Go a) {
-    return Stream.empty();
-  }
-
-  public Stream<Action> onTake(Action.Take a) {
+  public Stream<Action> onAttack(Action.Attack a) {
     return Stream.empty();
   }
 
@@ -220,11 +208,23 @@ public class Thing implements Location {
     return Stream.empty();
   }
 
+  public Stream<Action> onEat(Action.Eat a) {
+    return Stream.empty();
+  }
+
+  public Stream<Action> onEnter(Action.Go a) {
+    return Stream.empty();
+  }
+
   public Stream<Action> onLook(Action.Look a) {
     return Stream.empty();
   }
 
-  public Stream<Action> onEat(Action.Eat a) {
+  public Stream<Action> onMove(Action.Move a) {
+    return Stream.empty();
+  }
+
+  public Stream<Action> onPlayerAttack(Action.PlayerAttack a) {
     return Stream.empty();
   }
 
@@ -232,7 +232,11 @@ public class Thing implements Location {
     return Stream.empty();
   }
 
-  public Stream<Action> onMove(Action.Move a) {
+  public Stream<Action> onTake(Action.Take a) {
+    return Stream.empty();
+  }
+
+  public Stream<Action> onTurn(Action.Turn a) {
     return Stream.empty();
   }
 }

@@ -2,9 +2,7 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Text.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,43 +41,16 @@ public class Player implements Location {
     return thing(name).or(() -> roomThing(name));
   }
 
-  public String go(Door door) {
+  public void go(Door door) {
     room = door.from(room);
-    return room.description();
   }
 
   public Room room() {
     return room;
   }
 
-  public String take(List<Thing> things) {
-    var taken = new ArrayList<String>();
-    var notTaken = new ArrayList<String>();
-    for (var t : things) {
-      if (t.canBeTaken()) {
-        placeThing(t, "in your stuff");
-        taken.add(t.description());
-      } else {
-        notTaken.add(t.name());
-      }
-    }
-    var desc = new ArrayList<String>();
-    if (!taken.isEmpty()) {
-      desc.add("Okay, took " + commify(taken) + ".");
-    }
-    if (!notTaken.isEmpty()) {
-      desc.add("Can't take " + commify(notTaken) + ".");
-    }
-    return String.join(" ", desc);
-  }
-
-  public String drop(Thing t) {
+  public void drop(Thing t) {
     room.drop(t);
-    return "You drop the " + t.name() + ".";
-  }
-
-  public String look() {
-    return room.description();
   }
 
   public String inventory() {
@@ -89,14 +60,6 @@ public class Player implements Location {
       var items = things().stream().map(t -> a(t.thing().description())).toList();
       return new StringBuilder("You have ").append(commify(items)).append(".").toString();
     }
-  }
-
-  public String eat(Thing t) {
-    return t.eat();
-  }
-
-  public String listen() {
-    return "Can't hear anything!"; // FIXME: implement
   }
 
   public int hitPoints() {
