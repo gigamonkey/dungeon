@@ -102,101 +102,110 @@ public class Dungeon {
       .toSouthOf("entry", "blobbybloblair", "dank tunnel")
       .toEastOf("kitchen", "dining", "swinging door");
 
-    maze.thing("pedestal").description("stone pedestal").isPortable(false).thing();
+    maze.thing(new Things.Furniture("pedestal", "stone pedestal"));
+    maze.thing(new Things.Furniture("table", "wooden table"));
+    maze.thing(new Things.Furniture("tray", "tv tray"));
 
-    maze.thing("table").description("wooden table").isPortable(false).thing();
-
-    maze.thing("tray").description("tv tray").isPortable(false).thing();
-
-    maze
-      .thing("ring")
-      .description("ring of great power")
-      .attack(
+    maze.thing(
+      new Things.Weapon(
+        "ring",
+        "ring of great power",
         new Attack.Full(
           "A sphere of light emanates from the ring",
           1000,
           (t -> " blasting the " + t.name() + " to smithereens.")
         )
       )
-      .thing();
+    );
 
-    maze
-      .thing("axe")
-      .eat("Axes are not good for eating. Now your teeth hurt and you are no less hungry.")
-      .attack(new Attack.Simple("You swing your axe and connect!", 2))
-      .thing();
+    maze.thing(
+      new Things.Weapon("axe", "heavy dwarven axe", new Attack.Simple("You swing your axe and connect!", 2)) {
+        public String eat() {
+          return "Axes are not good for eating. Now your teeth hurt and you are no less hungry.";
+        }
+      }
+    );
 
-    maze
-      .thing("sword")
-      .description("broadsword with a rusty iron hilt")
-      .eat("What are you, a sword swallower?! You can't eat a sword.")
-      .attack(new Attack.Simple("Oof, this sword is heavy but you manage to swing it.", 5))
-      .thing();
+    maze.thing(
+      new Things.Weapon(
+        "sword",
+        "broadsword with a rusty iron hilt",
+        new Attack.Simple("Oof, this sword is heavy but you manage to swing it.", 5)
+      ) {
+        public String eat() {
+          return "What are you, a sword swallower?! You can't eat a sword.";
+        }
+      }
+    );
 
-    maze
-      .thing("bread")
-      .description("loaf of bread")
-      .eat(t -> t.destroy("Ah, delicious. Could use some mayonnaise though."))
-      .thing();
+    maze.thing(new Things.Food("bread", "a loaf of bread", "Ah, delicious. Could use some mayonnaise though."));
 
-    maze
-      .thing("sandwich")
-      .description("ham and cheese sandwich")
-      .eat(t -> t.destroy("Mmmm, tasty. But I think you got a spot of mustard on your tunic."))
-      .thing();
-
-    maze
-      .thing("blobbyblob")
-      .isMonster(true)
-      .initialHitPoints(7)
-      .description(t ->
-        t.alive()
-          ? t.name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad"
-          : t.hitPoints() > -100
-            ? "dead " + t.name() + " decaying into puddle of goo"
-            : "a spattering of blobbyblob bits"
+    maze.thing(
+      new Things.Food(
+        "sandwich",
+        "ham and cheese sandwich",
+        "Mmmm, tasty. But I think you got a spot of mustard on your tunic."
       )
-      .eat(t ->
-        t.alive()
-          ? "Are you out of your mind?! This is a live and jiggling " + t.name()
-          : t.destroy(
-            t.hitPoints() < -100
-              ? "The " +
-              t.name() +
-              " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
-              : "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger."
-          )
-      )
-      .onTurn((t, a) ->
-        streamIf(
-          t.alive(),
-          new Action.Attack(3, "The " + t.name() + " extrudes a blobby arm and smashes at you!", a.player())
-        )
-      )
-      .thing();
+    );
 
-    maze
-      .thing("pirate")
-      .isMonster(true)
-      .initialHitPoints(10)
-      .description(t -> t.alive() ? "pirate with a wooden leg and an eye patch" : "dead pirate with his eye patch askew"
-      )
-      .onEnter((t, a) -> streamIf(t.alive(), Action.say(t, "Arr, matey!")))
-      .onTake((t, a) ->
-        streamIf(
-          t.alive() && t.thing("PARROT").map(p -> a.things().contains(p)).orElse(false),
-          Action.say(t, "Oi, ye swarthy dog! Hands off me parrot!")
-        )
-      )
-      .thing();
+    maze.thing(
+      new Things.Monster("blobbyblob", null, null, 7, false) {
+        @Override
+        public String description() {
+          return alive()
+            ? name() + ", a gelatenous mass with too many eyes and an odor of jello casserole gone bad"
+            : hitPoints() > -100
+              ? "dead " + name() + " decaying into puddle of goo"
+              : "a spattering of blobbyblob bits";
+        }
 
-    maze
-      .thing("parrot")
-      .isMonster(true)
-      .isPortable(true)
-      .initialHitPoints(5)
-      .description(t -> t.alive() ? "green and blue parrot with a tiny eye patch" : "dead parrot")
-      .thing();
+        @Override
+        public String eat() {
+          return alive()
+            ? "Are you out of your mind?! This is a live and jiggling " + name()
+            : destroy(
+              hitPoints() < -100
+                ? "The " +
+                name() +
+                " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
+                : "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger."
+            );
+        }
+
+        @Override
+        public Stream<Action> onTurn(Action.Turn a) {
+          return streamIf(
+            alive(),
+            new Action.Attack(3, "The " + name() + " extrudes a blobby arm and smashes at you!", a.player())
+          );
+        }
+      }
+    );
+
+    maze.thing(
+      new Things.Monster(
+        "pirate",
+        "pirate with a wooden leg and an eye patch",
+        "dead pirate with his eye patch askew",
+        10,
+        false
+      ) {
+        @Override
+        public Stream<Action> onEnter(Action.Go a) {
+          return streamIf(alive(), Action.say(this, "Arr, matey!"));
+        }
+
+        @Override
+        public Stream<Action> onTake(Action.Take a) {
+          return streamIf(
+            alive() && thing("PARROT").map(p -> a.things().contains(p)).orElse(false),
+            Action.say(this, "Oi, ye swarthy dog! Hands off me parrot!")
+          );
+        }
+      }
+    );
+
+    maze.thing(new Things.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true));
 
     maze
       .place("ring", "on", "pedestal")

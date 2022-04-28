@@ -30,6 +30,11 @@ class MazeBuilder {
     };
   }
 
+  public MazeBuilder thing(Thing thing) {
+    things.put(thing.name().toLowerCase(), thing);
+    return this;
+  }
+
   public MazeBuilder place(String child, String place, String parent) {
     location(parent).placeThing(things.get(child), place);
     return this;
