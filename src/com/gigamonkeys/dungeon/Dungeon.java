@@ -103,12 +103,12 @@ public class Dungeon {
     kitchen.connect("swinging door", dining, EAST);
 
     // Furniture
-    var pedestal = new Things.Furniture("pedestal", "stone pedestal");
-    var table = new Things.Furniture("table", "wooden table");
-    var tray = new Things.Furniture("tray", "tv tray");
+    var pedestal = new Thing.Furniture("pedestal", "stone pedestal");
+    var table = new Thing.Furniture("table", "wooden table");
+    var tray = new Thing.Furniture("tray", "tv tray");
 
     // Things
-    var ring = new Things.Weapon(
+    var ring = new Thing.Weapon(
       "ring",
       "ring of great power",
       new Attack.Full(
@@ -118,13 +118,13 @@ public class Dungeon {
       )
     );
 
-    var axe = new Things.Weapon("axe", "heavy dwarven axe", new Attack.Simple("You swing your axe and connect!", 2)) {
+    var axe = new Thing.Weapon("axe", "heavy dwarven axe", new Attack.Simple("You swing your axe and connect!", 2)) {
       public String eat() {
         return "Axes are not good for eating. Now your teeth hurt and you are no less hungry.";
       }
     };
 
-    var sword = new Things.Weapon(
+    var sword = new Thing.Weapon(
       "sword",
       "broadsword with a rusty iron hilt",
       new Attack.Simple("Oof, this sword is heavy but you manage to swing it.", 5)
@@ -134,16 +134,16 @@ public class Dungeon {
       }
     };
 
-    var bread = new Things.Food("bread", "a loaf of bread", "Ah, delicious. Could use some mayonnaise though.");
+    var bread = new Thing.Food("bread", "a loaf of bread", "Ah, delicious. Could use some mayonnaise though.");
 
-    var sandwich = new Things.Food(
+    var sandwich = new Thing.Food(
       "sandwich",
       "ham and cheese sandwich",
       "Mmmm, tasty. But I think you got a spot of mustard on your tunic."
     );
 
     // Monsters
-    var blobbyblob = new Things.Monster("blobbyblob", null, null, 7, false) {
+    var blobbyblob = new Thing.Monster("blobbyblob", null, null, 7, false) {
       @Override
       public String description() {
         return alive()
@@ -173,7 +173,7 @@ public class Dungeon {
       }
     };
 
-    var pirate = new Things.Monster(
+    var pirate = new Thing.Monster(
       "pirate",
       "pirate with a wooden leg and an eye patch",
       "dead pirate with his eye patch askew",
@@ -194,7 +194,7 @@ public class Dungeon {
       }
     };
 
-    var parrot = new Things.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true);
+    var parrot = new Thing.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true);
 
     // Place things
     pedestal.placeThing(ring, "on");
