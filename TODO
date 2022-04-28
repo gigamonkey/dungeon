@@ -1,15 +1,6 @@
-- TAKE should support 'take a and b', 'take a, b, and c', etc. (Probably by
-  having a list parser.)
-
-- When a thing is in another thing, the enclosing thing should control whether
-  you can take it. (E.g. you can take the parrot from the pirate if the pirate
-  is weak or dead.)
-
 - Give objects a default place on the player (in bag, on finger, etc.)
 
 - Possibly differential damage for weapon/monster pairs.
-
-- Description class to deal with word wrapping, commafying, lists, etc.
 
 - Notion of turns within room so attacks can change or only start after a certain turn.
 
@@ -20,9 +11,5 @@
   BREAD" or even better "THERE IS A LOAF OF BREAD ON A WOODEN TABLE IN THE
   MIDDLE OF THE ROOM" rather than "THERE IS A WOODEN TABLE. ON THE TABLE IS A
   LOAF OF BREAD."
-
-- Feels like there should be a way to reify the verbs.
-
-- HELP commands (probably related to reifying verbs)
 
 - Abbreviations in commands.
