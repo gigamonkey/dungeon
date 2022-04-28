@@ -28,7 +28,9 @@ public interface Action {
   }
 
   public static Action noWrap(String description) {
-    return () -> { throw new Command.SpecialOutput(description); };
+    return () -> {
+      throw new Command.SpecialOutput(description);
+    };
   }
 
   //////////////////////////////////////////////////////////////////////////////

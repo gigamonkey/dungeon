@@ -18,7 +18,7 @@ public interface Location {
    */
   public static record PlacedThing(Thing thing, String where) {
     public Stream<String> describe() {
-      return Stream.of(where + " is " + a(thing.description()) + ".", thing.describeThings());
+      return Stream.of(capitalize(where) + " is " + a(thing.description()) + ".", thing.describeThings());
     }
   }
 

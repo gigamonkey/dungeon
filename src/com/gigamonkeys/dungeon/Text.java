@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 class Text {
 
   public static String a(String thing) {
-    var a = "AEIOUY".indexOf(Character.toUpperCase(thing.charAt(0))) != -1 ? "an " : "a ";
+    var a = "aeiouy".indexOf(Character.toLowerCase(thing.charAt(0))) != -1 ? "an " : "a ";
     return a + thing;
   }
 
@@ -21,6 +21,10 @@ class Text {
         default -> s + "s";
       };
     }
+  }
+
+  public static String capitalize(String s) {
+    return s.substring(0, 1).toUpperCase() + s.substring(1);
   }
 
   public static String numberOf(int n, String s) {

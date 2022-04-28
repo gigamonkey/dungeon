@@ -77,7 +77,7 @@ public class Thing implements Location {
   private Optional<Location> location = Optional.empty();
 
   Thing(String name, String description, boolean isPortable, boolean isMonster, int hitPoints) {
-    this.name = name.toUpperCase();
+    this.name = name;
     this.description = description;
     this.hitPoints = hitPoints;
     this.isPortable = isPortable;
@@ -96,7 +96,7 @@ public class Thing implements Location {
     var desc = new ArrayList<String>();
     things()
       .stream()
-      .map(pt -> pt.where() + " the " + name() + " is " + a(pt.thing().description()) + ".")
+      .map(pt -> capitalize(pt.where()) + " the " + name() + " is " + a(pt.thing().description()) + ".")
       .forEach(desc::add);
 
     things().stream().map(PlacedThing::thing).map(Thing::describeThings).forEach(desc::add);

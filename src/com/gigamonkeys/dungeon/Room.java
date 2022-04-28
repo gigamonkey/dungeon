@@ -83,7 +83,7 @@ public class Room implements Location {
     var ds = Arrays
       .stream(Direction.class.getEnumConstants())
       .filter(doors::containsKey)
-      .map(d -> a(doors.get(d).description()) + " to the " + d)
+      .map(d -> a(doors.get(d).description()) + " to the " + d.toString().toLowerCase())
       .toList();
 
     return "There is " + commify(ds) + ".";

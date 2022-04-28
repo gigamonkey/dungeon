@@ -43,7 +43,7 @@ public class Dungeon {
     say(player.room().description());
     while (!gameOver) {
       out.print("> ");
-      var tokens = parseLine(in.readLine().toUpperCase());
+      var tokens = parseLine(in.readLine().toLowerCase());
       if (tokens.length > 0) {
         say(doCommand(tokens, player));
         if (!player.alive()) {
@@ -61,7 +61,7 @@ public class Dungeon {
 
   private void say(String s) {
     out.println();
-    out.println(s.toUpperCase());
+    out.println(s);
     out.println();
   }
 
@@ -79,15 +79,15 @@ public class Dungeon {
   private void registerCommands(Player player) {
     commands.clear();
     var parser = new CommandParser(player, this, commands);
-    registerCommand(new Command("ATTACK", "Attack a monster with a weapon.", parser::attack));
-    registerCommand(new Command("DROP", "Drop an item you are carrying.", parser::drop));
-    registerCommand(new Command("EAT", "Eat an item you are holding or in the room.", parser::eat));
-    registerCommand(new Command("GO", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
-    registerCommand(new Command("HELP", "Get help on commands.", parser::help));
-    registerCommand(new Command("INVENTORY", "List the items you are holding.", parser::inventory));
-    registerCommand(new Command("LOOK", "Look at the room your are in again.", parser::look));
-    registerCommand(new Command("QUIT", "Quit the game", parser::quit));
-    registerCommand(new Command("TAKE", "Take an item from the room.", parser::take));
+    registerCommand(new Command("attack", "Attack a monster with a weapon.", parser::attack));
+    registerCommand(new Command("drop", "Drop an item you are carrying.", parser::drop));
+    registerCommand(new Command("eat", "Eat an item you are holding or in the room.", parser::eat));
+    registerCommand(new Command("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
+    registerCommand(new Command("help", "Get help on commands.", parser::help));
+    registerCommand(new Command("inventory", "List the items you are holding.", parser::inventory));
+    registerCommand(new Command("look", "Look at the room your are in again.", parser::look));
+    registerCommand(new Command("quit", "Quit the game", parser::quit));
+    registerCommand(new Command("take", "Take an item from the room.", parser::take));
   }
 
   private Room buildMaze() {
@@ -105,7 +105,7 @@ public class Dungeon {
     // Furniture
     var pedestal = new Thing.Furniture("pedestal", "stone pedestal");
     var table = new Thing.Furniture("table", "wooden table");
-    var tray = new Thing.Furniture("tray", "tv tray");
+    var tray = new Thing.Furniture("tray", "TV tray");
 
     // Things
     var ring = new Thing.Weapon(
@@ -188,7 +188,7 @@ public class Dungeon {
       @Override
       public Stream<Action> onTake(Action.Take a) {
         return streamIf(
-          alive() && thing("PARROT").map(p -> a.things().contains(p)).orElse(false),
+          alive() && thing("parrot").map(p -> a.things().contains(p)).orElse(false),
           Action.say(this, "Oi, ye swarthy dog! Hands off me parrot!")
         );
       }
@@ -197,7 +197,7 @@ public class Dungeon {
     var parrot = new Thing.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true) {
       @Override
       public Stream<Action> onDrop(Action.Drop a) {
-        return a.thing().name().equals("BREAD")
+        return a.thing().name().equals("bread")
           ? Stream.of(
             Action.move(
               this,

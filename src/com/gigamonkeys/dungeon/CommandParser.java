@@ -68,7 +68,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   Action attack(String[] args) {
     var i = 1;
 
-    var target = args.length == 3 && args[i].equals("WITH") ? onlyMonster() : arg(args, i++).flatMap(player::roomThing);
+    var target = args.length == 3 && args[i].equals("with") ? onlyMonster() : arg(args, i++).flatMap(player::roomThing);
 
     final var idx = i;
 
@@ -99,7 +99,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
     for (var i = start; i < args.length; i++) {
       var maybe = player.roomThing(args[i]);
       if (!maybe.isPresent()) {
-        if (!args[i].equals("AND")) {
+        if (!args[i].equals("and")) {
           return Optional.empty();
         }
       } else {
@@ -134,7 +134,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
 
   private Action attackTarget(Thing target, String[] args, int i) {
     return arg(args, i)
-      .flatMap(n -> expect("WITH", n))
+      .flatMap(n -> expect("with", n))
       .map(e -> attackTargetWithWeapon(target, args, i + 1))
       .orElse(Action.none("Don't understand 'ATTACK' with no 'WITH'."));
   }
