@@ -84,7 +84,7 @@ public class Player implements Location {
 
   public String drop(Thing t) {
     room.drop(t);
-    return "You drop the " + t.name();
+    return "You drop the " + t.name() + ".";
   }
 
   public String look() {

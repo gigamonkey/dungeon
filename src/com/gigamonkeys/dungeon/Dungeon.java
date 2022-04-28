@@ -194,7 +194,22 @@ public class Dungeon {
       }
     };
 
-    var parrot = new Thing.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true);
+    var parrot = new Thing.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true) {
+      @Override
+      public Stream<Action> onDrop(Action.Drop a) {
+        System.out.println("Dropped " + a.thing().name());
+        return a.thing().name().equals("BREAD")
+          ? Stream.of(
+            Action.move(
+              this,
+              a.thing(),
+              "on",
+              "The " + name() + " flies down and starts eating the " + a.thing().name() + "."
+            )
+          )
+          : Stream.empty();
+      }
+    };
 
     // Place things
     pedestal.placeThing(ring, "on");

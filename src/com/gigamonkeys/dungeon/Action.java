@@ -68,6 +68,10 @@ public interface Action {
     return new Drop(p, thing);
   }
 
+  public static Action move(Thing t, Location l, String p, String d) {
+    return new Move(t, l, p, d);
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // Concrete actions. All actions that generate events need to have a concrete
   // class rather than a lambda.
@@ -155,6 +159,17 @@ public interface Action {
 
     public Stream<Action> event(Thing t) {
       return t.onTurn(this);
+    }
+  }
+
+  public static record Move(Thing thing, Location location, String place, String movement) implements Action {
+    public String description() {
+      location.placeThing(thing, place);
+      return movement;
+    }
+
+    public Stream<Action> event(Thing t) {
+      return t.onMove(this);
     }
   }
 }

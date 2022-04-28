@@ -231,4 +231,8 @@ public class Thing implements Location {
   public Stream<Action> onSay(Action.Say a) {
     return Stream.empty();
   }
+
+  public Stream<Action> onMove(Action.Move a) {
+    return Stream.empty();
+  }
 }

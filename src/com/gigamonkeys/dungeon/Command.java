@@ -1,7 +1,7 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Location.PlacedThing;
-
+import com.gigamonkeys.dungeon.Location.PlacedThing;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -13,11 +13,13 @@ public record Command(String verb, String help, Function<String[], Action> parse
     try {
       var action = parser.apply(args);
       int origHitPoints = p.hitPoints();
-      return new Text.Wrapped(60)
-        .add(results(action, p))
-        .add(forTurn(p))
-        .add(playerStateChange(p, origHitPoints))
-        .toString();
+      var text = new Text.Wrapped(60);
+
+      text.add(action.description());
+      addReactions(text, action, p);
+      text.add(forTurn(p));
+      text.add(playerStateChange(p, origHitPoints));
+      return text.toString();
     } catch (SpecialOutput output) {
       // Can't decide if this is a kludge or elegant. The idea here is that
       // certain actions want to both control the formatting of the output and
@@ -45,6 +47,18 @@ public record Command(String verb, String help, Function<String[], Action> parse
         .flatMap(action::event)
         .flatMap(a -> results(a, player))
     );
+  }
+
+  private void addReactions(Text.Wrapped text, Action action, Player player) {
+    // Adds the reactions in batches because getting the description of each
+    // action may potentially change the state of the world in ways that lead to
+    // ConcurrentModificationExceptions from the stream.
+
+    List<Action> reactions = player.room().allThings().map(PlacedThing::thing).flatMap(action::event).toList();
+    text.add(reactions.stream().map(Action::description));
+    for (var a : reactions) {
+      addReactions(text, a, player);
+    }
   }
 
   /**
