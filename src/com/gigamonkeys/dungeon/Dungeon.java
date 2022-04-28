@@ -91,7 +91,6 @@ public class Dungeon {
   }
 
   private Room buildMaze() {
-
     // Rooms
     var entry = new Room("a dusty entryway to a castle");
     var kitchen = new Room("what appears to be a kitchen");

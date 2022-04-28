@@ -1,5 +1,9 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Text.*;
+
+import java.util.*;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -10,81 +14,74 @@ import java.util.stream.Stream;
  * actually have to deal with the player applying any verb to any
  * thing.
  */
-public interface Thing extends Location {
-  /**
-   * The thing's name. How it must be referred to in commands.
-   */
-  public String name();
+public class Thing implements ActualLocation {
 
-  /**
-   * Set the thing's location.
-   */
-  public void moveTo(Location location);
+  private final Items things = new Items(this);
 
-  /**
-   * Get the thing's location.
-   */
-  public Optional<Location> location();
+  private final String name;
+  private final String description;
+  private final boolean isPortable;
+  private final boolean isMonster;
 
-  /**
-   * Clear the thing's location. (Such as when the thing is eaten or otherwise destroyed.)
-   */
-  public void clearLocation();
+  private int hitPoints;
+  private Optional<Location> location = Optional.empty();
 
-  /**
-   * Take damage.
-   */
-  public void takeDamage(int damage);
+  Thing(String name, String description, boolean isPortable, boolean isMonster, int hitPoints) {
+    this.name = name.toUpperCase();
+    this.description = description;
+    this.hitPoints = hitPoints;
+    this.isPortable = isPortable;
+    this.isMonster = isMonster;
+  }
 
-  /**
-   * How many points does the Thing have left.
-   */
-  public int hitPoints();
+  public String name() {
+    return name;
+  }
 
-  /**
-   * Generate an attack when used as a weapon.
-   */
-  public Attack attack();
+  public String description() {
+    return description;
+  }
 
-  //////////////////////////////////////////////////////////////////////////////
-  // Descriptors -- string renderedings of the thing or consequences of taking
-  // certain actions on the thing.
+  public String describeThings() {
+    var desc = new ArrayList<String>();
+    things()
+      .stream()
+      .map(pt -> pt.where() + " the " + name() + " is " + a(pt.thing().description()) + ".")
+      .forEach(desc::add);
 
-  /**
-   * Describe eating the thing.
-   */
-  public String eat();
+    things().stream().map(PlacedThing::thing).map(Thing::describeThings).forEach(desc::add);
 
-  /**
-   * Describe the thing itself.
-   */
-  public String description();
+    return String.join(" ", desc);
+  }
 
-  /**
-   * Describe any things located on this thing.
-   */
-  public String describeThings();
+  public String eat() {
+    return "Yuck. You can't eat " + a(description()) + ".";
+  }
 
-  //////////////////////////////////////////////////////////////////////////////
-  // Predicates
+  public boolean isPortable() {
+    return isPortable;
+  }
 
-  /**
-   * Can the thing be taken by the player?
-   */
-  public boolean isPortable();
+  public boolean isMonster() {
+    return isMonster;
+  }
 
-  /**
-   * Is the thing a monster?
-   */
-  public boolean isMonster();
+  public int hitPoints() {
+    return hitPoints;
+  }
 
-  //////////////////////////////////////////////////////////////////////////////
-  // Some default implementations. Probably don't need to override these.
+  public void takeDamage(int damage) {
+    hitPoints -= damage;
+  }
+
+  public Attack attack() {
+    return new Attack.Useless(a(description()) + " is not an effective weapon.");
+  }
 
   /**
    * Is the thing alive?
    */
-  public default boolean alive() {
+  public boolean alive() {
     return hitPoints() > 0;
   }
 
@@ -92,7 +89,7 @@ public interface Thing extends Location {
    * Destroy the thing by unlinking it from any location and return a
    * description of the destruction.
    */
-  public default String destroy(String s) {
+  public String destroy(String s) {
     location().ifPresent(l -> l.removeThing(this));
     return s;
   }
@@ -100,7 +97,7 @@ public interface Thing extends Location {
   /**
    * Apply an attack to this thing as a target.
    */
-  public default String applyAttack(Attack attack) {
+  public String applyAttack(Attack attack) {
     if (isMonster()) {
       takeDamage(attack.damage());
       return (
@@ -120,26 +117,87 @@ public interface Thing extends Location {
    * Can this thing be taken from it's current location. It needs to be both
    * inherently portable and the location needs to allow it to be taken.
    */
-  public default boolean canBeTaken() {
+  public boolean canBeTaken() {
     return isPortable() && location().map(l -> l.canTake(this)).orElse(false);
   }
+
+  ////////////////////////////////////////////////////////////////////////////
+  // Movement
+
+  public final Optional<Location> location() {
+    return location;
+  }
+
+  public final void moveTo(Location location) {
+    this.location = Optional.of(location);
+  }
+
+  public final void clearLocation() {
+    location = Optional.empty();
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Location implementation -- things can contain things.
+
+  public void placeThing(Thing thing, String where) {
+    things.placeThing(thing, where);
+  }
+
+  public void removeThing(Thing thing) {
+    things.removeThing(thing);
+  }
+
+  public Optional<Thing> thing(String name) {
+    return things.thing(name);
+  }
+
+  public Collection<PlacedThing> things() {
+    return things.things();
+  }
+
+  public Stream<PlacedThing> allThings() {
+    return things.allThings();
+  }
+
+  public boolean canTake(Thing thing) {
+    return !alive();
+  }
+
+  //
+  //////////////////////////////////////////////////////////////////////////////
 
   //////////////////////////////////////////////////////////////////////////////
   // Action events
 
-  public Stream<Action> onTurn(Action.Turn a);
+  public Stream<Action> onTurn(Action.Turn a) {
+    return Stream.empty();
+  }
 
-  public Stream<Action> onPlayerAttack(Action.PlayerAttack a);
+  public Stream<Action> onPlayerAttack(Action.PlayerAttack a) {
+    return Stream.empty();
+  }
 
-  public Stream<Action> onEnter(Action.Go a);
+  public Stream<Action> onEnter(Action.Go a) {
+    return Stream.empty();
+  }
 
-  public Stream<Action> onTake(Action.Take a);
+  public Stream<Action> onTake(Action.Take a) {
+    return Stream.empty();
+  }
 
-  public Stream<Action> onDrop(Action.Drop a);
+  public Stream<Action> onDrop(Action.Drop a) {
+    return Stream.empty();
+  }
 
-  public Stream<Action> onLook(Action.Look a);
+  public Stream<Action> onLook(Action.Look a) {
+    return Stream.empty();
+  }
 
-  public Stream<Action> onEat(Action.Eat a);
+  public Stream<Action> onEat(Action.Eat a) {
+    return Stream.empty();
+  }
 
-  public Stream<Action> onSay(Action.Say a);
+  public Stream<Action> onSay(Action.Say a) {
+    return Stream.empty();
+  }
 }
