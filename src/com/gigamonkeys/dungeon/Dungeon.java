@@ -98,7 +98,7 @@ public class Dungeon {
     var dining = new Room("a grand dining room with a crystal chandelier and tapestries on the walls");
 
     // Doors
-    entry.connect("oakendoor", kitchen, EAST);
+    entry.connect("oaken door", kitchen, EAST);
     entry.connect("dank tunnel", blobbyblobLair, SOUTH);
     kitchen.connect("swinging door", dining, EAST);
 
@@ -197,7 +197,6 @@ public class Dungeon {
     var parrot = new Thing.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true) {
       @Override
       public Stream<Action> onDrop(Action.Drop a) {
-        System.out.println("Dropped " + a.thing().name());
         return a.thing().name().equals("BREAD")
           ? Stream.of(
             Action.move(
