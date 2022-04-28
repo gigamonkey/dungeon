@@ -19,7 +19,12 @@ public record Command(String verb, String help, Function<String[], Action> parse
         .add(playerStateChange(p, origHitPoints))
         .toString();
     } catch (SpecialOutput output) {
-      // Can't decide if this is a kludge or elegant.
+      // Can't decide if this is a kludge or elegant. The idea here is that
+      // certain actions want to both control the formatting of the output and
+      // to short circuit the forTurn and playerStateChange output so they can
+      // throw SpecialOutput from their description method. Probably better
+      // would be to have special commands rather than special actions. Maybe
+      // later.
       return output.text;
     }
   }

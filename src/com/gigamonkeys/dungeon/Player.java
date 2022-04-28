@@ -1,14 +1,12 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Location.PlacedThing;
 import static com.gigamonkeys.dungeon.Text.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
-import java.util.stream.Stream;
-
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Represent the player.
@@ -29,7 +27,6 @@ public class Player implements Location {
 
   //////////////////////////////////////////////////////////////////////////////
   // Location implementation
-
 
   public Map<String, PlacedThing> locationMap() {
     return inventory;

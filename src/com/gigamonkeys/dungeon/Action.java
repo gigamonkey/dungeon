@@ -36,9 +36,11 @@ public interface Action {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Static methods for creataing Actions.
+  // Static methods for creating Actions. (Return type is just Action rather
+  // than more specific type so make generic Optionals and Streams work better
+  // different types of Action are combined.)
 
-  public static Action attack(Thing monster, Thing weapon) {
+  public static Action playerAttack(Thing monster, Thing weapon) {
     return new PlayerAttack(monster, weapon);
   }
 

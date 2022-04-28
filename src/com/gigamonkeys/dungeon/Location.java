@@ -12,7 +12,6 @@ import java.util.stream.Stream;
  * time.
  */
 public interface Location {
-
   /**
    * Combine a Thing with the name of the place in the location, e.g. "on",
    * "under", "near the door", etc.
@@ -36,7 +35,6 @@ public interface Location {
   public default boolean canTake(Thing thing) {
     return true;
   }
-
 
   //////////////////////////////////////////////////////////////////////////////
   // Default implementations that almost certainly do not need to be overridden.
@@ -88,6 +86,4 @@ public interface Location {
   public default Stream<PlacedThing> allThings() {
     return locationMap().values().stream().flatMap(pt -> Stream.concat(Stream.of(pt), pt.thing().allThings()));
   }
-
-
 }

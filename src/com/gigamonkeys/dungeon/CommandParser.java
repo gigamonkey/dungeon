@@ -142,7 +142,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   private Action attackTargetWithWeapon(Thing target, String[] args, int i) {
     return arg(args, i)
       .flatMap(player::anyThing)
-      .map(w -> Action.attack(target, w))
+      .map(w -> Action.playerAttack(target, w))
       .orElse(Action.none("Attack with what?"));
   }
 }
