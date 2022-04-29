@@ -3,6 +3,11 @@ package com.gigamonkeys.dungeon;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+/**
+ * A command that produces an Action which can produce reactions and counts as a
+ * turn. The combined output from the reaction and reactions is all jammed
+ * together and wrapped as a paragraph.
+ */
 public record ActionCommand(String verb, String help, Function<String[], Action> parser) implements Command {
   /**
    * Run the command.

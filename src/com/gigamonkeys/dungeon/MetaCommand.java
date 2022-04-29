@@ -2,6 +2,9 @@ package com.gigamonkeys.dungeon;
 
 import java.util.function.*;
 
+/**
+ * A command that just produces output and does not count as a turn.
+ */
 public record MetaCommand(String verb, String help, Function<Player, String> fn) implements Command {
   /**
    * Run the command.
