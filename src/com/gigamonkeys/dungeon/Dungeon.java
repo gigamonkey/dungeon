@@ -239,7 +239,7 @@ public class Dungeon {
     dining.placeThing(pirate, "in the middle of the room");
     kitchen.placeThing(table, "against the wall");
     table.placeThing(bread, "on");
-    blobbyblobLair.placeThing(axe, "on floor");
+    blobbyblobLair.placeThing(axe, "on the floor");
     blobbyblobLair.placeThing(blobbyblob, "across from you");
     entry.placeThing(pedestal, "in the center of the room");
     entry.placeThing(tray, "by the door");

@@ -53,7 +53,7 @@ You drop the bread. The parrot flies down and starts eating the bread.
 
 You are in a grand dining room with a crystal chandelier and tapestries
 on the walls. Propped against a wall is a broadsword with a rusty iron
-hilt. On floor is a loaf of bread. On the bread is a green and blue
+hilt. On the floor is a loaf of bread. On the bread is a green and blue
 parrot with a tiny eye patch. In the middle of the room is a pirate with
 a wooden leg and an eye patch. There is a swinging door to the west.
 
@@ -75,11 +75,12 @@ east and a dank tunnel to the south.
 
 > go south
 
-You are in the lair of a horrible creature. On floor is a heavy dwarven
-axe. Across from you is a blobbyblob, a gelatenous mass with too many
-eyes and an odor of jello casserole gone bad. There is a dank tunnel to
-the north. The blobbyblob extrudes a blobby arm and smashes at you! You
-take 3 hit points of damage. You're down to 17.
+You are in the lair of a horrible creature. On the floor is a heavy
+dwarven axe. Across from you is a blobbyblob, a gelatenous mass with too
+many eyes and an odor of jello casserole gone bad. There is a dank
+tunnel to the north. The blobbyblob extrudes a blobby arm and smashes at
+you! You take 3 hit points of damage. You take 3 hit points of damage.
+You're down to 17.
 
 > eat blobbyblob
 

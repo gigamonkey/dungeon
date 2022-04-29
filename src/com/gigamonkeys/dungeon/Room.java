@@ -64,7 +64,7 @@ public class Room implements Location {
   }
 
   public void drop(Thing t) {
-    placeThing(t, "on floor");
+    placeThing(t, "on the floor");
   }
 
   public Optional<Thing> onlyMonster() {
