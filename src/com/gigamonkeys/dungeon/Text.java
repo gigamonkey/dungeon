@@ -74,10 +74,10 @@ class Text {
           }
           sb.append(t);
           sb.append(" ");
-          col += t.length();
+          col += t.length() + 1;
         }
       }
-      return sb.toString();
+      return sb.toString().strip();
     }
   }
 }
