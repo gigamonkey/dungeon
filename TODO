@@ -4,6 +4,8 @@
 
 - Notion of turns within room so attacks can change or only start after a certain turn.
 
+- Abbreviations in commands. Anywhere a word is required, should only need a unique prefix.
+
 - Add LCS error correction for not understood words.
 
 - Improve description of things with things, perhaps using some standard places.
@@ -11,5 +13,3 @@
   BREAD" or even better "THERE IS A LOAF OF BREAD ON A WOODEN TABLE IN THE
   MIDDLE OF THE ROOM" rather than "THERE IS A WOODEN TABLE. ON THE TABLE IS A
   LOAF OF BREAD."
-
-- Abbreviations in commands.

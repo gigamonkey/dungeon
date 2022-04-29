@@ -74,7 +74,7 @@ public record CommandParser(Player player) {
   }
 
   private Optional<Door> door(Direction d) {
-    return player.room().getDoor(d);
+    return player.room().door(d);
   }
 
   private Optional<String> expect(String expected, String s) {

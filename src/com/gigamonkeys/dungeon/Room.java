@@ -59,7 +59,7 @@ public class Room implements Location {
       .toString();
   }
 
-  public Optional<Door> getDoor(Direction d) {
+  public Optional<Door> door(Direction d) {
     return Optional.ofNullable(doors.get(d));
   }
 
