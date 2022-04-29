@@ -1,7 +1,6 @@
 package com.gigamonkeys.dungeon;
 
 import com.gigamonkeys.dungeon.Location.PlacedThing;
-import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -17,13 +16,13 @@ public record Command(String verb, String help, Function<String[], Action> parse
 
       text.add(action.description());
       addReactions(text, action, p);
-      text.add(forTurn(p));
+      addReactions(text, Action.turn(p), p);
       text.add(playerStateChange(p, origHitPoints));
       return text.toString();
     } catch (SpecialOutput output) {
       // Can't decide if this is a kludge or elegant. The idea here is that
       // certain actions want to both control the formatting of the output and
-      // to short circuit the forTurn and playerStateChange output so they can
+      // to short circuit the normal recursive text generaation so they can
       // throw SpecialOutput from their description method. Probably better
       // would be to have special commands rather than special actions. Maybe
       // later.
@@ -35,39 +34,17 @@ public record Command(String verb, String help, Function<String[], Action> parse
    * Get the description of executing this action and of all the resulting
    * reactions, recursively.
    */
-  private Stream<String> results(Action action, Player player) {
-    // N.B. Need to wrap the player in the second stream to defer getting the
-    // current room so that we get the room after the action has been described
-    // (with its possible side effect of changing the player's room)
-    return Stream.concat(
-      Stream.of(action.description()),
-      Stream
-        .of(player)
-        .flatMap(p -> p.room().allThings().map(PlacedThing::thing))
-        .flatMap(action::event)
-        .flatMap(a -> results(a, player))
-    );
-  }
-
   private void addReactions(Text.Wrapped text, Action action, Player player) {
     // Adds the reactions in batches because getting the description of each
     // action may potentially change the state of the world in ways that lead to
-    // ConcurrentModificationExceptions from the stream.
+    // ConcurrentModificationExceptions from the stream if we try to do
+    // everything in one big lazy stream.
 
-    List<Action> reactions = player.room().allThings().map(PlacedThing::thing).flatMap(action::event).toList();
+    var reactions = player.room().allThings().map(PlacedThing::thing).flatMap(action::event).toList();
     text.add(reactions.stream().map(Action::description));
     for (var a : reactions) {
       addReactions(text, a, player);
     }
-  }
-
-  /**
-   * Get the descriptions of any actions taking by things in the room from the
-   * onTurn event.
-   */
-  private Stream<String> forTurn(Player p) {
-    var turn = new Action.Turn(p);
-    return p.room().allThings().map(PlacedThing::thing).flatMap(t -> t.onTurn(turn)).flatMap(a -> results(a, p));
   }
 
   /**
