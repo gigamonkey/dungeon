@@ -175,7 +175,7 @@ public class Dungeon {
       @Override
       public String eat() {
         return alive()
-          ? "Are you out of your mind?! This is a live and jiggling " + name()
+          ? "Are you out of your mind?! This is a live and jiggling " + name() + "."
           : destroy(
             hitPoints() < -100
               ? "The " +

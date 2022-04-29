@@ -1,6 +1,6 @@
 # dungeon
 
-The main thing about this code is the framework of commands, actions, 
+The main thing about this code is the framework of commands, actions,
 and descriptions that can be combined in fairly simple ways to produce
 reasonable output.
 
@@ -51,10 +51,10 @@ You drop the bread. The parrot flies down and starts eating the bread.
 
 > look
 
-You are in a grand dining room with a crystal chandelier and tapestries 
-on the walls. Propped against a wall is a broadsword with a rusty iron 
-hilt. On floor is a loaf of bread. On the bread is a green and blue 
-parrot with a tiny eye patch. In the middle of the room is a pirate with 
+You are in a grand dining room with a crystal chandelier and tapestries
+on the walls. Propped against a wall is a broadsword with a rusty iron
+hilt. On floor is a loaf of bread. On the bread is a green and blue
+parrot with a tiny eye patch. In the middle of the room is a pirate with
 a wooden leg and an eye patch. There is a swinging door to the west.
 
 > take parrot
@@ -83,7 +83,7 @@ take 3 hit points of damage. You're down to 17.
 
 > eat blobbyblob
 
-Are you out of your mind?! This is a live and jiggling blobbyblob The
+Are you out of your mind?! This is a live and jiggling blobbyblob. The
 blobbyblob extrudes a blobby arm and smashes at you! You take 3 hit
 points of damage. You're down to 14.
 
