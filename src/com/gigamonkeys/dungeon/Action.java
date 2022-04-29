@@ -25,13 +25,6 @@ public interface Action {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Pseudo action that produces no reactions.
-
-  public static Action none(String description) {
-    return () -> description;
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
   // Static methods for creating Actions. Return type is just Action rather than
   // more specific type to make generic Optionals and Streams work better when
   // different types of Action are combined.
@@ -74,6 +67,11 @@ public interface Action {
 
   public static Action turn(Player p) {
     return new Turn(p);
+  }
+
+  // Pseudo action that produces no reactions.
+  public static Action none(String description) {
+    return () -> description;
   }
 
   //////////////////////////////////////////////////////////////////////////////
