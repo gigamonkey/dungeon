@@ -35,10 +35,6 @@ public class Dungeon {
     this.out = out;
   }
 
-  public void endGame() {
-    gameOver = true;
-  }
-
   private void loop(Player player) throws IOException {
     registerCommands(player);
     player.setStart(buildMaze());
@@ -51,8 +47,7 @@ public class Dungeon {
         say(doCommand(tokens, player));
         if (!player.alive()) {
           say("Ooops. You're dead. Game over.");
-          endGame();
-          break;
+          gameOver = true;
         }
       }
     }
@@ -94,7 +89,7 @@ public class Dungeon {
   }
 
   private String quit(Player p) {
-    endGame();
+    gameOver = true;
     return "Okay, bye!";
   }
 
