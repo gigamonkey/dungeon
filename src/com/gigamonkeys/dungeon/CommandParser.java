@@ -37,13 +37,13 @@ public record CommandParser(Player player) {
     return Action.look(player);
   }
 
-  Action playerAttack(String[] args) {
+  Action attack(String[] args) {
     var target = args.length == 3 && args[1].equals("with") ? onlyMonster() : arg(args, 1).flatMap(player::roomThing);
 
     Function<Thing, Action> attackTargetWithWeapon = t ->
       arg(args, args.length == 3 ? 2 : 3)
         .flatMap(player::anyThing)
-        .map(w -> Action.playerAttack(t, w))
+        .map(w -> Action.attack(t, w))
         .orElse(Action.none("Attack with what?"));
 
     Function<Thing, Action> attackWith = t ->

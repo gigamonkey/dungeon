@@ -1,7 +1,6 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Direction.EAST;
-import static com.gigamonkeys.dungeon.Direction.SOUTH;
+import static com.gigamonkeys.dungeon.Direction.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,15 +76,15 @@ public class Dungeon {
   private void registerCommands(Player player) {
     commands.clear();
     var parser = new CommandParser(player);
-    registerCommand(new ActionCommand("attack", "Attack a monster with a weapon.", parser::playerAttack));
+    registerCommand(new ActionCommand("attack", "Attack a monster with a weapon.", parser::attack));
     registerCommand(new ActionCommand("drop", "Drop an item you are carrying.", parser::drop));
     registerCommand(new ActionCommand("eat", "Eat an item you are holding or in the room.", parser::eat));
     registerCommand(new ActionCommand("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
+    registerCommand(new ActionCommand("look", "Look at the room your are in again.", parser::look));
+    registerCommand(new ActionCommand("take", "Take an item from the room.", parser::take));
     registerCommand(new MetaCommand("help", "Get help on commands.", this::help));
     registerCommand(new MetaCommand("inventory", "List the items you are holding.", Player::inventory));
-    registerCommand(new ActionCommand("look", "Look at the room your are in again.", parser::look));
     registerCommand(new MetaCommand("quit", "Quit the game", this::quit));
-    registerCommand(new ActionCommand("take", "Take an item from the room.", parser::take));
   }
 
   private String quit(Player p) {
@@ -136,7 +135,7 @@ public class Dungeon {
       new Attack.Full(
         "A sphere of light emanates from the ring",
         1000,
-        (t -> " blasting the " + t.name() + " to smithereens.")
+        (t -> " blasting " + t.who() + " to smithereens.")
       )
     );
 
@@ -165,7 +164,7 @@ public class Dungeon {
     );
 
     // Monsters
-    var blobbyblob = new Thing.Monster("blobbyblob", null, null, 7, false) {
+    var blobbyblob = new Thing.Monster("blobbyblob", 7) {
       @Override
       public String description() {
         return alive()
@@ -187,11 +186,13 @@ public class Dungeon {
       }
 
       @Override
+      public Attack attack() {
+        return new Attack.Simple("The blobbyblob extrudes a blobby arm and smashes at you!", 3);
+      }
+
+      @Override
       public Stream<Action> onTurn(Action.Turn a) {
-        return streamIf(
-          alive(),
-          new Action.Attack(3, "The " + name() + " extrudes a blobby arm and smashes at you!", a.player())
-        );
+        return streamIf(alive(), Action.attack(a.player(), this));
       }
     };
 

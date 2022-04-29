@@ -1,10 +1,10 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Location.PlacedThing;
 import static com.gigamonkeys.dungeon.Text.*;
 
-import java.util.*;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * actually have to deal with the player applying any verb to any
  * thing.
  */
-public class Thing implements Location {
+public class Thing implements Location, Target {
 
   static class Monster extends Thing {
 
@@ -24,6 +24,14 @@ public class Thing implements Location {
     Monster(String name, String liveDescription, String deadDescription, int hitPoints, boolean isPortable) {
       super(name, liveDescription, isPortable, true, hitPoints);
       this.deadDescription = deadDescription;
+    }
+
+    Monster(String name, int hitPoints, boolean isPortable) {
+      this(name, null, null, hitPoints, isPortable);
+    }
+
+    Monster(String name, int hitPoints) {
+      this(name, null, null, hitPoints, false);
     }
 
     public String description() {
@@ -120,10 +128,6 @@ public class Thing implements Location {
     return hitPoints;
   }
 
-  public void takeDamage(int damage) {
-    hitPoints -= damage;
-  }
-
   public Attack attack() {
     return new Attack.Useless(a(description()) + " is not an effective weapon.");
   }
@@ -149,7 +153,7 @@ public class Thing implements Location {
    */
   public String applyAttack(Attack attack) {
     if (isMonster()) {
-      takeDamage(attack.damage());
+      hitPoints -= attack.damage();
       return (
         "After " +
         attack.damage() +
@@ -161,6 +165,10 @@ public class Thing implements Location {
     } else {
       return "I don't know why you're attacking an innocent " + name() + ".";
     }
+  }
+
+  public String who() {
+    return "the " + name;
   }
 
   /**
@@ -221,10 +229,6 @@ public class Thing implements Location {
   }
 
   public Stream<Action> onMove(Action.Move a) {
-    return Stream.empty();
-  }
-
-  public Stream<Action> onPlayerAttack(Action.PlayerAttack a) {
     return Stream.empty();
   }
 

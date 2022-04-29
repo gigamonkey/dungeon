@@ -1,7 +1,6 @@
 package com.gigamonkeys.dungeon;
 
 public interface Command {
-
   /**
    * The verb that invokes this command.
    */
@@ -16,5 +15,4 @@ public interface Command {
    * Run the command.
    */
   public String run(String[] args, Player p);
-
 }

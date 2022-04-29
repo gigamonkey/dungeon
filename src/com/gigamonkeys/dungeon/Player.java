@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 /**
  * Represent the player.
  */
-public class Player implements Location {
+public class Player implements Location, Target {
 
   private final Map<String, PlacedThing> inventory = new HashMap<>();
   private Room room;
@@ -30,7 +30,6 @@ public class Player implements Location {
 
   //
   //////////////////////////////////////////////////////////////////////////////
-
 
   //////////////////////////////////////////////////////////////////////////////
   // Tracking and describing state changes.
@@ -82,8 +81,14 @@ public class Player implements Location {
     return hitPoints;
   }
 
-  public void takeDamage(int amount) {
-    hitPoints -= amount;
+  public String applyAttack(Attack attack) {
+    int damage = attack.damage();
+    hitPoints -= damage;
+    return "You take " + damage + " " + plural("hit point", damage) + " of damage.";
+  }
+
+  public String who() {
+    return "you";
   }
 
   public String describeDamage(int amount) {

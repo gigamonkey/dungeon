@@ -1,6 +1,6 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.function.*;
+import java.util.function.Function;
 
 public interface Attack {
   /**
@@ -18,11 +18,11 @@ public interface Attack {
    * Get the description of the result which may be determined by the thing
    * being attacked.
    */
-  public String result(Thing thing);
+  public String result(Target thing);
 
   public static record Simple(String description, int damage) implements Attack {
-    public String result(Thing thing) {
-      return thing.applyAttack(this);
+    public String result(Target target) {
+      return target.applyAttack(this);
     }
   }
 
@@ -30,13 +30,13 @@ public interface Attack {
     public int damage() {
       return 0;
     }
-    public String result(Thing thing) {
+    public String result(Target thing) {
       return "doing zero damage";
     }
   }
 
-  public static record Full(String description, int damage, Function<Thing, String> resultFn) implements Attack {
-    public String result(Thing t) {
+  public static record Full(String description, int damage, Function<Target, String> resultFn) implements Attack {
+    public String result(Target t) {
       return resultFn.apply(t) + " " + t.applyAttack(this);
     }
   }

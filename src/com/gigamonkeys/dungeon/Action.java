@@ -29,8 +29,8 @@ public interface Action {
   // more specific type to make generic Optionals and Streams work better when
   // different types of Action are combined.
 
-  public static Action attack(int damage, String text, Player p) {
-    return new Attack(damage, text, p);
+  public static Action attack(Target target, Thing weapon) {
+    return new Attack(target, weapon);
   }
 
   public static Action drop(Player p, Thing thing) {
@@ -53,10 +53,6 @@ public interface Action {
     return new Move(t, l, p, d);
   }
 
-  public static Action playerAttack(Thing monster, Thing weapon) {
-    return new PlayerAttack(monster, weapon);
-  }
-
   public static Action say(Thing who, String what) {
     return new Say(who, what);
   }
@@ -77,10 +73,10 @@ public interface Action {
   //////////////////////////////////////////////////////////////////////////////
   // Concrete actions classes.
 
-  public static record Attack(int damage, String text, Player player) implements Action {
+  public static record Attack(Target target, Thing weapon) implements Action {
     public String description() {
-      player.takeDamage(damage);
-      return text;
+      var attack = weapon.attack();
+      return attack.description() + " " + attack.result(target);
     }
 
     public Stream<Action> reactions(Thing t) {
@@ -136,17 +132,6 @@ public interface Action {
 
     public Stream<Action> reactions(Thing t) {
       return t.onMove(this);
-    }
-  }
-
-  public static record PlayerAttack(Thing monster, Thing weapon) implements Action {
-    public String description() {
-      var attack = weapon.attack();
-      return attack.description() + " " + attack.result(monster);
-    }
-
-    public Stream<Action> reactions(Thing t) {
-      return t.onPlayerAttack(this);
     }
   }
 

@@ -1,7 +1,6 @@
 package com.gigamonkeys.dungeon;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 /**
  * A command that produces an Action which can produce reactions and counts as a
