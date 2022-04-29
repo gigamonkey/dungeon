@@ -36,7 +36,7 @@ public record ActionCommand(String verb, String help, Function<String[], Action>
     // ConcurrentModificationExceptions from the stream if we try to do
     // everything in one big lazy stream.
 
-    var reactions = player.room().allThings().flatMap(action::event).toList();
+    var reactions = player.room().allThings().flatMap(action::reactions).toList();
     text.add(reactions.stream().map(Action::description));
     for (var a : reactions) {
       addReactions(text, a, player);

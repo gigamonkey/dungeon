@@ -18,27 +18,17 @@ public interface Action {
   public String description();
 
   /**
-   * Dispatch this action to the appropriate event handler on the Thing.
+   * Dispatch this action to the appropriate reactions handler on the Thing.
    */
-  public default Stream<Action> event(Thing t) {
+  public default Stream<Action> reactions(Thing t) {
     return Stream.empty();
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Non event generating pseudo actions.
+  // Pseudo action that produces no reactions.
 
-  // When we just want to generate a single response use this as it generates no
-  // action events.
   public static Action none(String description) {
     return () -> description;
-  }
-
-  // When we want to generate a single response and short circuit other the rest
-  // of the command invocation, including the automatic wrapping of output.
-  public static Action noWrap(String description) {
-    return () -> {
-      throw new Command.SpecialOutput(description);
-    };
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -87,8 +77,7 @@ public interface Action {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Concrete actions. All actions that generate events need to have a concrete
-  // class rather than a lambda.
+  // Concrete actions classes.
 
   public static record Attack(int damage, String text, Player player) implements Action {
     public String description() {
@@ -96,7 +85,7 @@ public interface Action {
       return text;
     }
 
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onAttack(this);
     }
   }
@@ -107,7 +96,7 @@ public interface Action {
       return "You drop the " + thing.name() + ".";
     }
 
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onDrop(this);
     }
   }
@@ -116,7 +105,7 @@ public interface Action {
     public String description() {
       return food.eat();
     }
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onEat(this);
     }
   }
@@ -127,7 +116,7 @@ public interface Action {
       return player.room().description();
     }
 
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onEnter(this);
     }
   }
@@ -136,7 +125,7 @@ public interface Action {
     public String description() {
       return player.room().description();
     }
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onLook(this);
     }
   }
@@ -147,7 +136,7 @@ public interface Action {
       return movement;
     }
 
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onMove(this);
     }
   }
@@ -158,7 +147,7 @@ public interface Action {
       return attack.description() + " " + attack.result(monster);
     }
 
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onPlayerAttack(this);
     }
   }
@@ -168,7 +157,7 @@ public interface Action {
       return "'" + what + "' says the " + speaker.name() + ".";
     }
 
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onSay(this);
     }
   }
@@ -195,7 +184,7 @@ public interface Action {
       return String.join(" ", desc);
     }
 
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onTake(this);
     }
 
@@ -209,7 +198,7 @@ public interface Action {
       return null; // This is a pseudo action so no description.
     }
 
-    public Stream<Action> event(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onTurn(this);
     }
   }
