@@ -41,9 +41,9 @@ public interface Action {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Static methods for creating Actions. (Return type is just Action rather
-  // than more specific type so make generic Optionals and Streams work better
-  // different types of Action are combined.)
+  // Static methods for creating Actions. Return type is just Action rather than
+  // more specific type to make generic Optionals and Streams work better when
+  // different types of Action are combined.
 
   public static Action attack(int damage, String text, Player p) {
     return new Attack(damage, text, p);
@@ -79,6 +79,10 @@ public interface Action {
 
   public static Action take(Player p, List<Thing> things) {
     return new Take(p, things);
+  }
+
+  public static Action turn(Player p) {
+    return new Turn(p);
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -182,10 +186,10 @@ public interface Action {
       }
       var desc = new ArrayList<String>();
       if (!taken.isEmpty()) {
-        desc.add("Okay, took " + commify(taken) + ".");
+        desc.add("Okay, took the " + commify(taken) + ".");
       }
       if (!notTaken.isEmpty()) {
-        desc.add("Can't take " + commify(notTaken) + ".");
+        desc.add("Can't take the " + commify(notTaken) + ".");
       }
       return String.join(" ", desc);
     }
@@ -197,7 +201,7 @@ public interface Action {
 
   public static record Turn(Player player) implements Action {
     public String description() {
-      return ""; // This is a pseudo action so no description.
+      return null; // This is a pseudo action so no description.
     }
 
     public Stream<Action> event(Thing t) {
