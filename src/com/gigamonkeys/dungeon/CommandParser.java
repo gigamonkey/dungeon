@@ -1,11 +1,10 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Location.PlacedThing;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -41,7 +40,13 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   }
 
   Action go(String[] args) {
-    return arg(args, 1).map(this::goNamed).orElse(Action.none("Go where?"));
+    Function<Direction, Action> forDirection = d ->
+      door(d).map(door -> Action.go(player, door)).orElse(Action.none("No door to the " + d + "."));
+
+    Function<String, Action> forName = name ->
+      direction(name).map(forDirection).orElse(Action.none("Don't understand direction " + name + "."));
+
+    return arg(args, 1).map(forName).orElse(Action.none("Go where?"));
   }
 
   Action take(String[] args) {
@@ -52,7 +57,10 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   }
 
   Action drop(String[] args) {
-    return arg(args, 1).map(this::dropNamed).orElse(Action.none("Drop what?"));
+    Function<String, Action> dropNamed = name ->
+      player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!"));
+
+    return arg(args, 1).map(dropNamed).orElse(Action.none("Drop what?"));
   }
 
   Action look(String[] args) {
@@ -64,17 +72,28 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
   }
 
   Action eat(String[] args) {
-    return arg(args, 1).map(this::eatNamed).orElse(Action.none("Eat what?"));
+    Function<String, Action> eatNamed = name ->
+      player.anyThing(name).map(food -> Action.eat(player, food)).orElse(Action.none("No " + name + " here to eat."));
+
+    return arg(args, 1).map(eatNamed).orElse(Action.none("Eat what?"));
   }
 
   Action attack(String[] args) {
-    var i = 1;
+    var target = args.length == 3 && args[1].equals("with") ? onlyMonster() : arg(args, 1).flatMap(player::roomThing);
 
-    var target = args.length == 3 && args[i].equals("with") ? onlyMonster() : arg(args, i++).flatMap(player::roomThing);
+    Function<Thing, Action> attackTargetWithWeapon = t ->
+      arg(args, args.length == 3 ? 2 : 3)
+        .flatMap(player::anyThing)
+        .map(w -> Action.playerAttack(t, w))
+        .orElse(Action.none("Attack with what?"));
 
-    final var idx = i;
+    Function<Thing, Action> attackWith = t ->
+      arg(args, args.length == 3 ? 1 : 2)
+        .flatMap(n -> expect("with", n))
+        .map(e -> attackTargetWithWeapon.apply(t))
+        .orElse(Action.none("Don't understand 'ATTACK' with no 'WITH'."));
 
-    return target.map(t -> attackTarget(t, args, idx)).orElse(Action.none("Attack what?"));
+    return target.map(attackWith).orElse(Action.none("Attack what?"));
   }
 
   ////////////////////////////////////////////////////////////////////
@@ -86,6 +105,10 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
 
   private Optional<Direction> direction(String name) {
     return Direction.fromString(name);
+  }
+
+  private Optional<Door> door(Direction d) {
+    return player.room().getDoor(d);
   }
 
   private Optional<String> expect(String expected, String s) {
@@ -111,42 +134,5 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
       }
     }
     return Optional.of(things);
-  }
-
-  private Action goNamed(String name) {
-    return direction(name).map(this::goDirection).orElse(Action.none("Don't understand direction " + name + "."));
-  }
-
-  private Action dropNamed(String name) {
-    return player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!"));
-  }
-
-  private Action goDirection(Direction d) {
-    return player
-      .room()
-      .getDoor(d)
-      .map(door -> Action.go(player, door))
-      .orElse(Action.none("No door to the " + d + "."));
-  }
-
-  private Action eatNamed(String name) {
-    return player
-      .anyThing(name)
-      .map(food -> Action.eat(player, food))
-      .orElse(Action.none("No " + name + " here to eat."));
-  }
-
-  private Action attackTarget(Thing target, String[] args, int i) {
-    return arg(args, i)
-      .flatMap(n -> expect("with", n))
-      .map(e -> attackTargetWithWeapon(target, args, i + 1))
-      .orElse(Action.none("Don't understand 'ATTACK' with no 'WITH'."));
-  }
-
-  private Action attackTargetWithWeapon(Thing target, String[] args, int i) {
-    return arg(args, i)
-      .flatMap(player::anyThing)
-      .map(w -> Action.playerAttack(target, w))
-      .orElse(Action.none("Attack with what?"));
   }
 }
