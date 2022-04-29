@@ -2,53 +2,13 @@ package com.gigamonkeys.dungeon;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Methods that can serve as the parsers needed by Command objects.
  */
-public record CommandParser(Player player, Dungeon dungeon, Map<String, Command> commands) {
-  //////////////////////////////////////////////////////////////////////////////
-  // Pseudo actions
-
-  Action help(String[] args) {
-    var w = commands.values().stream().mapToInt(c -> c.verb().length()).max().getAsInt();
-
-    var docs = commands
-      .values()
-      .stream()
-      .sorted((a, b) -> a.verb().compareTo(b.verb()))
-      .map(c -> {
-        var padding = IntStream
-          .range(0, (w + 2) - c.verb().length())
-          .mapToObj(i -> " ")
-          .collect(Collectors.joining(""));
-        return "  " + c.verb() + padding + c.help();
-      })
-      .toList();
-
-    return Action.noWrap("I understand the following commands:\n\n" + String.join("\n", docs));
-  }
-
-  Action quit(String[] args) {
-    // Doesn't need a real Action because it's the end of the road.
-    return () -> {
-      dungeon.endGame();
-      return "Okay. Bye!";
-    };
-  }
-
-  Action inventory(String[] args) {
-    return Action.none(player.inventory());
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // Action commands
-
+public record CommandParser(Player player) {
   Action drop(String[] args) {
     Function<String, Action> dropNamed = name ->
       player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!"));

@@ -1,6 +1,7 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Direction.*;
+import static com.gigamonkeys.dungeon.Direction.EAST;
+import static com.gigamonkeys.dungeon.Direction.SOUTH;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -78,16 +81,40 @@ public class Dungeon {
 
   private void registerCommands(Player player) {
     commands.clear();
-    var parser = new CommandParser(player, this, commands);
-    registerCommand(new Command("attack", "Attack a monster with a weapon.", parser::playerAttack));
-    registerCommand(new Command("drop", "Drop an item you are carrying.", parser::drop));
-    registerCommand(new Command("eat", "Eat an item you are holding or in the room.", parser::eat));
-    registerCommand(new Command("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
-    registerCommand(new Command("help", "Get help on commands.", parser::help));
-    registerCommand(new Command("inventory", "List the items you are holding.", parser::inventory));
-    registerCommand(new Command("look", "Look at the room your are in again.", parser::look));
-    registerCommand(new Command("quit", "Quit the game", parser::quit));
-    registerCommand(new Command("take", "Take an item from the room.", parser::take));
+    var parser = new CommandParser(player);
+    registerCommand(new ActionCommand("attack", "Attack a monster with a weapon.", parser::playerAttack));
+    registerCommand(new ActionCommand("drop", "Drop an item you are carrying.", parser::drop));
+    registerCommand(new ActionCommand("eat", "Eat an item you are holding or in the room.", parser::eat));
+    registerCommand(new ActionCommand("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
+    registerCommand(new MetaCommand("help", "Get help on commands.", this::help));
+    registerCommand(new MetaCommand("inventory", "List the items you are holding.", Player::inventory));
+    registerCommand(new ActionCommand("look", "Look at the room your are in again.", parser::look));
+    registerCommand(new MetaCommand("quit", "Quit the game", this::quit));
+    registerCommand(new ActionCommand("take", "Take an item from the room.", parser::take));
+  }
+
+  private String quit(Player p) {
+    endGame();
+    return "Okay, bye!";
+  }
+
+  private String help(Player p) {
+    var w = commands.values().stream().mapToInt(c -> c.verb().length()).max().getAsInt();
+
+    var docs = commands
+      .values()
+      .stream()
+      .sorted((a, b) -> a.verb().compareTo(b.verb()))
+      .map(c -> {
+        var padding = IntStream
+          .range(0, (w + 2) - c.verb().length())
+          .mapToObj(i -> " ")
+          .collect(Collectors.joining(""));
+        return "  " + c.verb() + padding + c.help();
+      })
+      .toList();
+
+    return "I understand the following commands:\n\n" + String.join("\n", docs);
   }
 
   private Room buildMaze() {
