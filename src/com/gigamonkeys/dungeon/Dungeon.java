@@ -79,7 +79,7 @@ public class Dungeon {
   private void registerCommands(Player player) {
     commands.clear();
     var parser = new CommandParser(player, this, commands);
-    registerCommand(new Command("attack", "Attack a monster with a weapon.", parser::attack));
+    registerCommand(new Command("attack", "Attack a monster with a weapon.", parser::playerAttack));
     registerCommand(new Command("drop", "Drop an item you are carrying.", parser::drop));
     registerCommand(new Command("eat", "Eat an item you are holding or in the room.", parser::eat));
     registerCommand(new Command("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));

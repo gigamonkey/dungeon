@@ -12,6 +12,9 @@ import java.util.stream.IntStream;
  * Methods that can serve as the parsers needed by Command objects.
  */
 public record CommandParser(Player player, Dungeon dungeon, Map<String, Command> commands) {
+  //////////////////////////////////////////////////////////////////////////////
+  // Pseudo actions
+
   Action help(String[] args) {
     var w = commands.values().stream().mapToInt(c -> c.verb().length()).max().getAsInt();
 
@@ -39,6 +42,27 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
     };
   }
 
+  Action inventory(String[] args) {
+    return Action.none(player.inventory());
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Action commands
+
+  Action drop(String[] args) {
+    Function<String, Action> dropNamed = name ->
+      player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!"));
+
+    return arg(args, 1).map(dropNamed).orElse(Action.none("Drop what?"));
+  }
+
+  Action eat(String[] args) {
+    Function<String, Action> eatNamed = name ->
+      player.anyThing(name).map(food -> Action.eat(player, food)).orElse(Action.none("No " + name + " here to eat."));
+
+    return arg(args, 1).map(eatNamed).orElse(Action.none("Eat what?"));
+  }
+
   Action go(String[] args) {
     Function<Direction, Action> forDirection = d ->
       door(d).map(door -> Action.go(player, door)).orElse(Action.none("No door to the " + d + "."));
@@ -49,36 +73,11 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
     return arg(args, 1).map(forName).orElse(Action.none("Go where?"));
   }
 
-  Action take(String[] args) {
-    return arg(args, 1)
-      .flatMap(n -> listOfThings(args, 1))
-      .map(ts -> Action.take(player, ts))
-      .orElse(Action.none("Take what?"));
-  }
-
-  Action drop(String[] args) {
-    Function<String, Action> dropNamed = name ->
-      player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!"));
-
-    return arg(args, 1).map(dropNamed).orElse(Action.none("Drop what?"));
-  }
-
   Action look(String[] args) {
     return Action.look(player);
   }
 
-  Action inventory(String[] args) {
-    return Action.none(player.inventory());
-  }
-
-  Action eat(String[] args) {
-    Function<String, Action> eatNamed = name ->
-      player.anyThing(name).map(food -> Action.eat(player, food)).orElse(Action.none("No " + name + " here to eat."));
-
-    return arg(args, 1).map(eatNamed).orElse(Action.none("Eat what?"));
-  }
-
-  Action attack(String[] args) {
+  Action playerAttack(String[] args) {
     var target = args.length == 3 && args[1].equals("with") ? onlyMonster() : arg(args, 1).flatMap(player::roomThing);
 
     Function<Thing, Action> attackTargetWithWeapon = t ->
@@ -94,6 +93,13 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
         .orElse(Action.none("Don't understand 'ATTACK' with no 'WITH'."));
 
     return target.map(attackWith).orElse(Action.none("Attack what?"));
+  }
+
+  Action take(String[] args) {
+    return arg(args, 1)
+      .flatMap(n -> listOfThings(args, 1))
+      .map(ts -> Action.take(player, ts))
+      .orElse(Action.none("Take what?"));
   }
 
   ////////////////////////////////////////////////////////////////////
