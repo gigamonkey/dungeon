@@ -134,7 +134,7 @@ public class Dungeon {
       }
     };
 
-    var bread = new Thing.Food("bread", "a loaf of bread", "Ah, delicious. Could use some mayonnaise though.");
+    var bread = new Thing.Food("bread", "loaf of bread", "Ah, delicious. Could use some mayonnaise though.");
 
     var sandwich = new Thing.Food(
       "sandwich",
