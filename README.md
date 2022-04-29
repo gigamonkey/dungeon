@@ -2,7 +2,7 @@
 
 The main thing about this code is the framework of commands, actions, 
 and descriptions that can be combined in fairly simple ways to produce
-pretty good output.
+reasonable output.
 
 Below is a sample interaction with the game.
 
