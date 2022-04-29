@@ -57,7 +57,7 @@ public class Player implements Location {
     if (things().isEmpty()) {
       return "You've got nothing!";
     } else {
-      var items = things().stream().map(t -> a(t.thing().description())).toList();
+      var items = things().stream().map(t -> a(t.description())).toList();
       return new StringBuilder("You have ").append(commify(items)).append(".").toString();
     }
   }

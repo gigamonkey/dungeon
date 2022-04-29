@@ -4,6 +4,7 @@ import static com.gigamonkeys.dungeon.Text.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -196,6 +197,10 @@ public interface Action {
 
     public Stream<Action> event(Thing t) {
       return t.onTake(this);
+    }
+
+    public boolean taking(Optional<Thing> t) {
+      return t.map(things::contains).orElse(false);
     }
   }
 

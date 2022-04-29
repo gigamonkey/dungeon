@@ -12,7 +12,7 @@ public record Command(String verb, String help, Function<String[], Action> parse
     try {
       var action = parser.apply(args);
       int origHitPoints = p.hitPoints();
-      var text = new Text.Wrapped(60);
+      var text = new Text.Wrapped(72);
 
       text.add(action.description());
       addReactions(text, action, p);
@@ -40,7 +40,7 @@ public record Command(String verb, String help, Function<String[], Action> parse
     // ConcurrentModificationExceptions from the stream if we try to do
     // everything in one big lazy stream.
 
-    var reactions = player.room().allThings().map(PlacedThing::thing).flatMap(action::event).toList();
+    var reactions = player.room().allThings().flatMap(action::event).toList();
     text.add(reactions.stream().map(Action::description));
     for (var a : reactions) {
       addReactions(text, a, player);

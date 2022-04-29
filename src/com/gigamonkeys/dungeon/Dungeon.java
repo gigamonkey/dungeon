@@ -188,7 +188,7 @@ public class Dungeon {
       @Override
       public Stream<Action> onTake(Action.Take a) {
         return streamIf(
-          alive() && thing("parrot").map(p -> a.things().contains(p)).orElse(false),
+          alive() && a.taking(thing("parrot")),
           Action.say(this, "Oi, ye swarthy dog! Hands off me parrot!")
         );
       }

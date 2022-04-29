@@ -94,12 +94,12 @@ public class Thing implements Location {
 
   public String describeThings() {
     var desc = new ArrayList<String>();
-    things()
+    placedThings()
       .stream()
       .map(pt -> capitalize(pt.where()) + " the " + name() + " is " + a(pt.thing().description()) + ".")
       .forEach(desc::add);
 
-    things().stream().map(PlacedThing::thing).map(Thing::describeThings).forEach(desc::add);
+    things().stream().map(Thing::describeThings).forEach(desc::add);
 
     return String.join(" ", desc);
   }

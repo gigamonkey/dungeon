@@ -51,7 +51,7 @@ public class Room implements Location {
   }
 
   public String description() {
-    return new Text.Wrapped(60)
+    return new Text.Wrapped(72)
       .add("You are in " + description + ".")
       .add(describeThings(t -> !t.isMonster()))
       .add(describeThings(t -> t.isMonster()))
@@ -72,11 +72,11 @@ public class Room implements Location {
   }
 
   private Stream<Thing> monsters() {
-    return allThings().map(pt -> pt.thing()).filter(t -> t.isMonster());
+    return allThings().filter(t -> t.isMonster());
   }
 
   private Stream<String> describeThings(Predicate<Thing> p) {
-    return things().stream().filter(pt -> p.test(pt.thing())).flatMap(PlacedThing::describe);
+    return placedThings().stream().filter(pt -> p.test(pt.thing())).flatMap(PlacedThing::describe);
   }
 
   private String describeDoors() {

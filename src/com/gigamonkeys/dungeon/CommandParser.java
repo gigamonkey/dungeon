@@ -107,7 +107,7 @@ public record CommandParser(Player player, Dungeon dungeon, Map<String, Command>
       } else {
         var thing = maybe.get();
         things.add(thing);
-        thing.allThings().map(PlacedThing::thing).forEach(things::add);
+        thing.allThings().forEach(things::add);
       }
     }
     return Optional.of(things);

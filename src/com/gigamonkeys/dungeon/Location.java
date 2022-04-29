@@ -63,7 +63,7 @@ public interface Location {
     if (locationMap().containsKey(name)) {
       return Optional.of(locationMap().get(name).thing());
     } else {
-      for (var pt : things()) {
+      for (var pt : placedThings()) {
         var maybe = pt.thing().thing(name);
         if (maybe.isPresent()) {
           return maybe;
@@ -76,14 +76,28 @@ public interface Location {
   /**
    * Things directly in this location.
    */
-  public default Collection<PlacedThing> things() {
-    return locationMap().values();
+  public default Collection<Thing> things() {
+    return placedThings().stream().map(PlacedThing::thing).toList();
   }
 
   /**
    * All things accessible from this location.
    */
-  public default Stream<PlacedThing> allThings() {
-    return locationMap().values().stream().flatMap(pt -> Stream.concat(Stream.of(pt), pt.thing().allThings()));
+  public default Stream<Thing> allThings() {
+    return allPlacedThings().map(PlacedThing::thing);
+  }
+
+  /**
+   * Placed things directly in this location.
+   */
+  public default Collection<PlacedThing> placedThings() {
+    return locationMap().values();
+  }
+
+  /**
+   * All placed things accessible from this location.
+   */
+  public default Stream<PlacedThing> allPlacedThings() {
+    return locationMap().values().stream().flatMap(pt -> Stream.concat(Stream.of(pt), pt.thing().allPlacedThings()));
   }
 }
