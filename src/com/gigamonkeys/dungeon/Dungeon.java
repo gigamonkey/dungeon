@@ -35,9 +35,9 @@ public class Dungeon {
     this.out = out;
   }
 
-  private void loop(Player player) throws IOException {
+  private void loop() throws IOException {
+    var player = new Player(buildMaze(), 20);
     registerCommands(player);
-    player.setStart(buildMaze());
 
     say(player.room().description());
     while (!gameOver) {
@@ -254,7 +254,7 @@ public class Dungeon {
 
   public static void main(String[] args) {
     try {
-      new Dungeon(System.in, System.out).loop(new Player(20));
+      new Dungeon(System.in, System.out).loop();
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);
     }

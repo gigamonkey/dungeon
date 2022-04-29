@@ -14,13 +14,15 @@ public record ActionCommand(String verb, String help, Function<String[], Action>
    */
   public String run(String[] args, Player p) {
     var action = parser.apply(args);
-    int origHitPoints = p.hitPoints();
-    var text = new Text.Wrapped(72);
 
+    // Get this before running any actions since they could change it.
+    var startingState = p.state();
+
+    var text = new Text.Wrapped(72);
     text.add(action.description());
     addReactions(text, action, p);
     addReactions(text, Action.turn(p), p);
-    text.add(playerStateChange(p, origHitPoints));
+    text.add(p.stateChanges(startingState));
     return text.toString();
   }
 
@@ -39,15 +41,5 @@ public record ActionCommand(String verb, String help, Function<String[], Action>
     for (var a : reactions) {
       addReactions(text, a, player);
     }
-  }
-
-  /**
-   * Get the decription of any changes to the player's state.
-   */
-  private Stream<String> playerStateChange(Player p, int orig) {
-    // At the moment, the only relevant state is the player's hit point count.
-    // If we add other state that can change, would need to thread it through
-    // here.
-    return Stream.of(p.hitPoints()).filter(hp -> hp < orig).map(hp -> p.describeDamage(orig - hp));
   }
 }

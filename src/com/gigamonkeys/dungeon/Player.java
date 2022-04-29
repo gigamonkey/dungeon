@@ -5,6 +5,7 @@ import static com.gigamonkeys.dungeon.Text.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Represent the player.
@@ -15,12 +16,9 @@ public class Player implements Location {
   private Room room;
   private int hitPoints;
 
-  public Player(int hitPoints) {
+  public Player(Room start, int hitPoints) {
+    this.room = start;
     this.hitPoints = hitPoints;
-  }
-
-  public void setStart(Room room) {
-    this.room = room;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -28,6 +26,24 @@ public class Player implements Location {
 
   public Map<String, PlacedThing> locationMap() {
     return inventory;
+  }
+
+  //
+  //////////////////////////////////////////////////////////////////////////////
+
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Tracking and describing state changes.
+
+  public static record State(int hitPoints) {}
+
+  public State state() {
+    return new State(hitPoints);
+  }
+
+  public Stream<String> stateChanges(State original) {
+    int damage = original.hitPoints - hitPoints;
+    return Stream.ofNullable(damage > 0 ? describeDamage(damage) : null);
   }
 
   //
