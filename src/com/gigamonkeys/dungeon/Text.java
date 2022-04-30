@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 
 class Text {
 
+  public final static int WRAP = 72;
+
   public static String a(String thing) {
     var a = "aeiouy".indexOf(Character.toLowerCase(thing.charAt(0))) != -1 ? "an " : "a ";
     return a + thing;
@@ -46,12 +48,7 @@ class Text {
 
   public static class Wrapped {
 
-    private final int width;
     private List<String> items = new ArrayList<>();
-
-    Wrapped(int width) {
-      this.width = width;
-    }
 
     public Wrapped add(Stream<String> ss) {
       ss.forEach(items::add);
@@ -68,7 +65,7 @@ class Text {
       int col = 0;
       for (var text : items) {
         for (var t : text.split("\\s+")) {
-          if (col + t.length() > width) {
+          if (col + t.length() > WRAP) {
             sb.append("\n");
             col = 0;
           }

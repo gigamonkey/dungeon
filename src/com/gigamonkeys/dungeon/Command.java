@@ -33,7 +33,7 @@ public interface Command {
       // Get this before running any actions since they could change it.
       var startingState = p.state();
 
-      var text = new Text.Wrapped(72);
+      var text = new Text.Wrapped();
       text.add(action.description());
       addReactions(text, action, p);
       addReactions(text, Action.turn(p), p);

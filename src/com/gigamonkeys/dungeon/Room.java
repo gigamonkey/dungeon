@@ -1,10 +1,8 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Location.PlacedThing;
 import static com.gigamonkeys.dungeon.Text.*;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -51,7 +49,7 @@ public class Room implements Location {
   }
 
   public String description() {
-    return new Text.Wrapped(72)
+    return new Text.Wrapped()
       .add("You are in " + description + ".")
       .add(describeThings(t -> !t.isMonster()))
       .add(describeThings(t -> t.isMonster()))
