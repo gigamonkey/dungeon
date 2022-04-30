@@ -73,10 +73,7 @@ public class Player implements Location, Target {
       return "You've got nothing!";
     } else {
       var items = things().stream().map(t -> a(t.description())).toList();
-      return new Text.Wrapped(72)
-        .add("You have")
-        .add(commify(items) + ".")
-        .toString();
+      return new Text.Wrapped(72).add("You have").add(commify(items) + ".").toString();
     }
   }
 
