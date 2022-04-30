@@ -83,16 +83,16 @@ public class Dungeon {
     registerCommand(new ActionCommand("look", "Look at the room your are in again.", parser::look));
     registerCommand(new ActionCommand("take", "Take an item from the room.", parser::take));
     registerCommand(new MetaCommand("help", "Get help on commands.", this::help));
-    registerCommand(new MetaCommand("inventory", "List the items you are holding.", Player::inventory));
+    registerCommand(new MetaCommand("inventory", "List the items you are holding.", player::inventory));
     registerCommand(new MetaCommand("quit", "Quit the game", this::quit));
   }
 
-  private String quit(Player p) {
+  private String quit() {
     gameOver = true;
     return "Okay, bye!";
   }
 
-  private String help(Player p) {
+  private String help() {
     var w = commands.values().stream().mapToInt(c -> c.verb().length()).max().getAsInt();
 
     var docs = commands
