@@ -2,6 +2,9 @@ package com.gigamonkeys.dungeon;
 
 import java.util.function.*;
 
+/**
+ * The things that can happen when the user types something.
+ */
 public interface Command {
   /**
    * The verb that invokes this command.

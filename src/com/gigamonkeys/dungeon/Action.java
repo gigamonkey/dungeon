@@ -1,5 +1,6 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.Attack.Target;
 import static com.gigamonkeys.dungeon.Text.*;
 
 import java.util.ArrayList;

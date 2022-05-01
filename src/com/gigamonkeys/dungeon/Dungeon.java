@@ -75,13 +75,12 @@ public class Dungeon {
 
   private void registerCommands(Player player) {
     commands.clear();
-    var parser = new CommandParser(player);
-    registerCommand(new Command.Turn("attack", "Attack a monster with a weapon.", parser::attack));
-    registerCommand(new Command.Turn("drop", "Drop an item you are carrying.", parser::drop));
-    registerCommand(new Command.Turn("eat", "Eat an item you are holding or in the room.", parser::eat));
-    registerCommand(new Command.Turn("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", parser::go));
-    registerCommand(new Command.Turn("look", "Look at the room your are in again.", parser::look));
-    registerCommand(new Command.Turn("take", "Take an item from the room.", parser::take));
+    registerCommand(new Command.Turn("attack", "Attack a monster with a weapon.", player::attack));
+    registerCommand(new Command.Turn("drop", "Drop an item you are carrying.", player::drop));
+    registerCommand(new Command.Turn("eat", "Eat an item you are holding or in the room.", player::eat));
+    registerCommand(new Command.Turn("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", player::go));
+    registerCommand(new Command.Turn("look", "Look at the room your are in again.", player::look));
+    registerCommand(new Command.Turn("take", "Take an item from the room.", player::take));
     registerCommand(new Command.NoTurn("help", "Get help on commands.", this::help));
     registerCommand(new Command.NoTurn("inventory", "List the items you are holding.", player::inventory));
     registerCommand(new Command.NoTurn("quit", "Quit the game", this::quit));

@@ -1,54 +1,21 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * Methods that can serve as the parsers needed by Command objects.
+ * Infrastructure for parsing commands from strings as tokens.
  */
 public record CommandParser(Player player) {
-  Action drop(String[] args) {
-    var name = arg(args, 1).or("Drop what?");
-    var thing = name.maybe(n -> player.thing(n)).or(n -> "No " + n + " to drop!");
-    return thing.toAction(t -> Action.drop(player, t));
+  /**
+   * Usual entry point, generates a Parse of the given element of args if it
+   * exists and an error parse otherwise.
+   */
+  public static Parse<String, String[]> arg(String[] args, int idx) {
+    return idx < args.length ? new Parse<>(args[idx], args, null) : new Parse<>(null, args, null);
   }
 
-  Action eat(String[] args) {
-    var name = arg(args, 1).or("Eat what?");
-    var thing = name.maybe(player::anyThing).or(n -> "No " + n + " here to eat.");
-    return thing.toAction(food -> Action.eat(player, food));
-  }
-
-  Action go(String[] args) {
-    var name = arg(args, 1).or("Go where?");
-    var dir = name.maybe(Direction::fromString).or(n -> "Don't understand direction " + n + ".");
-    var door = dir.maybe(player.room()::door).or(d -> "No door to the " + d + ".");
-    return door.toAction(d -> Action.go(player, d));
-  }
-
-  Action look(String[] args) {
-    return Action.look(player);
-  }
-
-  Action attack(String[] args) {
-    var targetName = arg(args, 1).or("Attack what? And with what?");
-    var with = arg(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
-    var weaponName = arg(args, args.length - 1).or("Attack with what?");
-    var target = targetName.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
-    var weapon = weaponName.maybe(player::anyThing).or(n -> "No " + n + " here to attack with!");
-    return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> Action.attack(t, w))));
-  }
-
-  Action take(String[] args) {
-    return listOfThings(args, 1).or("Take what?").toAction(ts -> Action.take(player, ts));
-  }
-
-  ////////////////////////////////////////////////////////////////////
-  // Parsing infrastructure.
-
-  private static class Parse<T, U> {
+  public static class Parse<T, U> {
 
     private final T value;
     private final U previous;
@@ -85,30 +52,5 @@ public record CommandParser(Player player) {
     public String toString() {
       return "value: " + value + "; previous: " + previous + "; error: " + error;
     }
-  }
-
-  private Parse<String, String[]> arg(String[] args, int idx) {
-    return idx < args.length ? new Parse<>(args[idx], args, null) : new Parse<>(null, args, null);
-  }
-
-  private Optional<Thing> implicitMonster(String name) {
-    return name.equals("with") ? player.room().onlyMonster() : player.roomThing(name);
-  }
-
-  private Parse<List<Thing>, String[]> listOfThings(String[] args, int start) {
-    var things = new ArrayList<Thing>();
-    for (var i = start; i < args.length; i++) {
-      var maybe = player.roomThing(args[i]);
-      if (!maybe.isPresent()) {
-        if (!args[i].equals("and")) {
-          return new Parse<>(null, args, null);
-        }
-      } else {
-        var thing = maybe.get();
-        things.add(thing);
-        thing.allThings().forEach(things::add);
-      }
-    }
-    return new Parse<>(things, args, null);
   }
 }

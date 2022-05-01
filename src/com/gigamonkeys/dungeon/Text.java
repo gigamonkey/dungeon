@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Utilities for generating text.
+ */
 class Text {
 
   public static final int WRAP = 72;

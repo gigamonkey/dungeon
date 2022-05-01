@@ -4,6 +4,15 @@ import java.util.function.Function;
 
 public interface Attack {
   /**
+   * Something that can be the target of an attack. Currently the Player and Things.
+   */
+  public static interface Target {
+    public String applyAttack(Attack attack);
+
+    public String who();
+  }
+
+  /**
    * Get the description of the attack, e.g. "You swing your axe and connect!"
    */
   public String description();

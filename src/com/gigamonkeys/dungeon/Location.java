@@ -9,7 +9,8 @@ import java.util.stream.Stream;
 
 /**
  * A location where a Thing can be. Every Thing must be in one location at a
- * time.
+ * time. Removing a Thing from its Location without putting it somewhere else
+ * effectively destroys it.
  */
 public interface Location {
   /**

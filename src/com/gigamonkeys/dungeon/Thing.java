@@ -9,13 +9,13 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * The interface for all the things in the Dungeon other than the
- * Player, Rooms, and Doors. We don't distinguish between different
- * kinds of things by class because ultimately it seems better to
- * actually have to deal with the player applying any verb to any
- * thing.
+ * The base class for all the things in the Dungeon other than the Player,
+ * Rooms, and Doors. Different static inner classes exist as conveniences for
+ * setting up Things with specific properties which can either be used directly
+ * or as the parent for other classes, possibly anonymous classes, that want to
+ * override a handful of other methods.
  */
-public class Thing implements Location, Target {
+public class Thing implements Location, Attack.Target {
 
   static class Monster extends Thing {
 
@@ -206,7 +206,9 @@ public class Thing implements Location, Target {
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  // Action events
+  // Action events. When an action occurs all the things in the room are
+  // notified via the appropriate one of these methods and can generate
+  // reactions which are then processed as part of the turn.
 
   public Stream<Action> onAttack(Action.Attack a) {
     return Stream.empty();
