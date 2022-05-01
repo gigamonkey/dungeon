@@ -107,30 +107,30 @@ public class Player implements Location, Attack.Target {
   //////////////////////////////////////////////////////////////////////////////
   // Command action parsers.
 
-  Action drop(String[] args) {
+  Action drop(String[] args) throws BadCommandException {
     var name = arg(args, 1).or("Drop what?");
     var thing = name.maybe(n -> thing(n)).or(n -> "No " + n + " to drop!");
     return thing.toAction(t -> Action.drop(this, t));
   }
 
-  Action eat(String[] args) {
+  Action eat(String[] args) throws BadCommandException {
     var name = arg(args, 1).or("Eat what?");
     var thing = name.maybe(this::anyThing).or(n -> "No " + n + " here to eat.");
     return thing.toAction(food -> Action.eat(this, food));
   }
 
-  Action go(String[] args) {
+  Action go(String[] args) throws BadCommandException {
     var name = arg(args, 1).or("Go where?");
     var dir = name.maybe(Direction::fromString).or(n -> "Don't understand direction " + n + ".");
     var door = dir.maybe(room()::door).or(d -> "No door to the " + d + ".");
     return door.toAction(d -> Action.go(this, d));
   }
 
-  Action look(String[] args) {
+  Action look(String[] args) throws BadCommandException {
     return Action.look(this);
   }
 
-  Action attack(String[] args) {
+  Action attack(String[] args) throws BadCommandException {
     var targetName = arg(args, 1).or("Attack what? And with what?");
     var with = arg(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
     var weaponName = arg(args, args.length - 1).or("Attack with what?");
@@ -139,7 +139,7 @@ public class Player implements Location, Attack.Target {
     return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> Action.attack(t, w))));
   }
 
-  Action take(String[] args) {
+  Action take(String[] args) throws BadCommandException {
     return listOfThings(args, 1).or("Take what?").toAction(ts -> Action.take(this, ts));
   }
 
@@ -153,7 +153,7 @@ public class Player implements Location, Attack.Target {
       var maybe = roomThing(args[i]);
       if (!maybe.isPresent()) {
         if (!args[i].equals("and")) {
-          return new Parse<>(null, args, null);
+          return new Parse<>(null, args, "No " + args[i] + " here to take.");
         }
       } else {
         var thing = maybe.get();
@@ -161,6 +161,6 @@ public class Player implements Location, Attack.Target {
         thing.allThings().forEach(things::add);
       }
     }
-    return new Parse<>(things, args, null);
+    return things.isEmpty() ? new Parse<>(null, args, "Take what?") : new Parse<>(things, args, null);
   }
 }

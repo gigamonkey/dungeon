@@ -66,11 +66,6 @@ public interface Action {
     return new Turn(p);
   }
 
-  // Pseudo action that produces no reactions.
-  public static Action none(String description) {
-    return () -> description;
-  }
-
   //////////////////////////////////////////////////////////////////////////////
   // Concrete actions classes.
 

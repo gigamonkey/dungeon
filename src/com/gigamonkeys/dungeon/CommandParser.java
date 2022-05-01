@@ -15,6 +15,17 @@ public record CommandParser(Player player) {
     return idx < args.length ? new Parse<>(args[idx], args, null) : new Parse<>(null, args, null);
   }
 
+  public static class BadCommandException extends RuntimeException {
+
+    BadCommandException(String message) {
+      super(message);
+    }
+  }
+
+  public static interface Parser {
+    public Action parse(String[] args) throws BadCommandException;
+  }
+
   public static class Parse<T, U> {
 
     private final T value;
@@ -27,8 +38,12 @@ public record CommandParser(Player player) {
       this.error = error;
     }
 
-    public Action toAction(Function<T, Action> fn) {
-      return value != null ? fn.apply(value) : Action.none(error);
+    public Action toAction(Function<T, Action> fn) throws BadCommandException {
+      if (value != null) {
+        return fn.apply(value);
+      } else {
+        throw new BadCommandException(error);
+      }
     }
 
     public <X> Parse<X, T> maybe(Function<T, Optional<X>> fn) {

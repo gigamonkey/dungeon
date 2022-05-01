@@ -1,5 +1,7 @@
 package com.gigamonkeys.dungeon;
 
+import static com.gigamonkeys.dungeon.CommandParser.*;
+
 import java.util.function.*;
 
 /**
@@ -26,22 +28,26 @@ public interface Command {
    * turn. The combined output from the reaction and reactions is all jammed
    * together and wrapped as a paragraph.
    */
-  public static record Turn(String verb, String help, Function<String[], Action> parser) implements Command {
+  public static record Turn(String verb, String help, Parser parser) implements Command {
     /**
      * Run the command.
      */
     public String run(String[] args, Player p) {
-      var action = parser.apply(args);
+      try {
+        var action = parser.parse(args);
 
-      // Get this before running any actions since they could change it.
-      var startingState = p.state();
+        // Get this before running any actions since they could change it.
+        var startingState = p.state();
 
-      var text = new Text.Wrapped();
-      text.add(action.description());
-      addReactions(text, action, p);
-      addReactions(text, Action.turn(p), p);
-      text.add(p.stateChanges(startingState));
-      return text.toString();
+        var text = new Text.Wrapped();
+        text.add(action.description());
+        addReactions(text, action, p);
+        addReactions(text, Action.turn(p), p);
+        text.add(p.stateChanges(startingState));
+        return text.toString();
+      } catch (BadCommandException bce) {
+        return bce.getMessage();
+      }
     }
 
     /**
