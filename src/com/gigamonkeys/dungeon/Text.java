@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 class Text {
 
-  public final static int WRAP = 72;
+  public static final int WRAP = 72;
 
   public static String a(String thing) {
     var a = "aeiouy".indexOf(Character.toLowerCase(thing.charAt(0))) != -1 ? "an " : "a ";
