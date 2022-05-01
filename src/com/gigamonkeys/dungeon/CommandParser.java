@@ -9,11 +9,49 @@ import java.util.function.Function;
  * Methods that can serve as the parsers needed by Command objects.
  */
 public record CommandParser(Player player) {
-  Action drop(String[] args) {
-    Function<String, Action> dropNamed = name ->
-      player.thing(name).map(t -> Action.drop(player, t)).orElse(Action.none("No " + name + " to drop!"));
+  private static class Parse<T, U> {
 
-    return arg(args, 1).map(dropNamed).orElse(Action.none("Drop what?"));
+    private final T value;
+    private final U previous;
+    private final String error;
+
+    public Parse(T value, U previous, String error) {
+      this.value = value;
+      this.previous = previous;
+      this.error = error;
+    }
+
+    public Action getAction(Function<T, Action> fn) {
+      return value != null ? fn.apply(value) : Action.none(error);
+    }
+
+    public <X> Parse<X, T> map(Function<T, X> fn) {
+      return value != null ? new Parse<>(fn.apply(value), value, null) : new Parse<>(null, value, error);
+    }
+
+    public <X> Parse<X, T> flatMap(Function<T, Optional<X>> fn) {
+      return value != null
+        ? fn.apply(value).map(x -> new Parse<>(x, value, null)).orElse(new Parse<>(null, value, null))
+        : new Parse<>(null, value, error);
+    }
+
+    public Parse<T, U> or(String error) {
+      return (value != null || this.error != null) ? this : new Parse<>(null, previous, error);
+    }
+
+    public Parse<T, U> or(Function<U, String> error) {
+      return (value != null || this.error != null) ? this : new Parse<>(null, previous, error.apply(previous));
+    }
+
+    public String toString() {
+      return "value: " + value + "; previous: " + previous + "; error: " + error;
+    }
+  }
+
+  Action drop(String[] args) {
+    var name = argParse(args, 1).or("Drop what?");
+    var thing = name.flatMap(n -> player.thing(n)).or(n -> "No " + n + " to drop!");
+    return thing.getAction(t -> Action.drop(player, t));
   }
 
   Action eat(String[] args) {
@@ -64,6 +102,10 @@ public record CommandParser(Player player) {
 
   ////////////////////////////////////////////////////////////////////
   // Helper methods.
+
+  private Parse<String, String[]> argParse(String[] args, int idx) {
+    return idx < args.length ? new Parse<>(args[idx], args, null) : new Parse<>(null, args, null);
+  }
 
   private Optional<String> arg(String[] args, int idx) {
     return Optional.of(idx).filter(i -> i < args.length).map(i -> args[i]);
