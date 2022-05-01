@@ -31,6 +31,10 @@ public record CommandParser(Player player) {
         : new Parse<>(null, value, error);
     }
 
+    public Parse<T, T> expect(T expected) {
+      return maybe(v -> Optional.ofNullable(expected.equals(v) ? v : null));
+    }
+
     public Parse<T, U> or(String error) {
       return (value != null || this.error != null) ? this : new Parse<>(null, previous, error);
     }
@@ -70,11 +74,10 @@ public record CommandParser(Player player) {
   Action attack(String[] args) {
     var a = argParse(args, 1).or("Attack what? And with what?");
     var a2 = argParse(args, args.length - 1).or("Attack with what?");
-    var target = a
-      .maybe(n -> n.equals("with") ? onlyMonster() : player.roomThing(n))
-      .or(n -> "No " + n + " here to attack.");
+    var target = a.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
+    var with = argParse(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
     var weapon = a2.maybe(player::anyThing).or(n -> "No " + n + " here to attack with!");
-    return weapon.getAction(w -> target.getAction(t -> Action.attack(t, w)));
+    return with.getAction(e -> weapon.getAction(w -> target.getAction(t -> Action.attack(t, w))));
   }
 
   Action take(String[] args) {
@@ -92,8 +95,8 @@ public record CommandParser(Player player) {
     return new Parse<>(args, null, null).maybe(xs -> listOfThings(xs, idx));
   }
 
-  private Optional<Thing> onlyMonster() {
-    return player.room().onlyMonster();
+  private Optional<Thing> implicitMonster(String name) {
+    return name.equals("with") ? player.room().onlyMonster() : player.roomThing(name);
   }
 
   private Optional<List<Thing>> listOfThings(String[] args, int start) {
