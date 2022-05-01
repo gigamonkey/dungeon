@@ -15,15 +15,30 @@ public record CommandParser(Player player) {
     return idx < args.length ? new Parse<>(args[idx], args, null) : new Parse<>(null, args, null);
   }
 
-  public static class BadCommandException extends RuntimeException {
+  public static class BadCommandException extends Exception {
 
     BadCommandException(String message) {
       super(message);
     }
   }
 
+  /**
+   * Interface for command arg parsing. Needed since we need to throw an
+   * exception.
+   */
+  @FunctionalInterface
   public static interface Parser {
     public Action parse(String[] args) throws BadCommandException;
+  }
+
+  /**
+   * Interface for finally converting to an action which is where the
+   * BadCommandException is actually thrown. Needed for the case where we chain
+   * multiple Parse<> objects.
+   */
+  @FunctionalInterface
+  public static interface ToAction<T> {
+    public Action actionify(T value) throws BadCommandException;
   }
 
   public static class Parse<T, U> {
@@ -38,9 +53,9 @@ public record CommandParser(Player player) {
       this.error = error;
     }
 
-    public Action toAction(Function<T, Action> fn) throws BadCommandException {
+    public Action toAction(ToAction<T> fn) throws BadCommandException {
       if (value != null) {
-        return fn.apply(value);
+        return fn.actionify(value);
       } else {
         throw new BadCommandException(error);
       }
