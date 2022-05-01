@@ -9,6 +9,45 @@ import java.util.function.Function;
  * Methods that can serve as the parsers needed by Command objects.
  */
 public record CommandParser(Player player) {
+  Action drop(String[] args) {
+    var name = arg(args, 1).or("Drop what?");
+    var thing = name.maybe(n -> player.thing(n)).or(n -> "No " + n + " to drop!");
+    return thing.toAction(t -> Action.drop(player, t));
+  }
+
+  Action eat(String[] args) {
+    var name = arg(args, 1).or("Eat what?");
+    var thing = name.maybe(player::anyThing).or(n -> "No " + n + " here to eat.");
+    return thing.toAction(food -> Action.eat(player, food));
+  }
+
+  Action go(String[] args) {
+    var name = arg(args, 1).or("Go where?");
+    var dir = name.maybe(Direction::fromString).or(n -> "Don't understand direction " + n + ".");
+    var door = dir.maybe(player.room()::door).or(d -> "No door to the " + d + ".");
+    return door.toAction(d -> Action.go(player, d));
+  }
+
+  Action look(String[] args) {
+    return Action.look(player);
+  }
+
+  Action attack(String[] args) {
+    var targetName = arg(args, 1).or("Attack what? And with what?");
+    var with = arg(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
+    var weaponName = arg(args, args.length - 1).or("Attack with what?");
+    var target = targetName.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
+    var weapon = weaponName.maybe(player::anyThing).or(n -> "No " + n + " here to attack with!");
+    return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> Action.attack(t, w))));
+  }
+
+  Action take(String[] args) {
+    return listOfThings(args, 1).or("Take what?").toAction(ts -> Action.take(player, ts));
+  }
+
+  ////////////////////////////////////////////////////////////////////
+  // Parsing infrastructure.
+
   private static class Parse<T, U> {
 
     private final T value;
@@ -47,45 +86,6 @@ public record CommandParser(Player player) {
       return "value: " + value + "; previous: " + previous + "; error: " + error;
     }
   }
-
-  Action drop(String[] args) {
-    var name = arg(args, 1).or("Drop what?");
-    var thing = name.maybe(n -> player.thing(n)).or(n -> "No " + n + " to drop!");
-    return thing.toAction(t -> Action.drop(player, t));
-  }
-
-  Action eat(String[] args) {
-    var name = arg(args, 1).or("Eat what?");
-    var thing = name.maybe(player::anyThing).or(n -> "No " + n + " here to eat.");
-    return thing.toAction(food -> Action.eat(player, food));
-  }
-
-  Action go(String[] args) {
-    var name = arg(args, 1).or("Go where?");
-    var dir = name.maybe(Direction::fromString).or(n -> "Don't understand direction " + n + ".");
-    var door = dir.maybe(player.room()::door).or(d -> "No door to the " + d + ".");
-    return door.toAction(d -> Action.go(player, d));
-  }
-
-  Action look(String[] args) {
-    return Action.look(player);
-  }
-
-  Action attack(String[] args) {
-    var targetName = arg(args, 1).or("Attack what? And with what?");
-    var with = arg(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
-    var weaponName = arg(args, args.length - 1).or("Attack with what?");
-    var target = targetName.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
-    var weapon = weaponName.maybe(player::anyThing).or(n -> "No " + n + " here to attack with!");
-    return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> Action.attack(t, w))));
-  }
-
-  Action take(String[] args) {
-    return listOfThings(args, 1).or("Take what?").toAction(ts -> Action.take(player, ts));
-  }
-
-  ////////////////////////////////////////////////////////////////////
-  // Helper methods.
 
   private Parse<String, String[]> arg(String[] args, int idx) {
     return idx < args.length ? new Parse<>(args[idx], args, null) : new Parse<>(null, args, null);
