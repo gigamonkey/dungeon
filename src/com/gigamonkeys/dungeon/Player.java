@@ -32,9 +32,6 @@ public class Player implements Location, Attack.Target {
     return inventory;
   }
 
-  //
-  //////////////////////////////////////////////////////////////////////////////
-
   //////////////////////////////////////////////////////////////////////////////
   // Tracking and describing state changes.
 
@@ -49,16 +46,13 @@ public class Player implements Location, Attack.Target {
     return Stream.ofNullable(damage > 0 ? describeDamage(damage) : null);
   }
 
-  //
+  private String describeDamage(int amount) {
+    var status = hitPoints > 0 ? "You're down to " + hitPoints + "." : "You feel consciousness slipping away.";
+    return "You take " + amount + plural(" hit point", amount) + " of damage. " + status;
+  }
+
   //////////////////////////////////////////////////////////////////////////////
-
-  public Optional<Thing> roomThing(String name) {
-    return room.thing(name);
-  }
-
-  public Optional<Thing> anyThing(String name) {
-    return thing(name).or(() -> roomThing(name));
-  }
+  // Basic methods on Player
 
   public void go(Door door) {
     room = door.from(room);
@@ -85,6 +79,13 @@ public class Player implements Location, Attack.Target {
     return hitPoints;
   }
 
+  public boolean alive() {
+    return hitPoints > 0;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Attack.Target implementation
+
   public String applyAttack(Attack attack) {
     int damage = attack.damage();
     hitPoints -= damage;
@@ -93,15 +94,6 @@ public class Player implements Location, Attack.Target {
 
   public String who() {
     return "you";
-  }
-
-  public String describeDamage(int amount) {
-    var status = hitPoints > 0 ? "You're down to " + hitPoints + "." : "You feel consciousness slipping away.";
-    return "You take " + amount + plural(" hit point", amount) + " of damage. " + status;
-  }
-
-  public boolean alive() {
-    return hitPoints > 0;
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -141,6 +133,17 @@ public class Player implements Location, Attack.Target {
 
   Action take(String[] args) throws BadCommandException {
     return listOfThings(args, 1).or("Take what?").toAction(ts -> Action.take(this, ts));
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Helpers for action parsers
+
+  private Optional<Thing> roomThing(String name) {
+    return room.thing(name);
+  }
+
+  private Optional<Thing> anyThing(String name) {
+    return thing(name).or(() -> roomThing(name));
   }
 
   private Optional<Thing> implicitMonster(String name) {
