@@ -83,10 +83,9 @@ public interface Action {
     }
   }
 
-  public static record Move(Thing thing, Location location, String place, String movement) implements Action {
+  public static record Move(Thing thing, Location location, String place) implements Action {
     public String description() {
-      location.placeThing(thing, place);
-      return movement;
+      return thing.moveTo(location, place);
     }
 
     public Stream<Action> reactions(Thing t) {

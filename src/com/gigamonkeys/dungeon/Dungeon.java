@@ -220,16 +220,13 @@ public class Dungeon {
     var parrot = new Thing.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true) {
       @Override
       public Stream<Action> onDrop(Action.Drop a) {
-        return a.thing().name().equals("bread")
-          ? Stream.of(
-            new Action.Move(
-              this,
-              a.thing(),
-              "on",
-              "The " + name() + " flies down and starts eating the " + a.thing().name() + "."
-            )
-          )
-          : Stream.empty();
+        return a.thing().name().equals("bread") ? Stream.of(new Action.Move(this, a.thing(), "on")) : Stream.empty();
+      }
+
+      @Override
+      public String moveTo(Location location, String place) {
+        var s = super.moveTo(location, place);
+        return location == bread ? "The " + name() + " flies down and starts eating the bread." : s;
       }
     };
 

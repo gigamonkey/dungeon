@@ -81,7 +81,7 @@ public class Thing implements Location, Attack.Target {
   private final boolean isPortable;
   private final boolean isMonster;
 
-  private int hitPoints;
+  private int hitPoints = 0;
   private Optional<Location> location = Optional.empty();
 
   Thing(String name, String description, boolean isPortable, boolean isMonster, int hitPoints) {
@@ -160,8 +160,13 @@ public class Thing implements Location, Attack.Target {
    * Apply an attack to this thing as a target.
    */
   public String applyAttack(Attack attack) {
+    hitPoints -= attack.damage();
+
+    if (hitPoints < -500) {
+      return destroy("");
+    }
+
     if (isMonster()) {
-      hitPoints -= attack.damage();
       return (
         "After " +
         attack.damage() +
@@ -171,12 +176,17 @@ public class Thing implements Location, Attack.Target {
         (alive() ? "wounded but still alive. And now it's mad." : "dead. Good job, murderer.")
       );
     } else {
-      return "I don't know why you're attacking an innocent " + name() + ".";
+        return "I don't know why you're attacking an innocent " + name() + ".";
     }
   }
 
   public String who() {
     return "the " + name;
+  }
+
+  public String moveTo(Location location, String place) {
+    location.placeThing(this, place);
+    return "The " + name() + " moves to " + place + " " + location + ".";
   }
 
   /**
