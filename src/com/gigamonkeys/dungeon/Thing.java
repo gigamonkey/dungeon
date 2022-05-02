@@ -108,7 +108,7 @@ public class Thing implements Location.Named, Attack.Target {
     places()
       .stream()
       .flatMap(p -> {
-        var things = byPlace.getOrDefault(p, List.of());
+        var things = byPlace.getOrDefault(p, List.of()).stream().map(t -> a(t.description())).toList();
         return things.isEmpty()
           ? Stream.empty()
           : Stream.of(capitalize(p) + " the " + name() + isAre(things.size()) + commify(things) + ".");
@@ -118,13 +118,6 @@ public class Thing implements Location.Named, Attack.Target {
     things().stream().map(Thing::describeThings).forEach(desc::add);
 
     return String.join(" ", desc);
-  }
-
-  private Map<String, List<String>> groupByPlace() {
-    var m = new HashMap<String, List<String>>();
-    placedThings()
-      .forEach(pt -> m.computeIfAbsent(pt.where(), k -> new ArrayList<>()).add(a(pt.thing().description())));
-    return m;
   }
 
   public String eat() {

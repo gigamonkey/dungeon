@@ -1,9 +1,10 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Text.a;
-import static com.gigamonkeys.dungeon.Text.capitalize;
+import static com.gigamonkeys.dungeon.Text.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -121,5 +122,11 @@ public interface Location {
    */
   public default Stream<PlacedThing> allPlacedThings() {
     return locationMap().values().stream().flatMap(pt -> Stream.concat(Stream.of(pt), pt.thing().allPlacedThings()));
+  }
+
+  public default Map<String, List<Thing>> groupByPlace() {
+    var m = new HashMap<String, List<Thing>>();
+    placedThings().forEach(pt -> m.computeIfAbsent(pt.where(), k -> new ArrayList<>()).add(pt.thing()));
+    return m;
   }
 }

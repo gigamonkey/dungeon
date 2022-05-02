@@ -2,8 +2,10 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Text.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -74,7 +76,24 @@ public class Room implements Location {
   }
 
   private Stream<String> describeThings(Predicate<Thing> p) {
-    return placedThings().stream().filter(pt -> p.test(pt.thing())).flatMap(PlacedThing::describe);
+    var desc = new ArrayList<String>();
+
+    var byPlace = groupByPlace();
+
+    byPlace
+      .keySet()
+      .stream()
+      .flatMap(place -> {
+        var things = byPlace.getOrDefault(place, List.of()).stream().filter(p).map(t -> a(t.description())).toList();
+        return things.isEmpty()
+          ? Stream.empty()
+          : Stream.of(capitalize(place) + isAre(things.size()) + commify(things) + ".");
+      })
+      .forEach(desc::add);
+
+    things().stream().map(Thing::describeThings).forEach(desc::add);
+
+    return desc.stream();
   }
 
   private String describeDoors() {
