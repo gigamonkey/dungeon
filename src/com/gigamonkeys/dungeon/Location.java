@@ -1,8 +1,10 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.Text.*;
+import static com.gigamonkeys.dungeon.Text.a;
+import static com.gigamonkeys.dungeon.Text.capitalize;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -30,6 +32,14 @@ public interface Location {
   public Map<String, PlacedThing> locationMap();
 
   /**
+   * The valid places for this location. Default implementation is okay but can
+   * definitely be overridden.
+   */
+  public default List<String> places() {
+    return List.of("on");
+  }
+
+  /**
    * Can the player take the Thing from this location. This method can
    * reasonably be overridden to provide different behavior.
    */
@@ -39,6 +49,13 @@ public interface Location {
 
   //////////////////////////////////////////////////////////////////////////////
   // Default implementations that almost certainly do not need to be overridden.
+
+  /**
+   * Get place if it exists.
+   */
+  public default Optional<String> place(String name) {
+    return Optional.ofNullable(places().contains(name) ? name : null);
+  }
 
   /**
    * Add thing to this location with the where descriptor.
