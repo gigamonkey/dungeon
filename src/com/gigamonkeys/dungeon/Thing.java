@@ -176,7 +176,7 @@ public class Thing implements Location, Attack.Target {
         (alive() ? "wounded but still alive. And now it's mad." : "dead. Good job, murderer.")
       );
     } else {
-        return "I don't know why you're attacking an innocent " + name() + ".";
+      return "I don't know why you're attacking an innocent " + name() + ".";
     }
   }
 

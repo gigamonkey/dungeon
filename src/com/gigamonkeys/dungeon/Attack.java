@@ -49,5 +49,4 @@ public interface Attack {
       return resultFn.apply(t) + " " + t.applyAttack(this);
     }
   }
-
 }
