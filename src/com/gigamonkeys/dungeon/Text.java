@@ -28,6 +28,10 @@ class Text {
     }
   }
 
+  public static String isAre(int n) {
+    return n == 1 ? " is " : " are ";
+  }
+
   public static String capitalize(String s) {
     return s.substring(0, 1).toUpperCase() + s.substring(1);
   }

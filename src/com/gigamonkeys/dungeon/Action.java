@@ -94,6 +94,16 @@ public interface Action {
     }
   }
 
+  public static record Put(Thing thing, Location.Named location, String place) implements Action {
+    public String description() {
+      location.placeThing(thing, place);
+      return "You put the " + thing.name() + " " + place + " the " + location.name() + ".";
+    }
+    public Stream<Action> reactios(Thing t) {
+      return t.onPut(this);
+    }
+  }
+
   public static record Say(Thing speaker, String what) implements Action {
     public String description() {
       return "'" + what + "' says the " + speaker.name() + ".";

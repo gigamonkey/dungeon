@@ -2,7 +2,7 @@ package com.gigamonkeys.dungeon;
 
 import static com.gigamonkeys.dungeon.Text.*;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * or as the parent for other classes, possibly anonymous classes, that want to
  * override a handful of other methods.
  */
-public class Thing implements Location, Attack.Target {
+public class Thing implements Location.Named, Attack.Target {
 
   static class Monster extends Thing {
 
@@ -102,14 +102,29 @@ public class Thing implements Location, Attack.Target {
 
   public String describeThings() {
     var desc = new ArrayList<String>();
-    placedThings()
+
+    var byPlace = groupByPlace();
+
+    places()
       .stream()
-      .map(pt -> capitalize(pt.where()) + " the " + name() + " is " + a(pt.thing().description()) + ".")
+      .flatMap(p -> {
+        var things = byPlace.getOrDefault(p, List.of());
+        return things.isEmpty()
+          ? Stream.empty()
+          : Stream.of(capitalize(p) + " the " + name() + isAre(things.size()) + commify(things) + ".");
+      })
       .forEach(desc::add);
 
     things().stream().map(Thing::describeThings).forEach(desc::add);
 
     return String.join(" ", desc);
+  }
+
+  private Map<String, List<String>> groupByPlace() {
+    var m = new HashMap<String, List<String>>();
+    placedThings()
+      .forEach(pt -> m.computeIfAbsent(pt.where(), k -> new ArrayList<>()).add(a(pt.thing().description())));
+    return m;
   }
 
   public String eat() {
@@ -231,6 +246,10 @@ public class Thing implements Location, Attack.Target {
   }
 
   public Stream<Action> onMove(Action.Move a) {
+    return Stream.empty();
+  }
+
+  public Stream<Action> onPut(Action.Put a) {
     return Stream.empty();
   }
 

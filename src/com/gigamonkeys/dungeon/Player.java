@@ -135,6 +135,7 @@ public class Player implements Location, Attack.Target {
     var thingName = arg(args, 1).or("Put what? And where?");
     var placeName = args(args, 2, args.length - 1).or("Where?");
     var locationName = arg(args, args.length - 1).or("Need location.");
+
     var thing = thingName.maybe(this::anyThing).or(n -> "No " + n + " here.");
     var location = locationName.maybe(this::anyThing).or(n -> "No " + n + " here.");
     return thing.toAction(t ->
@@ -142,7 +143,7 @@ public class Player implements Location, Attack.Target {
         placeName
           .maybe(l::place)
           .or(n -> "Can't put things " + n + " the " + l.name() + ".")
-          .toAction(p -> new Action.Move(t, l, p, "You put the " + t.name() + " " + p + " the " + l.name() + "."))
+          .toAction(p -> new Action.Put(t, l, p))
       )
     );
   }
