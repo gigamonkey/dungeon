@@ -99,6 +99,15 @@ public class Player implements Location, Attack.Target {
   //////////////////////////////////////////////////////////////////////////////
   // Command action parsers.
 
+  Action attack(String[] args) throws BadCommandException {
+    var targetName = arg(args, 1).or("Attack what? And with what?");
+    var with = arg(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
+    var weaponName = arg(args, args.length - 1).or("Attack with what?");
+    var target = targetName.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
+    var weapon = weaponName.maybe(this::anyThing).or(n -> "No " + n + " here to attack with!");
+    return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> new Action.Attack(t, w))));
+  }
+
   Action drop(String[] args) throws BadCommandException {
     var name = arg(args, 1).or("Drop what?");
     var thing = name.maybe(n -> thing(n)).or(n -> "No " + n + " to drop!");
@@ -122,13 +131,17 @@ public class Player implements Location, Attack.Target {
     return new Action.Look(this);
   }
 
-  Action attack(String[] args) throws BadCommandException {
-    var targetName = arg(args, 1).or("Attack what? And with what?");
-    var with = arg(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
-    var weaponName = arg(args, args.length - 1).or("Attack with what?");
-    var target = targetName.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
-    var weapon = weaponName.maybe(this::anyThing).or(n -> "No " + n + " here to attack with!");
-    return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> new Action.Attack(t, w))));
+  Action put(String[] args) throws BadCommandException {
+    var thingName = arg(args, 1).or("Put what? And where?");
+    var place = args(args, 2, args.length - 1).or("Where?");
+    var locationName = arg(args, args.length - 1).or("Need location.");
+    var thing = thingName.maybe(this::anyThing).or(n -> "No " + n + " here.");
+    var location = locationName.maybe(this::anyThing).or(n -> "No " + n + " here.");
+    return thing.toAction(t ->
+      place.toAction(p ->
+        location.toAction(l -> new Action.Move(t, l, p, "You put the " + t.name() + " " + p + " " + l.name() + "."))
+      )
+    );
   }
 
   Action take(String[] args) throws BadCommandException {

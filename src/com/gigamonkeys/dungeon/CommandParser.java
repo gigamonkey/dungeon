@@ -1,5 +1,6 @@
 package com.gigamonkeys.dungeon;
 
+import java.util.*;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -13,6 +14,14 @@ public record CommandParser(Player player) {
    */
   public static Parse<String, String[]> arg(String[] args, int idx) {
     return idx < args.length ? new Parse<>(args[idx], args, null) : new Parse<>(null, args, null);
+  }
+
+  /**
+   * Combine consecutive tokens into a single argument.
+   */
+  public static Parse<String, String[]> args(String[] args, int start, int end) {
+    var s = String.join(" ", Arrays.asList(Arrays.copyOfRange(args, start, end)));
+    return !s.equals("") ? new Parse<>(s, args, null) : new Parse<>(null, args, null);
   }
 
   /**
