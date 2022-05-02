@@ -9,7 +9,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * An action that can occur in a turn, e.g. a monster attacks a player.
+ * The actions that can happen. Most command will cause an action which will
+ * then cause zero or more reactions (which can then theoretically cause yet
+ * more reactions.)
  */
 public interface Action {
   /**
@@ -19,51 +21,12 @@ public interface Action {
   public String description();
 
   /**
-   * Dispatch this action to the appropriate reactions handler on the Thing.
+   * Get the reactions to this Action from the given thing. (This method just
+   * dispatches to the appropriate on<Action> method in the Thing interface so
+   * the Thing can generate its own reactions.
    */
   public default Stream<Action> reactions(Thing t) {
     return Stream.empty();
-  }
-
-  //////////////////////////////////////////////////////////////////////////////
-  // Static methods for creating Actions. Return type is just Action rather than
-  // more specific type to make generic Optionals and Streams work better when
-  // different types of Action are combined.
-
-  public static Action attack(Target target, Thing weapon) {
-    return new Attack(target, weapon);
-  }
-
-  public static Action drop(Player p, Thing thing) {
-    return new Drop(p, thing);
-  }
-
-  public static Action eat(Player p, Thing t) {
-    return new Eat(p, t);
-  }
-
-  public static Action go(Player p, Door door) {
-    return new Go(p, door);
-  }
-
-  public static Action look(Player p) {
-    return new Look(p);
-  }
-
-  public static Action move(Thing t, Location l, String p, String d) {
-    return new Move(t, l, p, d);
-  }
-
-  public static Action say(Thing who, String what) {
-    return new Say(who, what);
-  }
-
-  public static Action take(Player p, List<Thing> things) {
-    return new Take(p, things);
-  }
-
-  public static Action turn(Player p) {
-    return new Turn(p);
   }
 
   //////////////////////////////////////////////////////////////////////////////

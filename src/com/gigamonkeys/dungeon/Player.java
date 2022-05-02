@@ -102,24 +102,24 @@ public class Player implements Location, Attack.Target {
   Action drop(String[] args) throws BadCommandException {
     var name = arg(args, 1).or("Drop what?");
     var thing = name.maybe(n -> thing(n)).or(n -> "No " + n + " to drop!");
-    return thing.toAction(t -> Action.drop(this, t));
+    return thing.toAction(t -> new Action.Drop(this, t));
   }
 
   Action eat(String[] args) throws BadCommandException {
     var name = arg(args, 1).or("Eat what?");
     var thing = name.maybe(this::anyThing).or(n -> "No " + n + " here to eat.");
-    return thing.toAction(food -> Action.eat(this, food));
+    return thing.toAction(food -> new Action.Eat(this, food));
   }
 
   Action go(String[] args) throws BadCommandException {
     var name = arg(args, 1).or("Go where?");
     var dir = name.maybe(Direction::fromString).or(n -> "Don't understand direction " + n + ".");
     var door = dir.maybe(room()::door).or(d -> "No door to the " + d + ".");
-    return door.toAction(d -> Action.go(this, d));
+    return door.toAction(d -> new Action.Go(this, d));
   }
 
   Action look(String[] args) throws BadCommandException {
-    return Action.look(this);
+    return new Action.Look(this);
   }
 
   Action attack(String[] args) throws BadCommandException {
@@ -128,11 +128,11 @@ public class Player implements Location, Attack.Target {
     var weaponName = arg(args, args.length - 1).or("Attack with what?");
     var target = targetName.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
     var weapon = weaponName.maybe(this::anyThing).or(n -> "No " + n + " here to attack with!");
-    return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> Action.attack(t, w))));
+    return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> new Action.Attack(t, w))));
   }
 
   Action take(String[] args) throws BadCommandException {
-    return listOfThings(args, 1).or("Take what?").toAction(ts -> Action.take(this, ts));
+    return listOfThings(args, 1).or("Take what?").toAction(ts -> new Action.Take(this, ts));
   }
 
   //////////////////////////////////////////////////////////////////////////////

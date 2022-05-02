@@ -42,7 +42,7 @@ public interface Command {
         var text = new Text.Wrapped();
         text.add(action.description());
         addReactions(text, action, p);
-        addReactions(text, Action.turn(p), p);
+        addReactions(text, new Action.Turn(p), p);
         text.add(p.stateChanges(startingState));
         return text.toString();
       } catch (BadCommandException bce) {

@@ -191,7 +191,7 @@ public class Dungeon {
 
       @Override
       public Stream<Action> onTurn(Action.Turn a) {
-        return streamIf(alive(), Action.attack(a.player(), this));
+        return streamIf(alive(), new Action.Attack(a.player(), this));
       }
     };
 
@@ -204,14 +204,14 @@ public class Dungeon {
     ) {
       @Override
       public Stream<Action> onEnter(Action.Go a) {
-        return streamIf(alive(), Action.say(this, "Arr, matey!"));
+        return streamIf(alive(), new Action.Say(this, "Arr, matey!"));
       }
 
       @Override
       public Stream<Action> onTake(Action.Take a) {
         return streamIf(
           alive() && a.taking(thing("parrot")),
-          Action.say(this, "Oi, ye swarthy dog! Hands off me parrot!")
+          new Action.Say(this, "Oi, ye swarthy dog! Hands off me parrot!")
         );
       }
     };
@@ -221,7 +221,7 @@ public class Dungeon {
       public Stream<Action> onDrop(Action.Drop a) {
         return a.thing().name().equals("bread")
           ? Stream.of(
-            Action.move(
+            new Action.Move(
               this,
               a.thing(),
               "on",
