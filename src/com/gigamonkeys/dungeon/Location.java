@@ -26,10 +26,6 @@ public interface Location {
     }
   }
 
-  public static interface Named extends Location {
-    public String name();
-  }
-
   /**
    * Provide the map in which we manage the things. All other methods in this
    * interface have a default implementation.

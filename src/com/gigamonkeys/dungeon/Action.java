@@ -94,7 +94,7 @@ public interface Action {
     }
   }
 
-  public static record Put(Thing thing, Location.Named location, String place) implements Action {
+  public static record Put(Thing thing, Thing location, String place) implements Action {
     public String description() {
       location.placeThing(thing, place);
       return "You put the " + thing.name() + " " + place + " the " + location.name() + ".";

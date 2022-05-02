@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * or as the parent for other classes, possibly anonymous classes, that want to
  * override a handful of other methods.
  */
-public class Thing implements Location.Named, Attack.Target {
+public class Thing implements Location, Attack.Target {
 
   static class Monster extends Thing {
 
