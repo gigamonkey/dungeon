@@ -100,10 +100,12 @@ public class Player implements Location, Attack.Target {
   // Command action parsers.
 
   Action attack(String[] args) throws BadCommandException {
-    var targetName = arg(args, 1).or("Attack what? And with what?");
-    var with = arg(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
-    var target = targetName.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
-    var weapon = anyThing(arg(args, args.length - 1).or("Attack with what?"));
+    var i = 1;
+    var target = args.length == 3
+      ? implicit(room::onlyMonster).or("No monster here.")
+      : anyThing(arg(args, i++).or("Attack what? And with what?"));
+    var with = arg(args, i++).expect("with").or("Don't understand ATTACK with no WITH.");
+    var weapon = anyThing(arg(args, i++).or("Attack with what?"));
     return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> new Action.Attack(t, w))));
   }
 
@@ -160,22 +162,18 @@ public class Player implements Location, Attack.Target {
     return anyThing(arg(args, 1).or(capitalize(verb) + " what?")).toAction(factory);
   }
 
-  private Optional<Thing> roomThing(String name) {
-    return room.thing(name);
-  }
-
   private <T> Parse<Thing, String> anyThing(Parse<String, T> parse) {
-    return parse.maybe(n -> thing(n).or(() -> roomThing(n))).or(n -> "No " + n + " here.");
+    return parse.maybe(n -> thing(n).or(() -> room.thing(n))).or(n -> "No " + n + " here.");
   }
 
   private Optional<Thing> implicitMonster(String name) {
-    return name.equals("with") ? room().onlyMonster() : roomThing(name);
+    return name.equals("with") ? room().onlyMonster() : room.thing(name);
   }
 
   private Parse<List<Thing>, String[]> listOfThings(String[] args, int start) {
     var things = new ArrayList<Thing>();
     for (var i = start; i < args.length; i++) {
-      var maybe = roomThing(args[i]);
+      var maybe = room.thing(args[i]);
       if (!maybe.isPresent()) {
         if (!args[i].equals("and")) {
           return new Parse<>(null, args, "No " + args[i] + " here to take.");

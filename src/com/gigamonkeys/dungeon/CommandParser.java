@@ -1,8 +1,9 @@
 package com.gigamonkeys.dungeon;
 
-import java.util.*;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Infrastructure for parsing commands from strings as tokens.
@@ -22,6 +23,10 @@ public record CommandParser(Player player) {
   public static Parse<String, String[]> args(String[] args, int start, int end) {
     var s = String.join(" ", Arrays.asList(Arrays.copyOfRange(args, start, end)));
     return !s.equals("") ? new Parse<>(s, args, null) : new Parse<>(null, args, null);
+  }
+
+  public static <T> Parse<T, Object> implicit(Supplier<Optional<T>> opt) {
+    return opt.get().map(t -> new Parse<>(t, null, null)).orElse(new Parse<>(null, null, null));
   }
 
   /**
