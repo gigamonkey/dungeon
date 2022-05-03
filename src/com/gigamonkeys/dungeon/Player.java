@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -54,8 +53,9 @@ public class Player implements Location, Attack.Target {
   //////////////////////////////////////////////////////////////////////////////
   // Basic methods on Player
 
-  public void go(Door door) {
+  public String go(Door door) {
     room = door.from(room);
+    return room.description();
   }
 
   public Room room() {
@@ -118,7 +118,7 @@ public class Player implements Location, Attack.Target {
   }
 
   Action eat(String[] args) throws BadCommandException {
-    return simpleVerb(args, "eat", food -> new Action.Drop(this, food));
+    return simpleVerb(args, "eat", Action.Eat::new);
   }
 
   Action go(String[] args) throws BadCommandException {
@@ -164,10 +164,6 @@ public class Player implements Location, Attack.Target {
 
   private <T> Parse<Thing, String> anyThing(Parse<String, T> parse) {
     return parse.maybe(n -> thing(n).or(() -> room.thing(n))).or(n -> "No " + n + " here.");
-  }
-
-  private Optional<Thing> implicitMonster(String name) {
-    return name.equals("with") ? room().onlyMonster() : room.thing(name);
   }
 
   private Parse<List<Thing>, String[]> listOfThings(String[] args, int start) {

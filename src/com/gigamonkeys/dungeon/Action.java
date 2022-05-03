@@ -64,7 +64,7 @@ public interface Action {
     }
   }
 
-  public static record Eat(Player player, Thing food) implements Action {
+  public static record Eat(Thing food) implements Action {
     public String description() {
       return food.eat();
     }
@@ -75,8 +75,7 @@ public interface Action {
 
   public static record Go(Player player, Door door) implements Action {
     public String description() {
-      player.go(door);
-      return player.room().description();
+      return player.go(door);
     }
 
     public Stream<Action> reactions(Thing t) {
