@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -57,9 +58,7 @@ public class Dungeon {
   }
 
   private void say(String s) {
-    out.println();
-    out.println(s);
-    out.println();
+    out.println("\n" + s + "\n");
   }
 
   public String doCommand(String[] tokens, Player player) {
@@ -80,6 +79,7 @@ public class Dungeon {
     registerCommand(new Command.Turn("eat", "Eat an item you are holding or in the room.", player::eat));
     registerCommand(new Command.Turn("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", player::go));
     registerCommand(new Command.Turn("look", "Look at the room your are in again.", player::look));
+    registerCommand(new Command.Turn("open", "Open something.", player::open));
     registerCommand(new Command.Turn("put", "Put an object somewhere.", player::put));
     registerCommand(new Command.Turn("take", "Take an item from the room.", player::take));
     registerCommand(new Command.NoTurn("help", "Get help on commands.", this::help));
@@ -117,16 +117,43 @@ public class Dungeon {
     var kitchen = new Room("what appears to be a kitchen");
     var blobbyblobLair = new Room("the lair of a horrible creature");
     var dining = new Room("a grand dining room with a crystal chandelier and tapestries on the walls");
+    var storeroom = new Room("a storeroom");
 
     // Doors
     entry.connect("oaken door", kitchen, EAST);
     entry.connect("dank tunnel", blobbyblobLair, SOUTH);
     kitchen.connect("swinging door", dining, EAST);
+    kitchen.connect("wooden door", storeroom, SOUTH);
 
     // Furniture
     var pedestal = new Thing.Furniture("pedestal", "stone pedestal");
     var table = new Thing.Furniture("table", "wooden table");
     var tray = new Thing.Furniture("tray", "TV tray");
+
+    var treasureChest = new Thing.Furniture("chest", "wooden treasure chest") {
+      boolean open = false;
+
+      @Override
+      public String description() {
+        return (open ? "open" : "closed") + " " + super.description();
+      }
+
+      @Override
+      public String describeThings() {
+        return open ? super.describeThings() : "";
+      }
+
+      public String open() {
+        open = true;
+        return "The chest lid opens with a creak. " + describeThings();
+      }
+
+      public List<String> places() {
+        return List.of("inside");
+      }
+    };
+
+    var jeweledDagger = new Thing.Weapon("dagger", "jeweled dagger", new Attack.Simple("Stabby, stab, stab.", 1));
 
     // Things
     var ring = new Thing.Weapon(
@@ -237,6 +264,8 @@ public class Dungeon {
     kitchen.placeThing(table, "against the wall");
     table.placeThing(bread, "on");
     blobbyblobLair.placeThing(axe, "on the floor");
+    storeroom.placeThing(treasureChest, "against the wall");
+    treasureChest.placeThing(jeweledDagger, "inside");
     blobbyblobLair.placeThing(blobbyblob, "across from you");
     entry.placeThing(pedestal, "in the center of the room");
     entry.placeThing(tray, "by the door");

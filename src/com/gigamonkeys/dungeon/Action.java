@@ -93,6 +93,16 @@ public interface Action {
     }
   }
 
+  public static record Open(Thing thing) implements Action {
+    public String description() {
+      return thing.open();
+    }
+
+    public Stream<Action> reactions(Thing t) {
+      return t.onOpen(this);
+    }
+  }
+
   public static record Put(Thing thing, Thing location, String place) implements Action {
     public String description() {
       location.placeThing(thing, place);

@@ -124,6 +124,10 @@ public class Thing implements Location, Attack.Target {
     return "Yuck. You can't eat " + a(description()) + ".";
   }
 
+  public String open() {
+    return "You can't open a " + name() + ".";
+  }
+
   public boolean isPortable() {
     return isPortable;
   }
@@ -249,6 +253,10 @@ public class Thing implements Location, Attack.Target {
   }
 
   public Stream<Action> onMove(Action.Move a) {
+    return Stream.empty();
+  }
+
+  public Stream<Action> onOpen(Action.Open a) {
     return Stream.empty();
   }
 

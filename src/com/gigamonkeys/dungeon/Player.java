@@ -131,6 +131,14 @@ public class Player implements Location, Attack.Target {
     return new Action.Look(this);
   }
 
+  Action open(String[] args) throws BadCommandException {
+    return arg(args, 1)
+      .or("Open what?")
+      .maybe(this::anyThing)
+      .or(n -> "No " + n + " here.")
+      .toAction(t -> new Action.Open(t));
+  }
+
   Action put(String[] args) throws BadCommandException {
     var thingName = arg(args, 1).or("Put what? And where?");
     var placeName = args(args, 2, args.length - 1).or("Where?");
