@@ -145,20 +145,20 @@ public class Dungeon {
       }
 
       public String open() {
-        if (open) {
-          return "The " + name() + " is already open.";
-        } else {
+        if (!open) {
           open = true;
           return "The chest lid opens with a creak. " + describeThings();
+        } else {
+          return "The " + name() + " is already open.";
         }
       }
 
       public String close() {
-        if (!open) {
-          return "The " + name() + " is already closed.";
-        } else {
+        if (open) {
           open = false;
           return "The chest snaps shut.";
+        } else {
+          return "The " + name() + " is already closed.";
         }
       }
 
