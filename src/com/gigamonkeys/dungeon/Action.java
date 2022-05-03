@@ -43,6 +43,16 @@ public interface Action {
     }
   }
 
+  public static record Close(Thing thing) implements Action {
+    public String description() {
+      return thing.close();
+    }
+
+    public Stream<Action> reactions(Thing t) {
+      return t.onClose(this);
+    }
+  }
+
   public static record Drop(Player player, Thing thing) implements Action {
     public String description() {
       player.drop(thing);

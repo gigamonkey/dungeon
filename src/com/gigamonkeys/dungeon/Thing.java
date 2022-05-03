@@ -120,6 +120,10 @@ public class Thing implements Location, Attack.Target {
     return String.join(" ", desc);
   }
 
+  public String close() {
+    return "You can't close a " + name() + ".";
+  }
+
   public String eat() {
     return "Yuck. You can't eat " + a(description()) + ".";
   }
@@ -233,6 +237,10 @@ public class Thing implements Location, Attack.Target {
   // reactions which are then processed as part of the turn.
 
   public Stream<Action> onAttack(Action.Attack a) {
+    return Stream.empty();
+  }
+
+  public Stream<Action> onClose(Action.Close a) {
     return Stream.empty();
   }
 

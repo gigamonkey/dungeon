@@ -75,6 +75,7 @@ public class Dungeon {
   private void registerCommands(Player player) {
     commands.clear();
     registerCommand(new Command.Turn("attack", "Attack a monster with a weapon.", player::attack));
+    registerCommand(new Command.Turn("close", "Close something.", player::close));
     registerCommand(new Command.Turn("drop", "Drop an item you are carrying.", player::drop));
     registerCommand(new Command.Turn("eat", "Eat an item you are holding or in the room.", player::eat));
     registerCommand(new Command.Turn("go", "Go in a direction (NORTH, SOUTH, EAST, or WEST).", player::go));
@@ -144,8 +145,21 @@ public class Dungeon {
       }
 
       public String open() {
-        open = true;
-        return "The chest lid opens with a creak. " + describeThings();
+        if (open) {
+          return "The " + name() + " is already open.";
+        } else {
+          open = true;
+          return "The chest lid opens with a creak. " + describeThings();
+        }
+      }
+
+      public String close() {
+        if (!open) {
+          return "The " + name() + " is already closed.";
+        } else {
+          open = false;
+          return "The chest snaps shut.";
+        }
       }
 
       public List<String> places() {

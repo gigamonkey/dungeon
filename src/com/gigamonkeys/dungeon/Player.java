@@ -108,6 +108,14 @@ public class Player implements Location, Attack.Target {
     return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> new Action.Attack(t, w))));
   }
 
+  Action close(String[] args) throws BadCommandException {
+    return arg(args, 1)
+      .or("Close what?")
+      .maybe(this::anyThing)
+      .or(n -> "No " + n + " here.")
+      .toAction(t -> new Action.Close(t));
+  }
+
   Action drop(String[] args) throws BadCommandException {
     var name = arg(args, 1).or("Drop what?");
     var thing = name.maybe(n -> thing(n)).or(n -> "No " + n + " to drop!");
