@@ -53,17 +53,29 @@ public class Player implements Location, Attack.Target {
   //////////////////////////////////////////////////////////////////////////////
   // Basic methods on Player
 
+  public Room room() {
+    return room;
+  }
+
+  public int hitPoints() {
+    return hitPoints;
+  }
+
+  public boolean alive() {
+    return hitPoints > 0;
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Some verbs
+
   public String go(Door door) {
     room = door.from(room);
     return room.description();
   }
 
-  public Room room() {
-    return room;
-  }
-
-  public void drop(Thing t) {
+  public String drop(Thing t) {
     room.drop(t);
+    return "You drop the " + t.name() + ".";
   }
 
   public String inventory() {
@@ -73,14 +85,6 @@ public class Player implements Location, Attack.Target {
       var items = things().stream().map(t -> a(t.description())).toList();
       return new Text.Wrapped().add("You have").add(commify(items) + ".").toString();
     }
-  }
-
-  public int hitPoints() {
-    return hitPoints;
-  }
-
-  public boolean alive() {
-    return hitPoints > 0;
   }
 
   //////////////////////////////////////////////////////////////////////////////

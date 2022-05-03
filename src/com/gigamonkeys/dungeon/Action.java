@@ -55,8 +55,7 @@ public interface Action {
 
   public static record Drop(Player player, Thing thing) implements Action {
     public String description() {
-      player.drop(thing);
-      return "You drop the " + thing.name() + ".";
+      return player.drop(thing);
     }
 
     public Stream<Action> reactions(Thing t) {
