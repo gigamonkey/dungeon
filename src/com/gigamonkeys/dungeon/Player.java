@@ -102,9 +102,8 @@ public class Player implements Location, Attack.Target {
   Action attack(String[] args) throws BadCommandException {
     var targetName = arg(args, 1).or("Attack what? And with what?");
     var with = arg(args, args.length - 2).expect("with").or("Don't understand ATTACK with no WITH.");
-    var weaponName = arg(args, args.length - 1).or("Attack with what?");
     var target = targetName.maybe(this::implicitMonster).or(n -> "No " + n + " here to attack.");
-    var weapon = weaponName.maybe(this::anyThing).or(n -> "No " + n + " here to attack with!");
+    var weapon = anyThing(arg(args, args.length - 1).or("Attack with what?"));
     return with.toAction(e -> weapon.toAction(w -> target.toAction(t -> new Action.Attack(t, w))));
   }
 
@@ -136,12 +135,10 @@ public class Player implements Location, Attack.Target {
   }
 
   Action put(String[] args) throws BadCommandException {
-    var thingName = arg(args, 1).or("Put what? And where?");
+    var thing = anyThing(arg(args, 1).or("Put what? And where?"));
     var placeName = args(args, 2, args.length - 1).or("Where?");
-    var locationName = arg(args, args.length - 1).or("Need location.");
+    var location = anyThing(arg(args, args.length - 1).or("Need location."));
 
-    var thing = thingName.maybe(this::anyThing).or(n -> "No " + n + " here.");
-    var location = locationName.maybe(this::anyThing).or(n -> "No " + n + " here.");
     return thing.toAction(t ->
       location.toAction(l ->
         placeName
@@ -160,19 +157,15 @@ public class Player implements Location, Attack.Target {
   // Helpers for action parsers
 
   private Action simpleVerb(String[] args, String verb, ToAction<Thing> factory) throws BadCommandException {
-    return arg(args, 1)
-      .or(capitalize(verb) + " what?")
-      .maybe(this::anyThing)
-      .or(n -> "No " + n + " here.")
-      .toAction(factory);
+    return anyThing(arg(args, 1).or(capitalize(verb) + " what?")).toAction(factory);
   }
 
   private Optional<Thing> roomThing(String name) {
     return room.thing(name);
   }
 
-  private Optional<Thing> anyThing(String name) {
-    return thing(name).or(() -> roomThing(name));
+  private <T> Parse<Thing, String> anyThing(Parse<String, T> parse) {
+    return parse.maybe(n -> thing(n).or(() -> roomThing(n))).or(n -> "No " + n + " here.");
   }
 
   private Optional<Thing> implicitMonster(String name) {
