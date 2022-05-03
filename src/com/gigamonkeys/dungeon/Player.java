@@ -109,23 +109,15 @@ public class Player implements Location, Attack.Target {
   }
 
   Action close(String[] args) throws BadCommandException {
-    return arg(args, 1)
-      .or("Close what?")
-      .maybe(this::anyThing)
-      .or(n -> "No " + n + " here.")
-      .toAction(t -> new Action.Close(t));
+    return simpleVerb(args, "close", Action.Close::new);
   }
 
   Action drop(String[] args) throws BadCommandException {
-    var name = arg(args, 1).or("Drop what?");
-    var thing = name.maybe(n -> thing(n)).or(n -> "No " + n + " to drop!");
-    return thing.toAction(t -> new Action.Drop(this, t));
+    return simpleVerb(args, "drop", t -> new Action.Drop(this, t));
   }
 
   Action eat(String[] args) throws BadCommandException {
-    var name = arg(args, 1).or("Eat what?");
-    var thing = name.maybe(this::anyThing).or(n -> "No " + n + " here to eat.");
-    return thing.toAction(food -> new Action.Eat(this, food));
+    return simpleVerb(args, "eat", food -> new Action.Drop(this, food));
   }
 
   Action go(String[] args) throws BadCommandException {
@@ -140,11 +132,7 @@ public class Player implements Location, Attack.Target {
   }
 
   Action open(String[] args) throws BadCommandException {
-    return arg(args, 1)
-      .or("Open what?")
-      .maybe(this::anyThing)
-      .or(n -> "No " + n + " here.")
-      .toAction(t -> new Action.Open(t));
+    return simpleVerb(args, "open", Action.Open::new);
   }
 
   Action put(String[] args) throws BadCommandException {
@@ -170,6 +158,14 @@ public class Player implements Location, Attack.Target {
 
   //////////////////////////////////////////////////////////////////////////////
   // Helpers for action parsers
+
+  private Action simpleVerb(String[] args, String verb, ToAction<Thing> factory) throws BadCommandException {
+    return arg(args, 1)
+      .or(capitalize(verb) + " what?")
+      .maybe(this::anyThing)
+      .or(n -> "No " + n + " here.")
+      .toAction(factory);
+  }
 
   private Optional<Thing> roomThing(String name) {
     return room.thing(name);
