@@ -1,0 +1,23 @@
+take ring
+eat sandwich
+go east
+take bread
+go east
+take parrot
+drop bread
+look
+take parrot
+go west
+go south
+open chest
+look
+take dagger
+look
+close chest
+go north
+go west
+go south
+eat blobbyblob
+attack with ring
+eat blobbyblob
+quit
