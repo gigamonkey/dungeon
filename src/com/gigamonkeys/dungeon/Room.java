@@ -91,7 +91,7 @@ public class Room implements Location {
       })
       .forEach(desc::add);
 
-    things().stream().map(Thing::describeThings).forEach(desc::add);
+    things().stream().filter(p).map(Thing::describeThings).forEach(desc::add);
 
     return desc.stream();
   }

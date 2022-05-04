@@ -1,4 +1,4 @@
 #!/bin/bash
 
 clear
-rlwrap java --enable-preview -cp classes com.gigamonkeys.dungeon.Dungeon
+rlwrap java --enable-preview -cp classes com.gigamonkeys.dungeon.Dungeon $1 $2

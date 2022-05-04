@@ -3,9 +3,12 @@ package com.gigamonkeys.dungeon;
 import static com.gigamonkeys.dungeon.Direction.*;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
@@ -30,19 +33,22 @@ public class Dungeon {
 
   private boolean gameOver = false;
 
-  Dungeon(InputStream in, PrintStream out) {
+  Dungeon(InputStream in, OutputStream out) {
     this.in = new BufferedReader(new InputStreamReader(in));
-    this.out = out;
+    this.out = new PrintStream(out);
   }
 
-  private void loop() throws IOException {
+  private void loop(boolean printCommands) throws IOException {
     var player = new Player(buildMaze(), 20);
     registerCommands(player);
 
     say(player.room().description());
     while (!gameOver) {
       out.print("> ");
-      var tokens = parseLine(in.readLine().toLowerCase());
+      var line = in.readLine();
+      if (line == null) break;
+      if (printCommands) out.println(line);
+      var tokens = parseLine(line.toLowerCase());
       if (tokens.length > 0) {
         say(doCommand(tokens, player));
         if (!player.alive()) {
@@ -135,8 +141,18 @@ public class Dungeon {
       boolean open = false;
 
       @Override
+      public boolean isMonster() {
+        var b = super.isMonster();
+        return b;
+      }
+
+      @Override
       public String description() {
-        return (open ? "open" : "closed") + " " + super.description();
+        return descriptor() + " " + super.description();
+      }
+
+      private String descriptor() {
+        return open ? (things().isEmpty() ? "empty" : "open") : "closed";
       }
 
       @Override
@@ -167,7 +183,12 @@ public class Dungeon {
       }
     };
 
-    var jeweledDagger = new Thing.Weapon("dagger", "jeweled dagger", new Attack.Simple("Stabby, stab, stab.", 1));
+    var jeweledDagger = new Thing.Weapon("dagger", "jeweled dagger", new Attack.Simple("Stabby, stab, stab.", 1)) {
+      @Override
+      public String describeThings() {
+        return super.describeThings();
+      }
+    };
 
     // Things
     var ring = new Thing.Weapon(
@@ -295,7 +316,8 @@ public class Dungeon {
 
   public static void main(String[] args) {
     try {
-      new Dungeon(System.in, System.out).loop();
+      var in = args.length > 0 ? new FileInputStream(args[0]) : System.in;
+      new Dungeon(in, System.out).loop(args.length > 0);
     } catch (IOException ioe) {
       System.out.println("Yikes. Problem reading command: " + ioe);
     }

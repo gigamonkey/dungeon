@@ -9,8 +9,8 @@ Below is a sample interaction with the game.
 ```
 
 You are in a dusty entryway to a castle. In the center of the room is a
-stone pedestal. On the pedestal is a ring of great power. By the door is
-a TV tray. On the tray is a ham and cheese sandwich. There is an oaken
+stone pedestal. By the door is a TV tray. On the pedestal is a ring of
+great power. On the tray is a ham and cheese sandwich. There is an oaken
 door to the east and a dank tunnel to the south.
 
 > take ring
@@ -25,7 +25,7 @@ Mmmm, tasty. But I think you got a spot of mustard on your tunic.
 
 You are in what appears to be a kitchen. Against the wall is a wooden
 table. On the table is a loaf of bread. There is a swinging door to the
-east and an oaken door to the west.
+east, a wooden door to the south, and an oaken door to the west.
 
 > take bread
 
@@ -36,9 +36,8 @@ Okay, took the loaf of bread.
 You are in a grand dining room with a crystal chandelier and tapestries
 on the walls. Propped against a wall is a broadsword with a rusty iron
 hilt. In the middle of the room is a pirate with a wooden leg and an eye
-patch. On the right shoulder of the pirate is a green and blue parrot
-with a tiny eye patch. There is a swinging door to the west. 'Arr,
-matey!' says the pirate.
+patch. There is a swinging door to the west. 'Arr, matey!' says the
+pirate.
 
 > take parrot
 
@@ -64,8 +63,42 @@ Okay, took the green and blue parrot with a tiny eye patch.
 > go west
 
 You are in what appears to be a kitchen. Against the wall is a wooden
-table. There is a swinging door to the east and an oaken door to the
-west.
+table. There is a swinging door to the east, a wooden door to the south,
+and an oaken door to the west.
+
+> go south
+
+You are in a storeroom. Against the wall is a closed wooden treasure
+chest. There is a wooden door to the north.
+
+> open chest
+
+The chest lid opens with a creak. Inside the chest is a jeweled dagger.
+
+> look
+
+You are in a storeroom. Against the wall is an open wooden treasure
+chest. Inside the chest is a jeweled dagger. There is a wooden door to
+the north.
+
+> take dagger
+
+Okay, took the jeweled dagger.
+
+> look
+
+You are in a storeroom. Against the wall is an empty wooden treasure
+chest. There is a wooden door to the north.
+
+> close chest
+
+The chest snaps shut.
+
+> go north
+
+You are in what appears to be a kitchen. Against the wall is a wooden
+table. There is a swinging door to the east, a wooden door to the south,
+and an oaken door to the west.
 
 > go west
 
@@ -86,21 +119,20 @@ You're down to 17.
 
 Are you out of your mind?! This is a live and jiggling blobbyblob. The
 blobbyblob extrudes a blobby arm and smashes at you! You take 3 hit
-points of damage. You're down to 14.
+points of damage. You take 3 hit points of damage. You're down to 14.
 
 > attack with ring
 
 A sphere of light emanates from the ring blasting the blobbyblob to
-smithereens. After 1000 points of damage, the blobbyblob is dead. Good
-job, murderer.
+smithereens.
 
 > eat blobbyblob
 
-The blobbyblob is blasted all over the room. There is nothing to eat
-unless you have a squeege and a straw.
+No blobbyblob here.
 
 > quit
 
 Okay, bye!
+
 
 ```
