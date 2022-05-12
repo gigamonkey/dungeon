@@ -23,10 +23,11 @@ public interface Command {
    */
   public String run(String[] args, Player p);
 
+
   /**
-   * A command that produces an Action which can produce reactions and counts as a
-   * turn. The combined output from the reaction and reactions is all jammed
-   * together and wrapped as a paragraph.
+   * The main Command implementation, for commands that produce an Action which
+   * can produce reactions and counts as a turn. The combined output from the
+   * reaction and reactions is all jammed together and wrapped as a paragraph.
    */
   public static record Turn(String verb, String help, Parser parser) implements Command {
     /**
