@@ -93,7 +93,7 @@ public class Player implements Location, Attack.Target {
   public String applyAttack(Attack attack) {
     int damage = attack.damage();
     hitPoints -= damage;
-    return "You take " + numberOf(damage, "hit point") + " of damage.";
+    return "";
   }
 
   public String who() {
