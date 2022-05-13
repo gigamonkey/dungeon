@@ -50,11 +50,11 @@ public class Thing implements Location, Attack.Target {
 
     places()
       .stream()
-      .flatMap(p -> {
-        var things = byPlace.getOrDefault(p, List.of()).stream().map(t -> a(t.description())).toList();
+      .flatMap(place -> {
+        var things = byPlace.getOrDefault(place, List.of()).stream().map(t -> a(t.description())).toList();
         return things.isEmpty()
           ? Stream.empty()
-          : Stream.of(capitalize(p) + " the " + name() + isAre(things.size()) + commify(things) + ".");
+          : Stream.of(capitalize(place) + " the " + name() + isAre(things.size()) + commify(things) + ".");
       })
       .forEach(desc::add);
 
