@@ -12,7 +12,8 @@ class Text {
   public static final int WRAP = 72;
 
   public static String a(String thing) {
-    var a = "aeiouy".indexOf(Character.toLowerCase(thing.charAt(0))) != -1 ? "an " : "a ";
+    // N.B. this fails to deal with u in, e.g. "unicorn" and o in, e.g., "one".
+    var a = "aeiou".indexOf(Character.toLowerCase(thing.charAt(0))) != -1 ? "an " : "a ";
     return a + thing;
   }
 
