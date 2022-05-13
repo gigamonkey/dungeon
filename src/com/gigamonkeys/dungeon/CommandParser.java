@@ -56,17 +56,33 @@ public record CommandParser(Player player) {
   }
 
   public static interface Parse<T, U> {
-    public Action toAction(ToAction<T> fn) throws BadCommandException;
-
+    /**
+     * Succeed if we can convert the current value to a new value.
+     */
     public <X> Parse<X, T> maybe(Function<T, Optional<X>> fn);
 
-    public Parse<T, U> or(Function<U, String> error);
-
+    /**
+     * Set the error message if we have failed.
+     */
     public Parse<T, U> or(String error);
 
+    /**
+     * Set the error message based on the previous value if we have failed.
+     */
+    public Parse<T, U> or(Function<U, String> error);
+
+    /**
+     * Expect a specific value and fail otherwise.
+     */
     public default Parse<T, T> expect(T expected) {
       return maybe(v -> Optional.ofNullable(expected.equals(v) ? v : null));
     }
+
+    /**
+     * If we are a good parse, convert the value to an Action, throwing
+     * BadCommandException if we cannot.
+     */
+    public Action toAction(ToAction<T> fn) throws BadCommandException;
   }
 
   public static <T, U> Parse<T, U> good(T v, U p) {
@@ -78,10 +94,6 @@ public record CommandParser(Player player) {
   }
 
   private static record Good<T, U>(T value, U previous) implements Parse<T, U> {
-    public Action toAction(ToAction<T> fn) throws BadCommandException {
-      return fn.actionify(value);
-    }
-
     public <X> Parse<X, T> maybe(Function<T, Optional<X>> fn) {
       return fn.apply(value).map(x -> good(x, value)).orElse(bad(value, null));
     }
@@ -94,16 +106,16 @@ public record CommandParser(Player player) {
       return this;
     }
 
+    public Action toAction(ToAction<T> fn) throws BadCommandException {
+      return fn.actionify(value);
+    }
+
     public String toString() {
       return "Good parse: value: " + value + "; previous: " + previous;
     }
   }
 
   private static record Bad<T, U>(U previous, String error) implements Parse<T, U> {
-    public Action toAction(ToAction<T> fn) throws BadCommandException {
-      throw new BadCommandException(error);
-    }
-
     public <X> Parse<X, T> maybe(Function<T, Optional<X>> fn) {
       return bad(null, error);
     }
@@ -114,6 +126,10 @@ public record CommandParser(Player player) {
 
     public Parse<T, U> or(Function<U, String> error) {
       return bad(previous, error.apply(previous));
+    }
+
+    public Action toAction(ToAction<T> fn) throws BadCommandException {
+      throw new BadCommandException(error);
     }
 
     public String toString() {
