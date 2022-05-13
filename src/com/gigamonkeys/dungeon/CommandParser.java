@@ -120,12 +120,12 @@ public record CommandParser(Player player) {
       return bad(null, error);
     }
 
-    public Parse<T, U> or(String error) {
-      return bad(previous, error);
+    public Parse<T, U> or(String newError) {
+      return error == null ? bad(previous, newError) : this;
     }
 
-    public Parse<T, U> or(Function<U, String> error) {
-      return bad(previous, error.apply(previous));
+    public Parse<T, U> or(Function<U, String> errorFn) {
+      return error == null ? bad(previous, errorFn.apply(previous)) : this;
     }
 
     public Action toAction(ToAction<T> fn) throws BadCommandException {
