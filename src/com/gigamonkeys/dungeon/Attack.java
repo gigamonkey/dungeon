@@ -26,8 +26,8 @@ public interface Attack {
   /**
    * Get the description of the result which may be determined by the thing
    * being attacked. Should call applyAttack on the target if the attack
-   * succeeds but doesn't have to use the resulting string. (Though probably
-   * should.)
+   * succeeds but doesn't have to use the resulting string though it probably
+   * should in most cases.
    */
   public String result(Target thing);
 

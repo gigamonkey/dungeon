@@ -25,8 +25,10 @@ public interface Command {
 
   /**
    * The main Command implementation, for commands that produce an Action which
-   * can produce reactions and counts as a turn. The combined output from the
-   * reaction and reactions is all jammed together and wrapped as a paragraph.
+   * can produce reactions and counts as a turn. The combined outputs from the
+   * initial action and all the reactions plus a synthetic Turn action, and
+   * finally any state changes reported by the Player are jammed together and
+   * wrapped as a paragraph.
    */
   public static record Turn(String verb, String help, Parser parser) implements Command {
     /**
@@ -69,7 +71,9 @@ public interface Command {
   }
 
   /**
-   * A command that just produces output and does not count as a turn.
+   * A command that just produces output and does not count as a turn. The
+   * Supplier of the output is responsible for formatting the output exactly as
+   * it should appear.
    */
   public static record NoTurn(String verb, String help, Supplier<String> fn) implements Command {
     /**
