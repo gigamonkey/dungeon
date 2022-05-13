@@ -127,7 +127,7 @@ public class Maze {
             ? "The " +
             name() +
             " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
-            : destroy(
+            : super.destroy(
               "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger."
             );
       }
