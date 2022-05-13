@@ -25,3 +25,9 @@ clean:
 
 tidy:
 	find . -name '*~' -delete
+
+check:
+	@if [ "$$(./run run.txt | shasum | cut -c 1-40)" == "$$(cat output.sha)" ]; then echo Good; else echo Bad; fi
+
+output.sha:
+	./run run.txt | shasum | cut -c 1-40 > $@

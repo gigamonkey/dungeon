@@ -73,13 +73,16 @@ class Text {
       int col = 0;
       for (var text : items) {
         for (var t : text.split("\\s+")) {
-          if (col + t.length() > WRAP) {
+          if (col + 1 + t.length() > WRAP) {
             sb.append("\n");
             col = 0;
           }
+          if (col > 0) {
+            sb.append(" ");
+            col++;
+          }
           sb.append(t);
-          sb.append(" ");
-          col += t.length() + 1;
+          col += t.length();
         }
       }
       return sb.toString().strip();
