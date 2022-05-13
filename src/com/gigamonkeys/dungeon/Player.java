@@ -176,7 +176,7 @@ public class Player implements Location, Attack.Target {
       var maybe = room.thing(args[i]);
       if (!maybe.isPresent()) {
         if (!args[i].equals("and")) {
-          return new Parse<>(null, args, "No " + args[i] + " here to take.");
+          return bad(args, "No " + args[i] + " here to take.");
         }
       } else {
         var thing = maybe.get();
@@ -184,6 +184,6 @@ public class Player implements Location, Attack.Target {
         thing.allThings().forEach(things::add);
       }
     }
-    return things.isEmpty() ? new Parse<>(null, args, "Take what?") : new Parse<>(things, args, null);
+    return things.isEmpty() ? bad(args, "Take what?") : good(things, args);
   }
 }

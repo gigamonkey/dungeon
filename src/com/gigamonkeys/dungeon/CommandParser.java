@@ -14,7 +14,7 @@ public record CommandParser(Player player) {
    * exists and an error parse otherwise.
    */
   public static Parse<String, String[]> arg(String[] args, int idx) {
-    return idx < args.length ? new Parse<>(args[idx], args, null) : new Parse<>(null, args, null);
+    return idx < args.length ? good(args[idx], args) : bad(args, null);
   }
 
   /**
@@ -22,11 +22,11 @@ public record CommandParser(Player player) {
    */
   public static Parse<String, String[]> args(String[] args, int start, int end) {
     var s = String.join(" ", Arrays.asList(Arrays.copyOfRange(args, start, end)));
-    return !s.equals("") ? new Parse<>(s, args, null) : new Parse<>(null, args, null);
+    return !s.equals("") ? good(s, args) : bad(args, null);
   }
 
   public static <T> Parse<T, Object> implicit(Supplier<Optional<T>> opt) {
-    return opt.get().map(t -> new Parse<>(t, null, null)).orElse(new Parse<>(null, null, null));
+    return opt.get().map(t -> good(t, null)).orElse(bad(null, null));
   }
 
   /**
@@ -55,46 +55,69 @@ public record CommandParser(Player player) {
     }
   }
 
-  public static class Parse<T, U> {
+  public static interface Parse<T, U> {
+    public Action toAction(ToAction<T> fn) throws BadCommandException;
 
-    private final T value;
-    private final U previous;
-    private final String error;
+    public <X> Parse<X, T> maybe(Function<T, Optional<X>> fn);
 
-    public Parse(T value, U previous, String error) {
-      this.value = value;
-      this.previous = previous;
-      this.error = error;
+    public Parse<T, U> or(Function<U, String> error);
+
+    public Parse<T, U> or(String error);
+
+    public default Parse<T, T> expect(T expected) {
+      return maybe(v -> Optional.ofNullable(expected.equals(v) ? v : null));
     }
+  }
 
+  public static <T, U> Parse<T, U> good(T v, U p) {
+    return new Good<>(v, p);
+  }
+
+  public static <T, U> Parse<T, U> bad(U p, String s) {
+    return new Bad<>(p, s);
+  }
+
+  private static record Good<T, U>(T value, U previous) implements Parse<T, U> {
     public Action toAction(ToAction<T> fn) throws BadCommandException {
-      if (value != null) {
-        return fn.actionify(value);
-      } else {
-        throw new BadCommandException(error);
-      }
+      return fn.actionify(value);
     }
 
     public <X> Parse<X, T> maybe(Function<T, Optional<X>> fn) {
-      return value != null
-        ? fn.apply(value).map(x -> new Parse<>(x, value, null)).orElse(new Parse<>(null, value, null))
-        : new Parse<>(null, null, error);
-    }
-
-    public Parse<T, T> expect(T expected) {
-      return maybe(v -> Optional.ofNullable(expected.equals(v) ? v : null));
+      return fn.apply(value).map(x -> good(x, value)).orElse(bad(value, null));
     }
 
     public Parse<T, U> or(String error) {
-      return (value != null || this.error != null) ? this : new Parse<>(null, previous, error);
+      return this;
     }
 
     public Parse<T, U> or(Function<U, String> error) {
-      return (value != null || this.error != null) ? this : new Parse<>(null, previous, error.apply(previous));
+      return this;
     }
 
     public String toString() {
-      return "value: " + value + "; previous: " + previous + "; error: " + error;
+      return "Good parse: value: " + value + "; previous: " + previous;
+    }
+  }
+
+  private static record Bad<T, U>(U previous, String error) implements Parse<T, U> {
+    public Action toAction(ToAction<T> fn) throws BadCommandException {
+      throw new BadCommandException(error);
+    }
+
+    public <X> Parse<X, T> maybe(Function<T, Optional<X>> fn) {
+      return bad(null, error);
+    }
+
+    public Parse<T, U> or(String error) {
+      return bad(previous, error);
+    }
+
+    public Parse<T, U> or(Function<U, String> error) {
+      return bad(previous, error.apply(previous));
+    }
+
+    public String toString() {
+      return "Bad parse: previous: " + previous + "; error: " + error;
     }
   }
 }
