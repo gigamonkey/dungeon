@@ -135,11 +135,6 @@ public class Thing implements Location, Attack.Target {
     return "the " + name;
   }
 
-  public String moveTo(Location location, String place) {
-    location.placeThing(this, place);
-    return "The " + name() + " moves to " + place + " " + location + ".";
-  }
-
   /**
    * Can this thing be taken from it's current location. It needs to be both
    * inherently portable and the location needs to allow it to be taken.
@@ -155,7 +150,12 @@ public class Thing implements Location, Attack.Target {
     return location;
   }
 
-  public final void moveTo(Location location) {
+  public String moveTo(Location location, String place) {
+    location.placeThing(this, place);
+    return "The " + name() + " moves to " + place + " " + location + ".";
+  }
+
+  public final void setLocation(Location location) {
     this.location = Optional.of(location);
   }
 

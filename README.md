@@ -7,7 +7,6 @@ reasonable output.
 Below is a sample interaction with the game.
 
 ```
-
 You are in a dusty entryway to a castle. In the center of the room is a
 stone pedestal. By the door is a TV tray. On the pedestal is a ring of
 great power. On the tray is a ham and cheese sandwich. There is an oaken
@@ -36,8 +35,9 @@ Okay, took the loaf of bread.
 You are in a grand dining room with a crystal chandelier and tapestries
 on the walls. Propped against a wall is a broadsword with a rusty iron
 hilt. In the middle of the room is a pirate with a wooden leg and an eye
-patch. There is a swinging door to the west. 'Arr, matey!' says the
-pirate.
+patch. On the right shoulder of the pirate is a green and blue parrot
+with a tiny eye patch. There is a swinging door to the west. 'Arr,
+matey!' says the pirate.
 
 > take parrot
 
@@ -112,14 +112,13 @@ You are in the lair of a horrible creature. On the floor is a heavy
 dwarven axe. Across from you is a blobbyblob, a gelatenous mass with too
 many eyes and an odor of jello casserole gone bad. There is a dank
 tunnel to the north. The blobbyblob extrudes a blobby arm and smashes at
-you! You take 3 hit points of damage. You take 3 hit points of damage.
-You're down to 17.
+you! You take 3 hit points of damage. You're down to 17.
 
 > eat blobbyblob
 
 Are you out of your mind?! This is a live and jiggling blobbyblob. The
 blobbyblob extrudes a blobby arm and smashes at you! You take 3 hit
-points of damage. You take 3 hit points of damage. You're down to 14.
+points of damage. You're down to 14.
 
 > attack with ring
 
@@ -128,11 +127,10 @@ smithereens.
 
 > eat blobbyblob
 
-No blobbyblob here.
+The blobbyblob is blasted all over the room. There is nothing to eat
+unless you have a squeege and a straw.
 
 > quit
 
 Okay, bye!
-
-
 ```

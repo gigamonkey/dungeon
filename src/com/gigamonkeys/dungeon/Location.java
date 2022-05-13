@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -37,7 +38,7 @@ public interface Location {
    * definitely be overridden.
    */
   public default List<String> places() {
-    return List.of("on");
+    return List.copyOf(placedThings().stream().map(PlacedThing::where).collect(Collectors.toSet()));
   }
 
   /**
@@ -64,7 +65,7 @@ public interface Location {
   public default void placeThing(Thing thing, String where) {
     thing.location().ifPresent(l -> l.removeThing(thing));
     locationMap().put(thing.name(), new PlacedThing(thing, where));
-    thing.moveTo(this);
+    thing.setLocation(this);
   }
 
   /**

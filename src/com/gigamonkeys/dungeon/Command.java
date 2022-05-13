@@ -23,7 +23,6 @@ public interface Command {
    */
   public String run(String[] args, Player p);
 
-
   /**
    * The main Command implementation, for commands that produce an Action which
    * can produce reactions and counts as a turn. The combined output from the

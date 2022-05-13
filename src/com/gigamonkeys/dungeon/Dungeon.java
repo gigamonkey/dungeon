@@ -176,10 +176,6 @@ public class Dungeon {
           return "The " + name() + " is already closed.";
         }
       }
-
-      public List<String> places() {
-        return List.of("inside");
-      }
     };
 
     var jeweledDagger = new Thing.Weapon("dagger", "jeweled dagger", new Attack.Simple("Stabby, stab, stab.", 1)) {
@@ -237,13 +233,19 @@ public class Dungeon {
       public String eat() {
         return alive()
           ? "Are you out of your mind?! This is a live and jiggling " + name() + "."
-          : destroy(
-            hitPoints() < -100
-              ? "The " +
-              name() +
-              " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
-              : "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger."
-          );
+          : hitPoints() < -100
+            ? "The " +
+            name() +
+            " is blasted all over the room. There is nothing to eat unless you have a squeege and a straw."
+            : destroy(
+              "Ugh. This is worse than the worst jello casserole you have ever tasted. But it does slightly sate your hunger."
+            );
+      }
+
+      @Override
+      public String destroy(String s) {
+        location().ifPresent(l -> moveTo(l, "around the room"));
+        return "";
       }
 
       @Override
