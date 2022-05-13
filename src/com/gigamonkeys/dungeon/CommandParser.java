@@ -62,12 +62,13 @@ public record CommandParser(Player player) {
     public <X> Parse<X, T> maybe(Function<T, Optional<X>> fn);
 
     /**
-     * Set the error message if we have failed.
+     * Set the error message if we have failed and the error is not set yet.
      */
     public Parse<T, U> or(String error);
 
     /**
-     * Set the error message based on the previous value if we have failed.
+     * Set the error message based on the previous value if we have failed and
+     * the error is not set yet.
      */
     public Parse<T, U> or(Function<U, String> error);
 
