@@ -30,8 +30,8 @@ public record CommandParser(Player player) {
   }
 
   /**
-   * Interface for command arg parsing. Needed since we need to throw an
-   * exception.
+   * Interface for command arg parsing. Can't use a generic java.util.function
+   * interface since we need to be able to throw an exception.
    */
   @FunctionalInterface
   public static interface Parser {
@@ -40,8 +40,9 @@ public record CommandParser(Player player) {
 
   /**
    * Interface for finally converting to an action which is where the
-   * BadCommandException is actually thrown. Needed for the case where we chain
-   * multiple Parse<> objects via lambdas.
+   * BadCommandException is actually thrown. Can't use a generic
+   * java.util.function interface so we can nest multiple Parse<> objects via
+   * lambdas. See Player.attack for a good example.
    */
   @FunctionalInterface
   public static interface ToAction<T> {
@@ -80,8 +81,10 @@ public record CommandParser(Player player) {
     }
 
     /**
-     * If we are a good parse, convert the value to an Action, throwing
-     * BadCommandException if we cannot.
+     * Convert the result of the parse to an Action, throwing
+     * BadCommandException if we cannot. A bad command can be caused by a bad
+     * parse or because the ToAction can't produce an action for whatever reason
+     * despite the parse having succeeded.
      */
     public Action toAction(ToAction<T> fn) throws BadCommandException;
   }
