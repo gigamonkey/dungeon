@@ -21,13 +21,12 @@ public interface Action {
   public String description();
 
   /**
-   * Get the reactions to this Action from the given thing. (This method just
-   * dispatches to the appropriate on<Action> method in the Thing interface so
-   * the Thing can generate its own reactions.
+   * Get the reactions to this Action from the given thing. This method should
+   * just dispatch to the appropriate on<Action> method in the Thing interface
+   * so the Thing can generate its own reactions. I.e. this is the first hop in
+   * a double dispatch.
    */
-  public default Stream<Action> reactions(Thing t) {
-    return Stream.empty();
-  }
+  public Stream<Action> reactions(Thing t);
 
   //////////////////////////////////////////////////////////////////////////////
   // Concrete actions classes.
@@ -116,7 +115,7 @@ public interface Action {
       location.placeThing(thing, place);
       return "You put the " + thing.name() + " " + place + " the " + location.name() + ".";
     }
-    public Stream<Action> reactios(Thing t) {
+    public Stream<Action> reactions(Thing t) {
       return t.onPut(this);
     }
   }
