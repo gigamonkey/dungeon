@@ -1,8 +1,8 @@
 package com.gigamonkeys.dungeon;
 
-import static com.gigamonkeys.dungeon.CommandParser.*;
-
-import java.util.function.*;
+import com.gigamonkeys.dungeon.CommandParser.BadCommandException;
+import com.gigamonkeys.dungeon.CommandParser.Parser;
+import java.util.function.Supplier;
 
 /**
  * The things that can happen when the user types something.
