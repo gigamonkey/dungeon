@@ -61,9 +61,18 @@ public interface Command {
       // action may potentially change the state of the world in ways that lead to
       // ConcurrentModificationExceptions from the stream if we try to do
       // everything in one big lazy stream.
+      //
+      // N.B. this method does nothing to detect or prevent infinite loops or
+      // sorcerer's apprentice situations so be careful about what reactions you
+      // generate in the various Things.
 
+      // Get the imediate reactions from all the things in the room.
       var reactions = player.room().allThings().flatMap(action::reactions).toList();
+
+      // Add the descriptions of those reactions first.
       text.add(reactions.stream().map(Action::description));
+
+      // Now get all the reactions to those actions, recursively.
       for (var a : reactions) {
         addReactions(text, a, player);
       }
