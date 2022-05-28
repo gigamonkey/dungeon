@@ -155,6 +155,10 @@ public class Player implements Location, Attack.Target {
     );
   }
 
+  Action talk(String[] args) throws BadCommandException {
+    return rest(args, 1).or(args[0] + " what?").toAction(s -> new Action.Talk(s));
+  }
+
   Action take(String[] args) throws BadCommandException {
     return listOfThings(args, 1).or("Take what?").toAction(ts -> new Action.Take(this, ts));
   }

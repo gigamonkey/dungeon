@@ -168,6 +168,14 @@ public class Maze {
           new Action.Say(this, "Oi, ye swarthy dog! Hands off me parrot!")
         );
       }
+
+      @Override
+      public Stream<Action> onTalk(Action.Talk a) {
+        return streamIf(
+          alive() && a.what().toUpperCase().contains("MAGIC WORD"),
+          new Action.Say(this, "Arr, the magic word be 'Frobnicate'!")
+        );
+      }
     };
 
     var parrot = new Thing.Monster("parrot", "green and blue parrot with a tiny eye patch", "dead parrot", 5, true) {

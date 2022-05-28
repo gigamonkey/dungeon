@@ -161,6 +161,17 @@ public interface Action {
     }
   }
 
+  // When the player talks.
+  public static record Talk(String what) implements Action {
+    public String description() {
+      return "";
+    }
+
+    public Stream<Action> reactions(Thing t) {
+      return t.onTalk(this);
+    }
+  }
+
   public static record Turn(Player player) implements Action {
     public String description() {
       return null; // This is a pseudo action so no description.

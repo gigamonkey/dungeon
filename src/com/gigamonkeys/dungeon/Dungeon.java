@@ -74,6 +74,7 @@ public class Dungeon {
   }
 
   private void registerCommands(Player player) {
+    registerCommand(new Command.Turn("ask", "Attack a monster with a weapon.", player::talk));
     registerCommand(new Command.Turn("attack", "Attack a monster with a weapon.", player::attack));
     registerCommand(new Command.Turn("close", "Close something.", player::close));
     registerCommand(new Command.Turn("drop", "Drop an item you are carrying.", player::drop));
@@ -82,6 +83,7 @@ public class Dungeon {
     registerCommand(new Command.Turn("look", "Look at the room your are in again.", player::look));
     registerCommand(new Command.Turn("open", "Open something.", player::open));
     registerCommand(new Command.Turn("put", "Put an object somewhere.", player::put));
+    registerCommand(new Command.Turn("say", "Attack a monster with a weapon.", player::talk));
     registerCommand(new Command.Turn("take", "Take an item from the room.", player::take));
     registerCommand(new Command.NoTurn("help", "Get help on commands.", this::help));
     registerCommand(new Command.NoTurn("inventory", "List the items you are holding.", player::inventory));

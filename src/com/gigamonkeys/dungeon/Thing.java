@@ -223,6 +223,10 @@ public class Thing implements Location, Attack.Target {
     return Stream.empty();
   }
 
+  public Stream<Action> onTalk(Action.Talk a) {
+    return Stream.empty();
+  }
+
   public Stream<Action> onTurn(Action.Turn a) {
     return Stream.empty();
   }

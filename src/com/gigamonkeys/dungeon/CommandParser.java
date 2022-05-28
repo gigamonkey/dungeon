@@ -25,6 +25,15 @@ public record CommandParser(Player player) {
     return !s.equals("") ? good(s, args) : bad(args, null);
   }
 
+  /**
+   * Get the rest of the args from a start index as a single string.
+   */
+  public static Parse<String, String[]> rest(String[] args, int start) {
+    return start < args.length
+      ? good(String.join(" ", Arrays.asList(Arrays.copyOfRange(args, start, args.length))), args)
+      : bad(args, null);
+  }
+
   public static <T> Parse<T, Object> implicit(Supplier<Optional<T>> opt) {
     return opt.get().map(t -> good(t, null)).orElse(bad(null, null));
   }
