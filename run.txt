@@ -3,6 +3,7 @@ eat sandwich
 go east
 take bread
 go east
+ask what's the magic word?
 take parrot
 drop bread
 look

@@ -2,6 +2,9 @@ sources := $(shell find -name '*.java')
 main := com.gigamonkeys.dungeon.Dungeon
 resources :=
 
+golden_sha = cat golden.txt | shasum | cut -c 1-40
+current_sha = ./run run.txt | shasum | cut -c 1-40
+
 all: build
 
 build: compile resources
@@ -27,7 +30,10 @@ tidy:
 	find . -name '*~' -delete
 
 check:
-	@if [ "$$(./run run.txt | shasum | cut -c 1-40)" == "$$(cat output.sha)" ]; then echo Good; else echo Bad; fi
+	@if [ "`$(current_sha)`" == "`$(golden_sha)`" ]; then echo Good; else echo Bad; fi
 
-output.sha:
-	./run run.txt | shasum | cut -c 1-40 > $@
+golden.txt:
+	./run run.txt > $@
+
+candidate.txt:
+	./run run.txt > $@
