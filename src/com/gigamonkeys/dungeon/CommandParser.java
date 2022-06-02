@@ -21,6 +21,7 @@ public record CommandParser(Player player) {
    * Combine consecutive tokens into a single argument.
    */
   public static Parse<String, String[]> args(String[] args, int start, int end) {
+    if (end <= start) return bad(args, null);
     var s = String.join(" ", Arrays.asList(Arrays.copyOfRange(args, start, end)));
     return !s.equals("") ? good(s, args) : bad(args, null);
   }
