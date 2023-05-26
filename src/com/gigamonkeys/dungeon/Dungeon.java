@@ -74,7 +74,7 @@ public class Dungeon {
   }
 
   private void registerCommands(Player player) {
-    registerCommand(new Command.Turn("ask", "Attack a monster with a weapon.", player::talk));
+    registerCommand(new Command.Turn("ask", "Ask a question.", player::talk));
     registerCommand(new Command.Turn("attack", "Attack a monster with a weapon.", player::attack));
     registerCommand(new Command.Turn("close", "Close something.", player::close));
     registerCommand(new Command.Turn("drop", "Drop an item you are carrying.", player::drop));
