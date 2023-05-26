@@ -32,6 +32,9 @@ tidy:
 check:
 	@if [ "`$(current_sha)`" == "`$(golden_sha)`" ]; then echo Good; else echo Bad; fi
 
+dungeon.jar:
+	jar --create --file $@ --main-class $(main) -C classes .
+
 golden.txt:
 	./run run.txt > $@
 
